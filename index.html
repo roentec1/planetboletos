@@ -212,6 +212,11 @@
 .team-promo-zoom{position:absolute;bottom:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(6,6,11,0.7);backdrop-filter:blur(8px);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:0.85rem;opacity:0;transition:all var(--tr-normal)}
 .team-promo:hover .team-promo-zoom{opacity:1}
 
+.team-link{display:flex;justify-content:center;margin-top:16px}
+.team-link a{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:100px;background:rgba(255,255,255,0.04);border:1px solid var(--border-color);color:var(--text-secondary);font-family:var(--font-body);font-size:1.85rem;font-weight:600;transition:all var(--tr-normal)}
+.team-link a:hover{border-color:var(--accent-blue);color:var(--accent-blue);background:rgba(45,122,255,0.06);transform:translateY(-2px);box-shadow:0 4px 16px var(--accent-blue-glow)}
+.team-link a i{font-size:0.78rem}
+
 @media(max-width:1024px){
     .team-promo{max-width:400px}
     .team-promo img{max-height:280px}
@@ -563,29 +568,32 @@
         var equipos={
             barreteros:{
                 nombre:'Barreteros',icon:'⚾',
+                link:'https://barreteros.onrender.com',
                 promo:'img/barreteros.png',
                 juegos:[
                     {id:1,local:'Barreteros',visit:'Halcones del Ceuc',fecha:'2026-08-16',hora:'10:30',lugar:'Barreterán, Coah.'},
-                    {id:2,local:'Barreteros',visit:'Halcones del Ceuc',fecha:'2026-08-17',hora:'10:30',lugar:'Barreterán, Coah.'},
-                    /*{id:3,local:'Barreteros',visit:'Tecolotes de Nuevo Laredo',fecha:'2026-08-20',hora:'18:00',lugar:'Barreterán, Coah.'}*/
+                    {id:2,local:'Barreteros',visit:'Mineros de Zacatecas',fecha:'2026-08-17',hora:'10:30',lugar:'Barreterán, Coah.'},
+                    {id:3,local:'Barreteros',visit:'Tecolotes de Nuevo Laredo',fecha:'2026-08-20',hora:'18:00',lugar:'Barreterán, Coah.'}
                 ]
             },
             halcones:{
                 nombre:'Halcones',icon:'🦅',
+                link:'https://halconesceuc.onrender.com',
                 promo:'img/halcones.png',
                 juegos:[
-                    {id:4,local:'Halcones Monclova',visit:'Barreteros',fecha:'2026-08-23',hora:'10:30',lugar:'Parque Infantil Monclova, Coah.'},
-                    {id:5,local:'Halcones Monclova',visit:'Barreteros',fecha:'2026-06-23',hora:'13:00',lugar:'Parque Infantil Monclova, Coah.'},
-                    /*{id:6,local:'Halcones Monclova',visit:'Cañeros de Los Mochis',fecha:'2026-06-08',hora:'12:00',lugar:'Parque Infantil Monclova, Coah.'}*/
+                    {id:4,local:'Halcones Monclova',visit:'Agrícoltores de Morelos',fecha:'2026-06-02',hora:'10:30',lugar:'Parque Infantil Monclova, Coah.'},
+                    {id:5,local:'Halcones Monclova',visit:'Tunas de Obregón',fecha:'2026-06-05',hora:'18:00',lugar:'Parque Infantil Monclova, Coah.'},
+                    {id:6,local:'Halcones Monclova',visit:'Cañeros de Los Mochis',fecha:'2026-06-08',hora:'12:00',lugar:'Parque Infantil Monclova, Coah.'}
                 ]
             },
             indios:{
                 nombre:'Indios',icon:'🏹',
+                link:'https://indios.muzquiz.onrender.com',
                 promo:'img/indios.png',
                 juegos:[
-                    {id:7,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'},
-                    {id:8,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'},
-                    {id:9,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'}
+                    {id:7,local:'Indios Múzquiz',visit:'Bravos',fecha:'2026-05-17',hora:'10:30',lugar:'Múzquiz, Coah.'},
+                    {id:8,local:'Indios Múzquiz',visit:'Algodoneros de Guasave',fecha:'2026-05-20',hora:'18:00',lugar:'Múzquiz, Coah.'},
+                    {id:9,local:'Indios Múzquiz',visit:'Mayos de Navojoa',fecha:'2026-05-23',hora:'12:00',lugar:'Múzquiz, Coah.'}
                 ]
             }
         };
@@ -609,13 +617,14 @@
             var panel=document.createElement('div');
             panel.className='team-panel'+(i===0?' active':'');
             panel.setAttribute('data-panel',key);
-
-            /* Imagen promocional */
+            
             var promoHTML='<div class="team-promo" data-promo-img="'+eq.promo+'">'+
                 '<img src="'+eq.promo+'" alt="Promoción '+eq.nombre+' — Temporada 2026" loading="lazy">'+
                 '<div class="team-promo-badge"><i class="fas fa-tag"></i> $'+PRECIO+'.00 MXN</div>'+
                 '<div class="team-promo-zoom"><i class="fas fa-expand"></i></div>'+
-            '</div>';
+            '</div>'+
+            '<div class="team-link"><a href="'+eq.link+'" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i>Sitio oficial de '+eq.nombre+'</a></div>';
+            
 
             /* Tarjetas de juegos */
             var gamesHTML='<div class="team-games-title">Próximos juegos</div><div class="matches-grid">';

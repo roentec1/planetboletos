@@ -258,8 +258,8 @@
         .match-buy-btn{width:100%;padding:14px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--accent-green),#00b377);color:#fff;font-family:var(--font-body);font-size:0.95rem;font-weight:700;border:none;cursor:pointer;transition:all var(--tr-normal);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 16px rgba(0,214,143,0.2)}
         .match-buy-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,214,143,0.3)}
         .match-brand{padding:0 24px 16px;display:flex;align-items:center;justify-content:center;gap:8px;opacity:0.5}
-        .match-brand img{width:22px;height:22px;border-radius:4px;object-fit:cover}
-        .match-brand span{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted)}
+        .match-brand img{width:52px;height:22px;border-radius:4px;object-fit:cover}
+        .match-brand span{font-size:0.65rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-white)}
 
         /* ===== MODAL COMPRA ===== */
         .pm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity var(--tr-normal)}
@@ -268,7 +268,7 @@
         .pm-overlay.active .pm-box{transform:translateY(0) scale(1)}
         .pm-head{padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between}
         .pm-brand{display:flex;align-items:center;gap:10px}
-        .pm-brand img{width:36px;height:36px;border-radius:var(--radius-sm);object-fit:cover}
+        .pm-brand img{width:86px;height:36px;border-radius:var(--radius-sm);object-fit:cover}
         .pm-brand-txt{display:flex;flex-direction:column;line-height:1.1}
         .pm-brand-name{font-family:var(--font-heading);font-weight:800;font-size:0.95rem;color:var(--text-primary)}
         .pm-brand-sub{font-size:0.6rem;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase}
@@ -283,12 +283,12 @@
         .pm-details span{display:flex;align-items:center;gap:5px}
         .pm-details i{font-size:0.72rem;color:var(--accent-blue)}
         .pm-sec{padding:0 28px;margin-bottom:20px}
-        .pm-label{font-size:0.82rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;display:block}
+        .pm-label{font-size:0.82rem;font-weight:600;color:var(--text-white);margin-bottom:8px;display:block}
         .qty-sel{display:flex;align-items:center;border:1px solid var(--border-color);border-radius:var(--radius-md);overflow:hidden;width:fit-content}
         .qty-btn{width:44px;height:44px;background:var(--bg-card);border:none;color:var(--text-primary);font-size:1.1rem;cursor:pointer;transition:all var(--tr-fast);display:flex;align-items:center;justify-content:center}
         .qty-btn:hover{background:var(--bg-card-hover)}.qty-btn:disabled{opacity:0.3;cursor:not-allowed}
         .qty-val{width:56px;height:44px;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-size:1.2rem;font-weight:800;background:var(--bg-primary);border-left:1px solid var(--border-color);border-right:1px solid var(--border-color)}
-        .qty-note{font-size:0.72rem;color:var(--text-muted);margin-top:6px}
+        .qty-note{font-size:0.72rem;color:var(--text-info);margin-top:6px}
         .pm-prices{padding:0 28px;margin-bottom:20px}
         .pr-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:0.9rem}
         .pr-row.sub{color:var(--text-secondary)}
@@ -314,7 +314,7 @@
         .pm-submit{padding:0 28px 12px}
         .pm-wa{width:100%;padding:16px;border-radius:var(--radius-md);background:linear-gradient(135deg,#25d366,#128c4e);color:#fff;font-family:var(--font-body);font-size:1rem;font-weight:700;border:none;cursor:pointer;transition:all var(--tr-normal);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 20px rgba(37,211,102,0.3)}
         .pm-wa:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(37,211,102,0.4)}
-        .pm-note{padding:0 28px 28px;display:flex;gap:10px;font-size:0.75rem;color:var(--text-muted);line-height:1.6}
+        .pm-note{padding:0 28px 28px;display:flex;gap:10px;font-size:0.75rem;color:var(--text-white);line-height:1.6}
         .pm-note i{color:var(--accent-yellow);flex-shrink:0;margin-top:2px}
         .pm-dup{margin:0 28px 16px;padding:14px 16px;background:rgba(255,71,87,0.08);border:1px solid rgba(255,71,87,0.2);border-radius:var(--radius-sm);color:var(--accent-red);font-size:0.82rem;font-weight:500;display:none;align-items:center;gap:10px}
         .pm-dup.show{display:flex}
@@ -417,7 +417,7 @@
     <a href="#nosotros" class="nav-link">Nosotros</a>
     <a href="#servicios" class="nav-link">Servicios</a>
     <a href="#partidos" class="nav-link">Beisbol</a>
-    <a href="#eventos" class="nav-link">Eventos</a>
+    <!--<a href="#eventos" class="nav-link">Eventos</a>-->
     <a href="#galeria" class="nav-link">Galería</a>
     <!--<a href="#contacto" class="nav-link">Contacto</a>-->
     
@@ -425,7 +425,7 @@
 
 </nav><button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button></div></header>
     
-    <nav class="nav-mobile" id="navMobile" role="navigation" aria-label="Menú móvil"><a href="#inicio" class="nav-link" data-ml>Inicio</a><a href="#nosotros" class="nav-link" data-ml>Nosotros</a><a href="#servicios" class="nav-link" data-ml>Servicios</a><a href="#partidos" class="nav-link" data-ml>Beisbol</a><a href="#eventos" class="nav-link" data-ml>Eventos</a><a href="#galeria" class="nav-link" data-ml>Galería</a><a href="#contacto" class="nav-link" data-ml>Contacto</a><a href="#contacto" class="btn btn-primary" data-ml>Contáctanos</a></nav>
+    <nav class="nav-mobile" id="navMobile" role="navigation" aria-label="Menú móvil"><a href="#inicio" class="nav-link" data-ml>Inicio</a><a href="#nosotros" class="nav-link" data-ml>Nosotros</a><a href="#servicios" class="nav-link" data-ml>Servicios</a><a href="#partidos" class="nav-link" data-ml>Beisbol</a><!--<a href="#eventos" class="nav-link" data-ml>Eventos</a>--><a href="#galeria" class="nav-link" data-ml>Galería</a><a href="#contacto" class="nav-link" data-ml>Contacto</a><a href="#contacto" class="btn btn-primary" data-ml>Contáctanos</a></nav>
 
     <section class="hero" id="inicio"><div class="hero-bg"></div><div class="hero-grid"></div><div class="hero-particles" id="heroParticles"></div><div class="container"><div class="hero-content"><div class="hero-badge reveal"><i class="fas fa-circle"></i> Tecnología mexicana desde 2002</div><h1 class="hero-title reveal" style="transition-delay:100ms"><span class="line1">PLANET</span><span class="line2">BOLETOS</span></h1><p class="hero-slogan reveal" style="transition-delay:200ms">"Tu acceso de boleto!"</p><p class="hero-desc reveal" style="transition-delay:300ms">Soluciones profesionales de boletaje para eventos especiales, música, deportes y entretenimiento.</p><div class="hero-buttons reveal" style="transition-delay:400ms"><a href="#servicios" class="btn btn-primary"><i class="fas fa-ticket-alt"></i> Conoce nuestros servicios</a><a href="#partidos" class="btn btn-outline">Ver partidos <i class="fas fa-arrow-right"></i></a></div></div></div><div class="hero-ticket-deco" aria-hidden="true"><div class="ticket-line"></div><div class="ticket-line-sm"></div><div class="ticket-line-sm"></div><div class="ticket-line-sm"></div><div class="ticket-line-sm"></div></div></section>
 
@@ -433,11 +433,11 @@
 
     <section class="section objective-section" id="boletaje"><div class="container"><div class="objective-content"><div class="objective-text reveal-left"><div class="section-label">Objetivo</div><h2 class="section-title">Nuestro objetivo</h2><p>Satisfacer las necesidades de nuestros clientes diseñando el mejor</p><span class="objective-highlight">BOLETO</span><p>para tu evento.</p></div><div class="ticket-visual reveal-right"><div class="ticket-mockup" aria-hidden="true"><div class="ticket-mockup-top"><div class="ticket-mockup-event">Concierto Estelar 2026</div><div class="ticket-mockup-date">SÁBADO 15 DE AGOSTO — 20:00 HRS</div></div><div class="ticket-mockup-body"><div class="ticket-mockup-field"><label>Lugar</label><span>Arena Monclova</span></div><div class="ticket-mockup-field"><label>Sección</label><span>VIP — Fila 3</span></div><div class="ticket-mockup-field"><label>Asiento</label><span>012</span></div><div class="ticket-mockup-field"><label>Precio</label><span>$850.00 MXN</span></div></div><div class="ticket-mockup-barcode" id="barcode"></div></div></div></div></div></section>
 
-    <section class="section about-section" id="nosotros"><div class="container"><div class="about-grid"><div class="about-text reveal-left"><div class="section-label">Sobre nosotros</div><h2 class="section-title">Nosotros</h2><p>Somos una empresa 100% mexicana, muy orgullosos creadores de tecnología mexicana desde 2002.</p><p>Nacimos y tenemos nuestra oficina central en la Ciudad de Monclova, Coahuila.</p><p>Trabajamos en eventos en varias ciudades, como Monclova, Múzquiz y Barroterán.</p><div class="timeline"><div class="timeline-item"><h4>2002 — Fundación</h4><p>Nace Planet Boletos en Monclova, Coahuila.</p></div><div class="timeline-item"><h4>Tecnología propia</h4><p>Sistemas de boletaje 100% mexicanos.</p></div><div class="timeline-item"><h4>Expansión regional</h4><p>Cobertura en Monclova, Múzquiz y Barroterán.</p></div></div></div><div class="about-stats reveal-right stagger"><div class="stat-card"><div class="stat-number" data-count="20">0</div><div class="stat-label">Años de experiencia</div></div><div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Empresa mexicana</div></div><div class="stat-card"><div class="stat-number"><i class="fas fa-microchip" style="font-size:1.6rem"></i></div><div class="stat-label">Tecnología mexicana</div></div><div class="stat-card"><div class="stat-number"><i class="fas fa-ticket-alt" style="font-size:1.6rem"></i></div><div class="stat-label">Soluciones de boletaje</div></div></div></div></div></section>
+    <section class="section about-section" id="nosotros"><div class="container"><div class="about-grid"><div class="about-text reveal-left"><div class="section-label">Sobre nosotros</div><h2 class="section-title">Nosotros</h2><p>Somos una empresa 100% mexicana, muy orgullosos creadores de tecnología mexicana desde 2002.</p><p>Nacimos y tenemos nuestra oficina central en la Ciudad de Monclova, Coahuila.</p><p>Trabajamos en eventos en varias ciudades, como Monclova, Múzquiz y Barroterán.</p><div class="timeline"><div class="timeline-item"><h4>2002  — Fundación</h4><p>Nace Planet Boletos en Monclova, Coahuila.</p></div><div class="timeline-item"><h4>Tecnología propia</h4><p>Sistemas de boletaje 100% mexicanos.</p></div><div class="timeline-item"><h4>Expansión regional</h4><p>Cobertura en Monclova, Múzquiz y Barroterán.</p></div></div></div><div class="about-stats reveal-right stagger"><div class="stat-card"><div class="stat-number" data-count="20">0</div><div class="stat-label">Años de experiencia</div></div><div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Empresa mexicana</div></div><div class="stat-card"><div class="stat-number"><i class="fas fa-microchip" style="font-size:1.6rem"></i></div><div class="stat-label">Tecnología mexicana</div></div><div class="stat-card"><div class="stat-number"><i class="fas fa-ticket-alt" style="font-size:1.6rem"></i></div><div class="stat-label">Soluciones de boletaje</div></div></div></div></div></section>
 
     <section class="section coverage-section"><div class="container"><div class="text-center reveal"><div class="section-label" style="justify-content:center">Cobertura</div><h2 class="section-title">Nuestra cobertura</h2><p class="section-desc mx-auto">Llevamos nuestras soluciones de boletaje a diferentes ciudades y eventos.</p></div><div class="coverage-cities stagger"><div class="city-card reveal"><div class="city-icon"><i class="fas fa-location-dot"></i></div><h3>Monclova</h3><p>Oficina central y mayor operación.</p></div><div class="city-card reveal"><div class="city-icon"><i class="fas fa-location-dot"></i></div><h3>Múzquiz</h3><p>Soluciones para eventos locales.</p></div><div class="city-card reveal"><div class="city-icon"><i class="fas fa-location-dot"></i></div><h3>Barroterán</h3><p>Cobertura de eventos y control de acceso.</p></div></div></div></section>
 
-    <section class="section solutions-section" id="eventos"><div class="container"><div class="text-center reveal"><div class="section-label" style="justify-content:center">Soluciones</div><h2 class="section-title">Soluciones para tu evento</h2><p class="section-desc mx-auto">Adaptamos nuestras herramientas a cada tipo de evento.</p></div><div class="solutions-grid stagger"><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/concert-music-event/600/400.jpg" alt="Evento musical" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos musicales</h3><p>Boletaje y control de acceso para conciertos y festivales.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/sports-stadium-event/600/400.jpg" alt="Evento deportivo" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos deportivos</h3><p>Venta de boletos y control de acceso deportivo.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/entertainment-show/600/400.jpg" alt="Espectáculo" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Entretenimiento</h3><p>Soluciones para espectáculos y experiencias.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/special-event-gala/600/400.jpg" alt="Evento especial" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos especiales</h3><p>Boletos personalizados y soluciones adaptadas.</p></div></div></div></div></section>
+    <!--<section class="section solutions-section" id="eventos"><div class="container"><div class="text-center reveal"><div class="section-label" style="justify-content:center">Soluciones</div><h2 class="section-title">Soluciones para tu evento</h2><p class="section-desc mx-auto">Adaptamos nuestras herramientas a cada tipo de evento.</p></div><div class="solutions-grid stagger"><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/concert-music-event/600/400.jpg" alt="Evento musical" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos musicales</h3><p>Boletaje y control de acceso para conciertos y festivales.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/sports-stadium-event/600/400.jpg" alt="Evento deportivo" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos deportivos</h3><p>Venta de boletos y control de acceso deportivo.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/entertainment-show/600/400.jpg" alt="Espectáculo" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Entretenimiento</h3><p>Soluciones para espectáculos y experiencias.</p></div></div><div class="solution-card reveal"><div class="solution-img-wrap"><img src="https://picsum.photos/seed/special-event-gala/600/400.jpg" alt="Evento especial" class="solution-img" loading="lazy"></div><div class="solution-body"><h3>Eventos especiales</h3><p>Boletos personalizados y soluciones adaptadas.</p></div></div></div></div></section>-->
 
     <section class="section process-section"><div class="container"><div class="text-center reveal"><div class="section-label" style="justify-content:center">Proceso</div><h2 class="section-title">De tu evento a la entrada</h2><p class="section-desc mx-auto">Cuatro pasos simples para tener tu sistema de boletaje listo.</p></div><div class="process-steps stagger"><div class="process-step reveal"><div class="process-number">01</div><h3>Diseñamos</h3><p>Diseñamos el boleto de acuerdo con la identidad del evento.</p></div><div class="process-step reveal"><div class="process-number">02</div><h3>Producimos</h3><p>Generamos boletos impresos o electrónicos.</p></div><div class="process-step reveal"><div class="process-number">03</div><h3>Vendemos</h3><p>Venta mediante internet, tiendas y puntos de expedición.</p></div><div class="process-step reveal"><div class="process-number">04</div><h3>Controlamos</h3><p>Control de acceso en las puertas del recinto.</p></div></div></div></section>
 
@@ -456,7 +456,64 @@
         </div>
     </section>
 
-    <section class="section gallery-section" id="galeria"><div class="container"><div class="text-center reveal"><div class="section-label" style="justify-content:center">Galería</div><h2 class="section-title">Galería</h2><p class="section-desc mx-auto">Momentos de nuestros eventos y trabajos de boletaje.</p></div><div class="gallery-filters reveal"><button class="gallery-filter-btn active" data-filter="all">Todos</button><button class="gallery-filter-btn" data-filter="eventos">Eventos</button><button class="gallery-filter-btn" data-filter="boletos">Boletos</button><button class="gallery-filter-btn" data-filter="musica">Música</button><button class="gallery-filter-btn" data-filter="deportes">Deportes</button><button class="gallery-filter-btn" data-filter="entretenimiento">Entretenimiento</button></div><div class="gallery-grid" id="galleryGrid"><div class="gallery-item reveal" data-category="eventos musica" data-title="Concierto en vivo"><img src="https://picsum.photos/seed/gallery-concert-live/600/450.jpg" alt="Concierto" loading="lazy"><div class="gallery-overlay"><i class="fas fa-expand"></i><span>Concierto en vivo</span></div></div><div class="gallery-item reveal" data-category="boletos" data-title="Boleto personalizado"><img src="https://picsum.photos/seed/gallery-ticket-design/600/450.jpg" alt="Boleto" loading="lazy"><div class="gallery-overlay"><i class="fas fa-expand"></i><span>Boleto personalizado</span></div></div><div class="gallery-item reveal" data-category="deportes" data-title="Evento deportivo"><img src="https://picsum.photos/seed/gallery-sports-game/600/450.jpg" alt="Deportivo" loading="lazy"><div class="gallery-overlay"><i class="fas fa-expand"></i><span>Evento deportivo</span></div></div><div class="gallery-item reveal" data-category="eventos" data-title="Evento especial"><img src="https://picsum.photos/seed/gallery-special-event/600/450.jpg" alt="Especial" loading="lazy"><div class="gallery-overlay"><i class="fas fa-expand"></i><span>Evento especial</span></div></div></div></div></section>
+    <section class="section gallery-section" id="galeria">
+      <div class="container">
+        <div class="text-center reveal">
+          <div class="section-label" style="justify-content:center">Galería</div><h2 class="section-title">Galería</h2>
+            <p class="section-desc mx-auto">Momentos de nuestros eventos y trabajos de boletaje.</p>
+          </div>
+          <div class="gallery-filters reveal"><button class="gallery-filter-btn active" data-filter="all">Todos</button>
+            <button class="gallery-filter-btn" data-filter="eventos">Eventos</button>
+            <button class="gallery-filter-btn" data-filter="boletos">Boletos</button>
+            <button class="gallery-filter-btn" data-filter="musica">Música</button>
+            <button class="gallery-filter-btn" data-filter="deportes">Deportes</button>
+            <button class="gallery-filter-btn" data-filter="entretenimiento">Entretenimiento</button>
+          </div>
+        <div class="gallery-grid" id="galleryGrid">
+      
+        <div class="gallery-item reveal" data-category="eventos musica" data-title="imagen a cambiar">
+          <img src="publi/musica.jpg" alt="Concierto" loading="lazy">
+          <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+            <span>imagen a cambiar</span>
+          </div>
+        </div>
+    
+        <div class="gallery-item reveal" data-category="boletos" data-title="Boleto personalizado">
+          <img src="publi/boletos.jpg" alt="Boleto" loading="lazy">
+          <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+            <span>Boleto personalizado</span>
+          </div>
+        </div>
+  
+        <div class="gallery-item reveal" data-category="deportes" data-title="Evento deportivo">
+          <img src="publi/deportes.jpg" alt="Deportivo" loading="lazy">
+          <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+            <span>Evento deportivo</span>
+          </div>
+        </div>
+        
+        <div class="gallery-item reveal" data-category="eventos" data-title="Imagen a Cambiar">
+          <img src="publi/musica.jpg" alt="Especial" loading="lazy">
+          <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+            <span>imagen a cambiar</span>
+          </div><
+        </div>
+        
+        <div class="gallery-item reveal" data-category=entretenimiento" data-title="Entretenimiento">
+          <img src="publi/musica.jpg" alt="entretemiento" loading="lazy">
+          <div class="gallery-overlay">
+            <i class="fas fa-expand"></i>
+            <span>imagen a cambiar</span>
+          </div><
+        </div>
+        
+      </div>
+    </div>
+  </section>
 
     <div class="lightbox" id="lightbox" role="dialog" aria-label="Visor" aria-hidden="true"><button class="lightbox-close" aria-label="Cerrar"><i class="fas fa-times"></i></button><img src="" alt="Imagen" id="lightboxImg"></div>
 
@@ -481,7 +538,7 @@
     <!-- MODAL COMPRA -->
     <div class="pm-overlay" id="pmOverlay" aria-hidden="true">
         <div class="pm-box" role="dialog" aria-label="Compra de boletos">
-            <div class="pm-head"><div class="pm-brand"><img src="https://z-cdn-media.chatglm.cn/files/856a3d08-68ad-4699-abf7-ea965d61ea5c.png?auth_key=1886826499-36b5302e02f646aea4494bccecb92c5b-0-ff85c2fabdf6872564c8b644308f4dde" alt="Planet Boletos"><div class="pm-brand-txt"><span class="pm-brand-name">PLANET BOLETOS</span><span class="pm-brand-sub">Tu acceso de boleto!</span></div></div><button class="pm-close" id="pmClose" aria-label="Cerrar"><i class="fas fa-times"></i></button></div>
+            <div class="pm-head"><div class="pm-brand"><img src="img/planet-boletos.png" alt="Planet Boletos"><div class="pm-brand-txt"><span class="pm-brand-name">PLANET BOLETOS</span><span class="pm-brand-sub">Tu acceso de boleto!</span></div></div><button class="pm-close" id="pmClose" aria-label="Cerrar"><i class="fas fa-times"></i></button></div>
             <h3 class="pm-title">Compra de boletos</h3>
             <div class="pm-summary"><div class="pm-teams"><span class="pm-team" id="pmL">—</span><span class="pm-vs">VS</span><span class="pm-team" id="pmV">—</span></div><div class="pm-details"><span><i class="fas fa-calendar"></i> <span id="pmD">—</span></span><span><i class="fas fa-clock"></i> <span id="pmH">—</span></span><span><i class="fas fa-location-dot"></i> <span id="pmP">—</span></span></div></div>
             <div class="pm-sec"><label class="pm-label">Cantidad de boletos</label><div class="qty-sel"><button class="qty-btn" id="qM" disabled>−</button><div class="qty-val" id="qV">1</div><button class="qty-btn" id="qP">+</button></div><p class="qty-note">Máximo 4 boletos por persona</p></div>
@@ -509,26 +566,26 @@
                 promo:'img/barreteros.png',
                 juegos:[
                     {id:1,local:'Barreteros',visit:'Halcones del Ceuc',fecha:'2026-08-16',hora:'10:30',lugar:'Barreterán, Coah.'},
-                    {id:2,local:'Barreteros',visit:'Mineros de Zacatecas',fecha:'2026-08-17',hora:'10:30',lugar:'Barreterán, Coah.'},
-                    {id:3,local:'Barreteros',visit:'Tecolotes de Nuevo Laredo',fecha:'2026-08-20',hora:'18:00',lugar:'Barreterán, Coah.'}
+                    {id:2,local:'Barreteros',visit:'Halcones del Ceuc',fecha:'2026-08-17',hora:'10:30',lugar:'Barreterán, Coah.'},
+                    /*{id:3,local:'Barreteros',visit:'Tecolotes de Nuevo Laredo',fecha:'2026-08-20',hora:'18:00',lugar:'Barreterán, Coah.'}*/
                 ]
             },
             halcones:{
                 nombre:'Halcones',icon:'🦅',
                 promo:'img/halcones.png',
                 juegos:[
-                    {id:4,local:'Halcones Monclova',visit:'Agrícoltores de Morelos',fecha:'2026-06-02',hora:'10:30',lugar:'Parque Infantil Monclova, Coah.'},
-                    {id:5,local:'Halcones Monclova',visit:'Tunas de Obregón',fecha:'2026-06-05',hora:'18:00',lugar:'Parque Infantil Monclova, Coah.'},
-                    {id:6,local:'Halcones Monclova',visit:'Cañeros de Los Mochis',fecha:'2026-06-08',hora:'12:00',lugar:'Parque Infantil Monclova, Coah.'}
+                    {id:4,local:'Halcones Monclova',visit:'Barreteros',fecha:'2026-08-23',hora:'10:30',lugar:'Parque Infantil Monclova, Coah.'},
+                    {id:5,local:'Halcones Monclova',visit:'Barreteros',fecha:'2026-06-23',hora:'13:00',lugar:'Parque Infantil Monclova, Coah.'},
+                    /*{id:6,local:'Halcones Monclova',visit:'Cañeros de Los Mochis',fecha:'2026-06-08',hora:'12:00',lugar:'Parque Infantil Monclova, Coah.'}*/
                 ]
             },
             indios:{
                 nombre:'Indios',icon:'🏹',
                 promo:'img/indios.png',
                 juegos:[
-                    {id:7,local:'Indios Múzquiz',visit:'Bravos',fecha:'2026-05-17',hora:'10:30',lugar:'Múzquiz, Coah.'},
-                    {id:8,local:'Indios Múzquiz',visit:'Algodoneros de Guasave',fecha:'2026-05-20',hora:'18:00',lugar:'Múzquiz, Coah.'},
-                    {id:9,local:'Indios Múzquiz',visit:'Mayos de Navojoa',fecha:'2026-05-23',hora:'12:00',lugar:'Múzquiz, Coah.'}
+                    {id:7,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'},
+                    {id:8,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'},
+                    {id:9,local:'Indios Múzquiz',visit:'Proximamente',fecha:'2026-00-00',hora:'00:00',lugar:'Múzquiz, Coah.'}
                 ]
             }
         };

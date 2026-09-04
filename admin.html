@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administración - Planet Boletos</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --accent: #2563eb;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); line-height: 1.5; min-height: 100vh; padding-bottom: 30px; }
+
+    /* HEADER Y NAVBAR ADAPTADO A MÓVILES */
+    .admin-header {
+      background: var(--primary);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .brand-logo-img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      background: white;
+      padding: 4px;
+      border-radius: 6px;
+    }
+
+    .brand-titles h1 {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-titles span {
+      font-size: 12px;
+      opacity: 0.85;
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      width: auto;
+    }
+
+    .btn-nav {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+    .btn-nav:hover { background: rgba(255, 255, 255, 0.25); }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    /* BARRA DE FILTROS Y CONTROLES */
+    .controls-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .form-group select, .form-group input {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+    }
+
+    .form-group select:focus, .form-group input:focus {
+      border-color: var(--accent);
+    }
+
+    /* RESUMEN DE COMPRA/ESTADÍSTICAS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .stat-card .lbl {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* TABLA RESPONSIVA */
+    .table-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+      min-width: 750px;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary);
+      padding: 12px 14px;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover { background: #f8fafc; }
+
+    /* BADGES DE ESTADO */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-aprobado { background: #dcfce7; color: var(--success); }
+    .badge-pendiente { background: #fef3c7; color: var(--warning); }
+    .badge-rechazado { background: #fee2e2; color: var(--danger); }
+
+    /* BOTONES DE ACCIÓN */
+    .btn-action {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-right: 4px;
+    }
+
+    .btn-approve { background: var(--success); color: white; }
+    .btn-approve:hover { background: #15803d; }
+    
+    .btn-reject { background: var(--danger); color: white; }
+    .btn-reject:hover { background: #b91c1c; }
+
+    /* DISEÑO RESPONSIVO PARA SMARTPHONES */
+    @media (max-width: 640px) {
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .brand-titles h1 {
+        font-size: 18px;
+      }
+      .brand-logo-img {
+        height: 40px;
+      }
+      .stat-card .num {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO CON LOGO INTEGRADO -->
+  <header class="admin-header">
+    <div class="brand-section">
+      <img src="planet-boletos.png" alt="Planet Boletos Logo" class="brand-logo-img">
+      <div class="brand-titles">
+        <h1>Control de Ventas</h1>
+        <span>Panel Administrador | Planet Boletos</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="index.html" class="btn-nav">🌐 Sitio Web</a>
+      <a href="validador.html" class="btn-nav">📱 Validador QR</a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- CONTROLES Y FILTROS -->
+    <div class="controls-card">
+      <div class="filters-grid">
+        
+        <!-- FILTRO POR EQUIPOS -->
+        <div class="form-group">
+          <label>Filtrar por Equipo</label>
+          <select id="filtroEquipo" onchange="aplicarFiltros()">
+            <option value="TODOS">Todos los equipos</option>
+            <option value="Barreteros">Barreteros</option>
+            <option value="Halcones">Halcones</option>
+            <option value="Indios">Indios</option>
+            <option value="Agricultores">Agricultores</option>
+          </select>
+        </div>
+
+        <!-- FILTRO POR ESTADO DE PAGO -->
+        <div class="form-group">
+          <label>Estado de Pago</label>
+          <select id="filtroEstado" onchange="aplicarFiltros()">
+            <option value="TODOS">Todos los estados</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="Aprobado">Aprobado</option>
+            <option value="Rechazado">Rechazado</option>
+          </select>
+        </div>
+
+        <!-- BÚSQUEDA GENERAL -->
+        <div class="form-group">
+          <label>Buscar Cliente / Folio</label>
+          <input type="text" id="inputBuscar" placeholder="Nombre, correo o folio..." onkeyup="aplicarFiltros()">
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TARJETAS DE ESTADÍSTICAS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num" id="statTotalVentas">0</div>
+        <div class="lbl">Registros Totales</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statBoletosVendidos">0</div>
+        <div class="lbl">Boletos Vendidos</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statIngresosTotal">$0.00</div>
+        <div class="lbl">Monto Recaudado</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statPendientes">0</div>
+        <div class="lbl">Pagos Pendientes</div>
+      </div>
+    </div>
+
+    <!-- TABLA DE VENTAS REGISTRADAS -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Folio</th>
+            <th>Fecha</th>
+            <th>Equipo</th>
+            <th>Cliente</th>
+            <th>Contacto</th>
+            <th>Cant.</th>
+            <th>Total</th>
+            <th>Método</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaVentas">
+          <tr>
+            <td colspan="10" style="text-align:center; padding: 25px; color: var(--text-muted);">
+              Cargando registros de ventas...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9psp0fofweSoaAyMnrmJR8jDQxpzNaWKCv-Yx55cW3Z6GstHKBbfVQQ9mYvCaGDxNOw/exec"; // Reemplazar con tu URL de Apps Script
+  let ventasGlobales = [];
+
+  async function cargarVentas() {
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "obtenerVentas" })
+      });
+      const data = await res.json();
+      if (data.status === "OK") {
+        ventasGlobales = data.ventas || [];
+        aplicarFiltros();
+      } else {
+        document.getElementById("tablaVentas").innerHTML = `<tr><td colspan="10" style="text-align:center; color:red;">${data.message}</td></tr>`;
+      }
+    } catch (e) {
+      console.error(e);
+      document.getElementById("tablaVentas").innerHTML = `<tr><td colspan="10" style="text-align:center; color:red;">Error de conexión con el servidor.</td></tr>`;
+    }
+  }
+
+  function aplicarFiltros() {
+    const equipoSel = document.getElementById("filtroEquipo").value;
+    const estadoSel = document.getElementById("filtroEstado").value;
+    const busqueda = document.getElementById("inputBuscar").value.toLowerCase().trim();
+
+    const ventasFiltradas = ventasGlobales.filter(v => {
+      const cumpleEquipo = equipoSel === "TODOS" || v.equipo === equipoSel;
+      const cumpleEstado = estadoSel === "TODOS" || v.estado === estadoSel;
+      const cumpleBusqueda = busqueda === "" || 
+        (v.folio && v.folio.toLowerCase().includes(busqueda)) ||
+        (v.cliente && v.cliente.toLowerCase().includes(busqueda)) ||
+        (v.correo && v.correo.toLowerCase().includes(busqueda));
+
+      return cumpleEquipo && cumpleEstado && cumpleBusqueda;
+    });
+
+    renderizarTabla(ventasFiltradas);
+    actualizarEstadisticas(ventasFiltradas);
+  }
+
+  function renderizarTabla(lista) {
+    const tbody = document.getElementById("tablaVentas");
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 20px;">No se encontraron registros de ventas.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = lista.map(v => {
+      const badgeClase = v.estado === "Aprobado" ? "badge-aprobado" : (v.estado === "Rechazado" ? "badge-rechazado" : "badge-pendiente");
+      
+      return `
+        <tr>
+          <td><strong>${v.folio}</strong></td>
+          <td>${v.fecha || 'N/A'}</td>
+          <td><strong>${v.equipo}</strong></td>
+          <td>${v.cliente}</td>
+          <td><small>${v.correo}<br>${v.telefono}</small></td>
+          <td>${v.cantidad}</td>
+          <td>$${parseFloat(v.total).toFixed(2)}</td>
+          <td>${v.metodoPago}</td>
+          <td><span class="badge ${badgeClase}">${v.estado}</span></td>
+          <td>
+            ${v.estado === "Pendiente" ? `
+              <button class="btn-action btn-approve" onclick="cambiarEstado('${v.folio}', 'Aprobado')">Aprobar</button>
+              <button class="btn-action btn-reject" onclick="cambiarEstado('${v.folio}', 'Rechazado')">Rechazar</button>
+            ` : '-'}
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function actualizarEstadisticas(lista) {
+    let totalBoletos = 0;
+    let montoTotal = 0;
+    let pendientes = 0;
+
+    lista.forEach(v => {
+      totalBoletos += parseInt(v.cantidad) || 0;
+      if (v.estado === "Aprobado") {
+        montoTotal += parseFloat(v.total) || 0;
+      }
+      if (v.estado === "Pendiente") {
+        pendientes++;
+      }
+    });
+
+    document.getElementById("statTotalVentas").innerText = lista.length;
+    document.getElementById("statBoletosVendidos").innerText = totalBoletos;
+    document.getElementById("statIngresosTotal").innerText = `$${montoTotal.toFixed(2)}`;
+    document.getElementById("statPendientes").innerText = pendientes;
+  }
+
+  async function cambiarEstado(folio, nuevoEstado) {
+    if (!confirm(`¿Confirmas cambiar el estado del folio ${folio} a "${nuevoEstado}"?`)) return;
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "actualizarEstadoPago", folio: folio, nuevoEstado: nuevoEstado })
+      });
+      const data = await res.json();
+      if (data.status === "OK") {
+        alert(`Folio ${folio} actualizado exitosamente.`);
+        cargarVentas();
+      } else {
+        alert("Error: " + data.message);
+      }
+    } catch (e) {
+      alert("Ocurrió un error al intentar actualizar el estado.");
+    }
+  }
+
+  window.onload = cargarVentas;
+</script>
+
+</body>
+</html>

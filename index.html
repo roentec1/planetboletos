@@ -62,7 +62,7 @@
     .nav-links a { color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: color 0.2s; }
     .nav-links a:hover { color: #ffffff; }
 
-/* HERO BANNER MÓVIL */
+    /* HERO BANNER MÓVIL */
     .hero {
       background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80') center/cover;
       color: white; 
@@ -80,7 +80,7 @@
       height: auto;
       margin-bottom: 20px;
       object-fit: contain;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); /* Sombra para resaltar sobre el fondo */
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
     }
 
     .hero h1 { font-size: 1.9rem; margin-bottom: 12px; font-weight: 800; line-height: 1.2; letter-spacing: -0.5px; }
@@ -119,8 +119,23 @@
 
     .team-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; border-radius: 50%; padding: 6px; background: #f8fafc; border: 1px solid #e2e8f0; }
     .team-name { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
-    .team-price { font-weight: 800; color: var(--accent); font-size: 0.95rem; margin: 4px 0 12px 0; }
+    .team-price { font-weight: 800; color: var(--accent); font-size: 0.95rem; margin: 4px 0 2px 0; }
     
+    /* DISPONIBILIDAD DE BOLETOS */
+    .team-stock {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--info-text);
+      background-color: var(--info-bg);
+      border: 1px solid var(--info-border);
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
     .btn-select {
       background: #f1f5f9; color: var(--primary); border: none; padding: 10px;
       border-radius: 10px; font-weight: 700; font-size: 0.85rem; width: 100%; transition: 0.2s;
@@ -266,6 +281,7 @@
       .checkout-section { padding: 40px; }
       .about-section, .contact-card { padding: 40px; }
     }
+    
   </style>
 </head>
 <body>
@@ -286,10 +302,12 @@
       <li><a href="#eventos" onclick="closeMenu()">Eventos</a></li>
       <li><a href="#nosotros" onclick="closeMenu()">Nosotros</a></li>
       <li><a href="#contacto" onclick="closeMenu()">Contacto</a></li>
+      <li><a href="admin.html" onclick="closeMenu()">Administrador</a></li>
+      <li><a href="validador.html" onclick="closeMenu()">Validador</a></li>
     </ul>
   </header>
 
-<!-- HERO BANNER -->
+  <!-- HERO BANNER -->
   <section id="inicio" class="hero">
     <!-- Logo Planet Boletos sobre el título -->
     <img src="planet-boletos.jpg" alt="Planet Boletos" class="hero-logo" onerror="this.src='planet-boletos.png'">
@@ -304,36 +322,36 @@
       <p>Toca la tarjeta del equipo al que deseas asistir para cargar tu boleto</p>
     </div>
 
-    <!-- TARJETAS DE EQUIPOS -->
-    <div class="teams-grid">
-      <div class="team-card selected" onclick="seleccionarEquipo('Barreteros', this)">
-        <img src="logo.jpg" alt="Barreteros" class="team-logo" onerror="this.src='img/logob.jpg'">
-        <div class="team-name">Barreteros</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
+<!-- TARJETAS DE EQUIPOS -->
+<div class="teams-grid">
+  <div class="team-card selected" data-equipo="Barreteros" onclick="seleccionarEquipo('Barreteros', this)">
+    <img src="logo.jpg" alt="Barreteros" class="team-logo" onerror="this.src='img/logob.jpg'">
+    <div class="team-name">Barreteros</div>
+    <div class="team-price">$50.00 MXN</div>
+    <button type="button" class="btn-select">Elegir</button>
+  </div>
+  
+  <div class="team-card" data-equipo="Halcones" onclick="seleccionarEquipo('Halcones', this)">
+    <img src="logoh.jpg" alt="Halcones" class="team-logo" onerror="this.src='img/logoh.jpg'">
+    <div class="team-name">Halcones</div>
+    <div class="team-price">$50.00 MXN</div>
+    <button type="button" class="btn-select">Elegir</button>
+  </div>
 
-      <div class="team-card" onclick="seleccionarEquipo('Halcones', this)">
-        <img src="logoh.jpg" alt="Halcones" class="team-logo" onerror="this.src='img/logoh.jpg'">
-        <div class="team-name">Halcones</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
+  <div class="team-card" data-equipo="Indios" onclick="seleccionarEquipo('Indios', this)">
+    <img src="logoi.jpg" alt="Indios" class="team-logo" onerror="this.src='img/logom.jpg'">
+    <div class="team-name">Indios</div>
+    <div class="team-price">$50.00 MXN</div>
+    <button type="button" class="btn-select">Elegir</button>
+  </div>
 
-      <div class="team-card" onclick="seleccionarEquipo('Indios', this)">
-        <img src="logoi.jpg" alt="Indios" class="team-logo" onerror="this.src='img/logom.jpg'">
-        <div class="team-name">Indios</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
-
-      <div class="team-card" onclick="seleccionarEquipo('Agricultores', this)">
-        <img src="logoa.jpg" alt="Agricultores" class="team-logo" onerror="this.src='img/logoa.jpg'">
-        <div class="team-name">Agricultores</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
-    </div>
+  <div class="team-card" data-equipo="Agricultores" onclick="seleccionarEquipo('Agricultores', this)">
+    <img src="logoa.jpg" alt="Agricultores" class="team-logo" onerror="this.src='img/logoa.jpg'">
+    <div class="team-name">Agricultores</div>
+    <div class="team-price">$50.00 MXN</div>
+    <button type="button" class="btn-select">Elegir</button>
+  </div>
+</div>
 
     <!-- FORMULARIO DE CHECKOUT -->
     <div class="checkout-section">
@@ -418,7 +436,7 @@
           <div class="info-notice-box">
             <i class="fas fa-info-circle"></i>
             <div class="info-notice-text">
-              <b>Nota importante:</b> Al cnfirmar tu compra, te generaremos un <b>Folio de Compra</b> el cual debes guardar para ingresar a tu evento. También te llegará por correo la información de tu compra.
+              <b>Nota importante:</b> Al confirmar tu compra, te generaremos un <b>Folio de Compra</b> el cual debes guardar para ingresar a tu evento. También te llegará por correo la información de tu compra.
             </div>
           </div>
         </div>
@@ -489,8 +507,7 @@
   </footer>
 
   <!-- LÓGICA JAVASCRIPT -->
-  <script>
-    // ⚠️ REEMPLAZA CON TU URL DESPLEGADA EN GOOGLE APPS SCRIPT
+<script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
 
     const PRECIO_BOLETO = 50;
@@ -525,7 +542,6 @@
       const txtConcepto = document.getElementById('txtConcepto');
       
       if (nombreInput !== "") {
-        // Remueve espacios extra y convierte a mayúsculas
         const nombreLimpio = nombreInput.replace(/\s+/g, '').toUpperCase();
         txtConcepto.innerText = `BOL-${nombreLimpio}`;
       } else {
@@ -597,6 +613,7 @@
         btn.innerText = "🎟️ Confirmar Compra";
       }
     }
+
   </script>
 </body>
 </html>

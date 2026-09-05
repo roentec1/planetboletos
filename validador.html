@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Control de Acceso - Planet Boletos</title>
+  
+  <!-- FontAwesome para Íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #2563eb;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --success-bg: #059669;
+      --success-text: #ecfdf5;
+      
+      --error-bg: #dc2626;
+      --error-text: #fef2f2;
+      
+      --warn-bg: #d97706;
+      --warn-text: #fffbeb;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    
+    body { 
+      background-color: var(--bg-dark); 
+      color: var(--text-light); 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+    }
+
+    /* HEADER DE CONTROL */
+    .app-header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 5px 20px 5px;
+      border-bottom: 1px solid #334155;
+      margin-bottom: 20px;
+    }
+
+    .app-header h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .counter-badge {
+      background: #334155;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .validator-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      border: 1px solid #334155;
+      text-align: center;
+    }
+
+    /* FORMULARIO DE ENTRADA */
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .scan-input {
+      width: 100%;
+      padding: 16px;
+      background: #0f172a;
+      border: 2px solid #475569;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .scan-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-validate {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .btn-validate:active {
+      transform: scale(0.98);
+    }
+
+    /* TARJETA DE RESULTADO */
+    #resultado {
+      margin-top: 20px;
+      border-radius: 16px;
+      padding: 20px;
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ESTADOS DE VALIDACIÓN */
+    .status-ok {
+      background: var(--success-bg);
+      color: var(--success-text);
+      display: block !important;
+    }
+
+    .status-err {
+      background: var(--error-bg);
+      color: var(--error-text);
+      display: block !important;
+    }
+
+    .status-warn {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      display: block !important;
+    }
+
+    .status-loading {
+      background: #334155;
+      color: var(--text-light);
+      display: block !important;
+    }
+
+    /* DETALLES DEL BOLETO */
+    .status-icon {
+      font-size: 3.5rem;
+      margin-bottom: 10px;
+    }
+
+    .status-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .ticket-info {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .ticket-info div {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 0;
+    }
+
+    .ticket-info div:last-child {
+      border-bottom: none;
+    }
+
+    .ticket-info span.label {
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .ticket-info span.val {
+      font-weight: 800;
+    }
+
+    /* BOTÓN LIMPIAR */
+    .btn-reset {
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA -->
+  <div class="app-header">
+    <h1><i class="fas fa-qrcode" style="color: var(--accent);"></i> Access Control</h1>
+    <div class="counter-badge" id="counterBox">Ingresos: 0</div>
+  </div>
+
+  <!-- TARJETA DE OPERACIÓN -->
+  <div class="validator-card">
+    <form onsubmit="validarAcceso(event)">
+      <div class="input-group">
+        <label for="folioInput">Escanear o Ingresar Folio</label>
+        <input 
+          type="text" 
+          id="folioInput" 
+          class="scan-input" 
+          placeholder="FOLIO..." 
+          autocomplete="off" 
+          autofocus
+          required
+        >
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn-validate">
+        <i class="fas fa-search"></i> VALIDAR ENTRADA
+      </button>
+    </form>
+
+    <!-- ÁREA DE RESPUESTA VISUAL -->
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    // ⚠️ REEMPLAZA CON TU URL REAL OBTENIDA DEL DESPLIEGUE EN GOOGLE APPS SCRIPT
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
+
+    let totalValidados = 0;
+
+    // Mantener el foco automático en el input para lectores de código de barras USB/Bluetooth
+    document.addEventListener("click", () => {
+      document.getElementById("folioInput").focus();
+    });
+
+    async function validarAcceso(event) {
+      if (event) event.preventDefault();
+
+      const input = document.getElementById("folioInput");
+      const div = document.getElementById("resultado");
+      const btn = document.getElementById("btnSubmit");
+      const folio = input.value.trim();
+
+      if (!folio) return;
+
+      // Estado Cargando
+      btn.disabled = true;
+      div.className = "status-loading";
+      div.innerHTML = `
+        <div class="status-icon"><i class="fas fa-spinner fa-spin"></i></div>
+        <div class="status-title">Consultando...</div>
+      `;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "validarQR", folio: folio })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "OK") {
+          totalValidados++;
+          document.getElementById("counterBox").innerText = `Ingresos: ${totalValidados}`;
+
+          div.className = "status-ok";
+          div.innerHTML = `
+            <div class="status-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="status-title">ACCESO PERMITIDO</div>
+            <div class="ticket-info">
+              <div><span class="label">Cliente:</span><span class="val">${data.venta.cliente}</span></div>
+              <div><span class="label">Equipo:</span><span class="val">${data.venta.equipo}</span></div>
+              <div><span class="label">Boletos:</span><span class="val">${data.venta.cantidad}</span></div>
+              <div><span class="label">Folio:</span><span class="val">${folio}</span></div>
+            </div>
+            <button class="btn-reset" onclick="resetForm()">SIGUIENTE ESCANEO</button>
+          `;
+          input.value = "";
+        } else if (data.status === "ALREADY_USED") {
+          div.className = "status-warn";
+          div.innerHTML = `
+            <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="status-title">BOLETO YA USADO</div>
+            <p style="margin-bottom:10px;">${data.message || 'Este folio ya fue registrado previamente.'}</p>
+            <button class="btn-reset" onclick="resetForm()">ENTENDIDO</button>
+          `;
+        } else {
+          div.className = "status-err";
+          div.innerHTML = `
+            <div class="status-icon"><i class="fas fa-times-circle"></i></div>
+            <div class="status-title">ACCESO DENEGADO</div>
+            <p style="margin-bottom:10px;">${data.message || 'Folio no encontrado o no válido.'}</p>
+            <button class="btn-reset" onclick="resetForm()">REINTENTAR</button>
+          `;
+        }
+      } catch (e) {
+        console.error(e);
+        div.className = "status-err";
+        div.innerHTML = `
+          <div class="status-icon"><i class="fas fa-wifi"></i></div>
+          <div class="status-title">ERROR DE RED</div>
+          <p>Verifica la conexión a Internet del dispositivo.</p>
+          <button class="btn-reset" onclick="resetForm()">REINTENTAR</button>
+        `;
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function resetForm() {
+      const div = document.getElementById("resultado");
+      div.className = "";
+      div.style.display = "none";
+      const input = document.getElementById("folioInput");
+      input.value = "";
+      input.focus();
+    }
+  </script>
+</body>
+</html>

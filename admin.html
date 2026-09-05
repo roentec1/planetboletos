@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Planet Boletos</title>
+  
+  <!-- FontAwesome icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --bg-light: #f8fafc;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --team-barreteros: #d97706;
+      --team-halcones: #2563eb;
+      --team-indios: #dc2626;
+      --team-agricultores: #16a34a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; }
+
+    /* NAVBAR HEADER */
+    .header-navbar {
+      background: var(--primary);
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      color: white;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-container img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-container span {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* HEADER BUTTONS */
+    .btn-header {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-header:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-header-primary {
+      background: var(--accent);
+      border: none;
+    }
+
+    .btn-header-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* MAIN CONTAINER */
+    .main-container {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .dashboard-title h2 {
+      font-size: 1.5rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dashboard-title p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 25px 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* SEARCH BOX */
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 15px 10px 38px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent);
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    /* STATS SUMMARY CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-left: 4px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-card.approved { border-left-color: var(--success); }
+    .stat-card.pending { border-left-color: var(--warning); }
+    .stat-card.rejected { border-left-color: var(--danger); }
+    .stat-card.revenue { border-left-color: #0d9488; background: #f0fdfa; }
+
+    .stat-info div {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .stat-info span {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .stat-icon {
+      font-size: 1.8rem;
+      opacity: 0.25;
+    }
+
+    /* TEAM CARDS GRID */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .team-card {
+      background: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border-top: 4px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .team-card.barreteros { border-top-color: var(--team-barreteros); }
+    .team-card.halcones { border-top-color: var(--team-halcones); }
+    .team-card.indios { border-top-color: var(--team-indios); }
+    .team-card.agricultores { border-top-color: var(--team-agricultores); }
+
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 8px;
+    }
+
+    .team-card-header h3 {
+      font-size: 1.05rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .team-card-metrics {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .team-metric-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .team-metric-item label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .team-metric-item val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .team-metric-item.money val {
+      color: #0d9488;
+    }
+
+    /* TABLE */
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 950px;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* BADGES */
+    .badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .badge-Aprobado { background: #dcfce7; color: var(--success); }
+    .badge-Pendiente { background: #fef3c7; color: var(--warning); }
+    .badge-Rechazado { background: #fee2e2; color: var(--danger); }
+
+    /* ACTION BUTTONS */
+    .action-btn-group {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-action {
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: white;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-action:hover { opacity: 0.85; }
+    .btn-app { background: var(--success); }
+    .btn-rej { background: var(--danger); }
+
+    /* LOADING SPINNER */
+    .loading-spinner {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .loading-spinner i {
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .header-navbar { flex-direction: column; align-items: flex-start; }
+      .header-actions { width: 100%; justify-content: space-between; }
+      .btn-header { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR WITH LOGO AND ACTIONS -->
+  <header class="header-navbar">
+    <div class="logo-container">
+      <img src="planet-boletos.png" alt="Planet Boletos" onerror="this.src='https://via.placeholder.com/150x45?text=Planet+Boletos'">
+      <span>Planet Boletos</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- Refresh Button -->
+      <button class="btn-header" onclick="cargarVentas()" id="btnReload">
+        <i class="fas fa-sync-alt" id="iconReload"></i>
+        <span>Actualizar</span>
+      </button>
+
+      <!-- Link to Validator -->
+      <a href="validador.html" class="btn-header btn-header-primary">
+        <i class="fas fa-qrcode"></i>
+        <span>Ir a Validador</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-container">
+    
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <h2><i class="fas fa-tasks" style="color: var(--accent);"></i> Panel de Control de Ventas</h2>
+        <p>Administra y aprueba las transacciones registradas</p>
+      </div>
+
+      <!-- Smart Search -->
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="inputBuscar" onkeyup="filtrarTabla()" placeholder="Buscar por Folio, Cliente, Equipo...">
+      </div>
+    </div>
+
+    <!-- GENERAL SUMMARY CARDS -->
+    <div class="stats-grid">
+      <!-- Total Revenue -->
+      <div class="stat-card revenue">
+        <div class="stat-info">
+          <div>Total Recaudado</div>
+          <span id="statMontoTotal" style="color: #0f766e;">$0.00</span>
+        </div>
+        <i class="fas fa-dollar-sign stat-icon" style="color: #0d9488;"></i>
+      </div>
+
+      <!-- Total Tickets Sold -->
+      <div class="stat-card approved">
+        <div class="stat-info">
+          <div>Boletos Vendidos</div>
+          <span id="statBoletosVendidos">0</span>
+        </div>
+        <i class="fas fa-ticket-alt stat-icon" style="color: var(--success);"></i>
+      </div>
+
+      <!-- Approved Sales -->
+      <div class="stat-card approved">
+        <div class="stat-info">
+          <div>Aprobadas</div>
+          <span id="statAprobadas">0</span>
+        </div>
+        <i class="fas fa-check-circle stat-icon" style="color: var(--success);"></i>
+      </div>
+
+      <!-- Pending Sales -->
+      <div class="stat-card pending">
+        <div class="stat-info">
+          <div>Pendientes</div>
+          <span id="statPendientes">0</span>
+        </div>
+        <i class="fas fa-clock stat-icon" style="color: var(--warning);"></i>
+      </div>
+
+      <!-- Rejected Sales -->
+      <div class="stat-card rejected">
+        <div class="stat-info">
+          <div>Rechazadas</div>
+          <span id="statRechazadas">0</span>
+        </div>
+        <i class="fas fa-times-circle stat-icon" style="color: var(--danger);"></i>
+      </div>
+    </div>
+
+    <!-- BREAKDOWN BY TEAM -->
+    <div class="section-title">
+      <i class="fas fa-baseball-ball" style="color: var(--accent);"></i> Desglose por Equipo (Ventas Aprobadas)
+    </div>
+
+    <div class="teams-grid">
+      <!-- Barreteros -->
+      <div class="team-card barreteros">
+        <div class="team-card-header">
+          <h3>Barreteros</h3>
+          <i class="fas fa-baseball-ball" style="color: var(--team-barreteros);"></i>
+        </div>
+        <div class="team-card-metrics">
+          <div class="team-metric-item">
+            <label>Boletos</label>
+            <val id="teamBoletosBarreteros">0</val>
+          </div>
+          <div class="team-metric-item money">
+            <label>Recaudado</label>
+            <val id="teamMontoBarreteros">$0.00</val>
+          </div>
+        </div>
+      </div>
+
+      <!-- Halcones -->
+      <div class="team-card halcones">
+        <div class="team-card-header">
+          <h3>Halcones</h3>
+          <i class="fas fa-baseball-ball" style="color: var(--team-halcones);"></i>
+        </div>
+        <div class="team-card-metrics">
+          <div class="team-metric-item">
+            <label>Boletos</label>
+            <val id="teamBoletosHalcones">0</val>
+          </div>
+          <div class="team-metric-item money">
+            <label>Recaudado</label>
+            <val id="teamMontoHalcones">$0.00</val>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indios -->
+      <div class="team-card indios">
+        <div class="team-card-header">
+          <h3>Indios</h3>
+          <i class="fas fa-baseball-ball" style="color: var(--team-indios);"></i>
+        </div>
+        <div class="team-card-metrics">
+          <div class="team-metric-item">
+            <label>Boletos</label>
+            <val id="teamBoletosIndios">0</val>
+          </div>
+          <div class="team-metric-item money">
+            <label>Recaudado</label>
+            <val id="teamMontoIndios">$0.00</val>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agricultores -->
+      <div class="team-card agricultores">
+        <div class="team-card-header">
+          <h3>Agricultores</h3>
+          <i class="fas fa-baseball-ball" style="color: var(--team-agricultores);"></i>
+        </div>
+        <div class="team-card-metrics">
+          <div class="team-metric-item">
+            <label>Boletos</label>
+            <val id="teamBoletosAgricultores">0</val>
+          </div>
+          <div class="team-metric-item money">
+            <label>Recaudado</label>
+            <val id="teamMontoAgricultores">$0.00</val>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES TABLE -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Folio</th>
+            <th>Fecha</th>
+            <th>Equipo</th>
+            <th>Cliente</th>
+            <th>Contacto</th>
+            <th>Cant.</th>
+            <th>Total</th>
+            <th>Método</th>
+            <th>Folio Banco</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tablaVentas">
+          <tr>
+            <td colspan="11" class="loading-spinner">
+              <i class="fas fa-spinner fa-spin"></i> Cargando datos de ventas...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Google Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
+
+    let ventasGlobales = [];
+
+    // Fetch sales list from Apps Script
+    async function cargarVentas() {
+      const iconReload = document.getElementById("iconReload");
+      iconReload.classList.add("fa-spin");
+
+      const tbody = document.getElementById("tablaVentas");
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="11" class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i> Obteniendo datos más recientes...
+          </td>
+        </tr>
+      `;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "obtenerVentas" })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "OK") {
+          ventasGlobales = data.ventas || [];
+          actualizarMetricas(ventasGlobales);
+          renderizarTabla(ventasGlobales);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="11" style="color:var(--danger); text-align:center; padding: 20px;">⚠️ Error: ${data.message}</td></tr>`;
+        }
+      } catch (e) {
+        console.error(e);
+        tbody.innerHTML = `<tr><td colspan="11" style="color:var(--danger); text-align:center; padding: 20px;">❌ Error de conexión al servidor.</td></tr>`;
+      } finally {
+        iconReload.classList.remove("fa-spin");
+      }
+    }
+
+    // Render table rows
+    function renderizarTabla(lista) {
+      const tbody = document.getElementById("tablaVentas");
+
+      if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:20px; color:var(--text-muted);">No se encontraron ventas registradas.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = lista.map(v => `
+        <tr>
+          <td><b>${v.folio}</b></td>
+          <td style="white-space: nowrap;">${v.fecha}</td>
+          <td><b>${v.equipo}</b></td>
+          <td>${v.cliente}</td>
+          <td><small style="color:var(--text-muted);">${v.correo}<br>${v.telefono}</small></td>
+          <td style="text-align:center;"><b>${v.cantidad}</b></td>
+          <td style="color:var(--accent); font-weight:700;">$${parseFloat(v.total).toFixed(2)}</td>
+          <td><small>${v.metodoPago}</small></td>
+          <td><code>${v.folioBanco || '-'}</code></td>
+          <td><span class="badge badge-${v.estado}">${v.estado}</span></td>
+          <td>
+            ${v.estado === "Pendiente" ? `
+              <div class="action-btn-group">
+                <button class="btn-action btn-app" title="Aprobar" onclick="cambiarEstado('${v.folio}', 'Aprobado')">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn-action btn-rej" title="Rechazar" onclick="cambiarEstado('${v.folio}', 'Rechazado')">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            ` : '<span style="color:var(--text-muted); font-size:0.8rem;">Procesado</span>'}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // Update Metrics and Per-Team Breakdown
+    function actualizarMetricas(lista) {
+      // Filter approved sales
+      const aprobadas = lista.filter(v => v.estado === "Aprobado");
+
+      // Sum overall approved totals
+      const montoTotalAprobado = aprobadas.reduce((sum, v) => sum + (parseFloat(v.total) || 0), 0);
+      const totalBoletosAprobados = aprobadas.reduce((sum, v) => sum + (parseInt(v.cantidad) || 0), 0);
+
+      // Render general stats
+      document.getElementById("statMontoTotal").innerText = `$${montoTotalAprobado.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
+      document.getElementById("statBoletosVendidos").innerText = totalBoletosAprobados;
+      document.getElementById("statAprobadas").innerText = aprobadas.length;
+      document.getElementById("statPendientes").innerText = lista.filter(v => v.estado === "Pendiente").length;
+      document.getElementById("statRechazadas").innerText = lista.filter(v => v.estado === "Rechazado").length;
+
+      // Helper function for team calculations
+      const calcularPorEquipo = (nombreEquipo) => {
+        const ventasEquipo = aprobadas.filter(v => v.equipo && v.equipo.toLowerCase().trim() === nombreEquipo.toLowerCase());
+        const boletos = ventasEquipo.reduce((sum, v) => sum + (parseInt(v.cantidad) || 0), 0);
+        const monto = ventasEquipo.reduce((sum, v) => sum + (parseFloat(v.total) || 0), 0);
+        return { boletos, monto };
+      };
+
+      // Teams list
+      const equipos = ["Barreteros", "Halcones", "Indios", "Agricultores"];
+
+      equipos.forEach(equipo => {
+        const stats = calcularPorEquipo(equipo);
+        const elBoletos = document.getElementById(`teamBoletos${equipo}`);
+        const elMonto = document.getElementById(`teamMonto${equipo}`);
+
+        if (elBoletos) elBoletos.innerText = stats.boletos;
+        if (elMonto) elMonto.innerText = `$${stats.monto.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      });
+    }
+
+    // Change sale status (Aprobado / Rechazado)
+    async function cambiarEstado(folio, nuevoEstado) {
+      if (!confirm(`¿Estás seguro de cambiar el estado del folio ${folio} a "${nuevoEstado}"?`)) return;
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "actualizarEstadoPago", folio: folio, nuevoEstado: nuevoEstado })
+        });
+
+        const data = await res.json();
+
+        if (data.status === "OK") {
+          alert(`✅ Folio ${folio} actualizado a ${nuevoEstado}`);
+          cargarVentas();
+        } else {
+          alert("⚠️ " + data.message);
+        }
+      } catch (e) {
+        alert("❌ Error de comunicación con el servidor.");
+      }
+    }
+
+    // Filter Table Search
+    function filtrarTabla() {
+      const texto = document.getElementById("inputBuscar").value.toLowerCase();
+      const filtrados = ventasGlobales.filter(v => 
+        (v.folio && v.folio.toLowerCase().includes(texto)) ||
+        (v.cliente && v.cliente.toLowerCase().includes(texto)) ||
+        (v.equipo && v.equipo.toLowerCase().includes(texto)) ||
+        (v.folioBanco && v.folioBanco.toLowerCase().includes(texto)) ||
+        (v.estado && v.estado.toLowerCase().includes(texto))
+      );
+      renderizarTabla(filtrados);
+    }
+
+    // Initialize load on startup
+    window.onload = cargarVentas;
+  </script>
+
+</body>
+</html>

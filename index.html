@@ -9,20 +9,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <style>
-    /* VARIABLES Y RESETEO */
+    /* VARIABLES ADAPTADAS AL LOGO PLANET BOLETOS */
     :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --bg-light: #f8fafc;
-      --text-dark: #1e293b;
-      --text-muted: #64748b;
-      --bank-bg: #eff6ff;
-      --bank-border: #bfdbfe;
-      --highlight: #d97706;
-      --info-bg: #f0fdf4;
-      --info-border: #bbf7d0;
-      --info-text: #166534;
+      --primary: #0f1e36;        /* Azul marino profundo de la pelota */
+      --primary-light: #1e293b;  /* Azul oscuro contrastante */
+      --accent: #dc2626;         /* Rojo primario de las costuras */
+      --accent-hover: #b91c1c;   /* Rojo oscuro para hover/active */
+      --bg-light: #f8fafc;       /* Gris plata muy suave */
+      --card-bg: #ffffff;        /* Blanco puro */
+      --text-dark: #0f172a;      /* Texto principal */
+      --text-muted: #64748b;     /* Texto secundario */
+      --bank-bg: #f1f5f9;        /* Fondo caja bancaria plata */
+      --bank-border: #cbd5e1;    /* Borde caja bancaria */
+      --highlight: #fee2e2;     /* Fondo rojo suave para insignias */
+      --highlight-text: #991b1b;/* Texto rojo oscuro para insignias */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -32,16 +32,17 @@
     /* NAVEGACIÓN MOBILE-FIRST */
     .header-navbar {
       position: sticky; top: 0; z-index: 1000;
-      background: rgba(15, 23, 42, 0.98);
+      background: var(--primary);
       backdrop-filter: blur(8px);
       display: flex; justify-content: space-between; align-items: center;
       padding: 12px 20px; color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      border-b: 3px solid var(--accent);
     }
     
     .logo-container { display: flex; align-items: center; gap: 10px; }
-    .logo-container img { height: 38px; width: auto; object-fit: contain; }
-    .logo-container span { font-size: 1.25rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+    .logo-container img { height: 42px; width: auto; object-fit: contain; }
+    .logo-container span { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
 
     /* MENÚ HAMBURGUESA MÓVIL */
     .hamburger-btn {
@@ -54,117 +55,157 @@
       background: var(--primary); list-style: none;
       display: flex; flex-direction: column; text-align: center;
       max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
-      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.3);
     }
 
-    .nav-links.active { max-height: 300px; padding: 10px 0; }
+    .nav-links.active { max-height: 300px; padding: 10px 0; border-bottom: 3px solid var(--accent); }
     .nav-links li { margin: 12px 0; }
-    .nav-links a { color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: color 0.2s; }
-    .nav-links a:hover { color: #ffffff; }
+    .nav-links a { color: #e2e8f0; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
 
-    /* HERO BANNER MÓVIL */
-    .hero {
-      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80') center/cover;
-      color: white; 
-      text-align: center; 
-      padding: 50px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
+/* HERO BANNER MEJORADO CON LOGO DESTACADO */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, rgba(15, 30, 54, 0.94) 0%, rgba(15, 30, 54, 0.88) 100%), 
+              url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  color: white; 
+  text-align: center; 
+  padding: 60px 20px 50px 20px;
+  border-bottom: 4px solid var(--accent);
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center;
+}
 
-    /* ESTILO PARA EL LOGO DENTRO DEL HERO */
-    .hero-logo {
-      max-width: 220px;
-      height: auto;
-      margin-bottom: 20px;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-    }
+.hero-badge {
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px;
+  background: rgba(220, 38, 38, 0.2); 
+  border: 1px solid var(--accent);
+  color: #fca5a5; 
+  font-size: 0.8rem; 
+  font-weight: 700; 
+  text-transform: uppercase;
+  padding: 6px 14px; 
+  border-radius: 20px; 
+  margin-bottom: 20px;
+  letter-spacing: 1px; 
+  backdrop-filter: blur(4px);
+}
 
-    .hero h1 { font-size: 1.9rem; margin-bottom: 12px; font-weight: 800; line-height: 1.2; letter-spacing: -0.5px; }
-    .hero p { font-size: 1rem; color: #cbd5e1; max-width: 90%; margin: 0 auto; font-weight: 400; }
+.hero-logo-img {
+  width: 140px; 
+  height: auto; 
+  max-width: 80%;
+  margin-bottom: 18px; 
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  transition: transform 0.3s ease;
+}
 
-    /* Ajuste responsivo para pantallas más grandes */
-    @media(min-width: 768px) {
-      .hero { padding: 80px 20px; }
-      .hero-logo { max-width: 300px; margin-bottom: 25px; }
-      .hero h1 { font-size: 2.8rem; }
-    }
+.hero-logo-img:hover { 
+  transform: scale(1.04); 
+}
+
+.hero h1 { 
+  font-size: 2rem; 
+  margin-bottom: 12px; 
+  font-weight: 900; 
+  line-height: 1.25; 
+  text-shadow: 0 3px 6px rgba(0,0,0,0.6); 
+  color: #ffffff;
+  max-width: 700px;
+}
+
+.hero h1 span { 
+  color: #ef4444; 
+}
+
+.hero p { 
+  font-size: 1.05rem; 
+  color: #e2e8f0; 
+  max-width: 600px; 
+  margin: 0 auto 25px auto; 
+  line-height: 1.6; 
+  font-weight: 400; 
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.btn-hero-primary {
+  background: var(--accent); 
+  color: white; 
+  padding: 14px 28px; 
+  border-radius: 30px;
+  text-decoration: none; 
+  font-weight: 800; 
+  font-size: 1rem; 
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); 
+  display: inline-block;
+}
+
+@media(min-width: 768px) {
+  .hero { padding: 90px 20px 80px 20px; }
+  .hero-logo-img { width: 180px; margin-bottom: 22px; }
+  .hero h1 { font-size: 2.8rem; }
+}
 
     /* SECCIÓN DE EVENTOS & TARJETAS */
-    .section-container { padding: 40px 15px; max-width: 1200px; margin: 0 auto; }
-    .section-title { text-align: center; margin-bottom: 30px; }
-    .section-title h2 { font-size: 1.7rem; color: var(--primary); font-weight: 800; }
-    .section-title p { font-size: 0.95rem; color: var(--text-muted); margin-top: 6px; }
+    .section-container { padding: 35px 15px; max-width: 1200px; margin: 0 auto; }
+    .section-title { text-align: center; margin-bottom: 25px; }
+    .section-title h2 { font-size: 1.6rem; color: var(--primary); font-weight: 800; }
+    .section-title p { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
 
     /* GRID RESPONSIVO DE EQUIPOS */
     .teams-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      gap: 12px;
     }
     
     .team-card {
-      background: white; border-radius: 16px; padding: 18px 12px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.05); transition: all 0.25s ease;
+      background: var(--card-bg); border-radius: 14px; padding: 15px 10px;
+      box-shadow: 0 3px 12px rgba(15, 30, 54, 0.08); transition: transform 0.2s, border-color 0.2s;
       cursor: pointer; border: 2px solid #e2e8f0; text-align: center;
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      position: relative; overflow: hidden;
     }
-    .team-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
     .team-card:active { transform: scale(0.98); }
-    .team-card.selected { border-color: var(--accent); background: #f0f7ff; box-shadow: 0 6px 18px rgba(37, 99, 235, 0.15); }
+    .team-card.selected { border-color: var(--accent); background: #fef2f2; }
 
-    .team-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; border-radius: 50%; padding: 6px; background: #f8fafc; border: 1px solid #e2e8f0; }
-    .team-name { font-size: 1.05rem; font-weight: 800; color: var(--primary); }
-    .team-price { font-weight: 800; color: var(--accent); font-size: 0.95rem; margin: 4px 0 2px 0; }
+    .team-logo { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; border-radius: 50%; padding: 4px; background: #f1f5f9; border: 1px solid #cbd5e1; }
+    .team-name { font-size: 1rem; font-weight: 700; color: var(--primary); }
+    .team-price { font-weight: 800; color: var(--accent); font-size: 0.95rem; margin: 4px 0 10px 0; }
     
-    /* DISPONIBILIDAD DE BOLETOS */
-    .team-stock {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--info-text);
-      background-color: var(--info-bg);
-      border: 1px solid var(--info-border);
-      padding: 3px 8px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
     .btn-select {
-      background: #f1f5f9; color: var(--primary); border: none; padding: 10px;
-      border-radius: 10px; font-weight: 700; font-size: 0.85rem; width: 100%; transition: 0.2s;
+      background: #e2e8f0; color: var(--primary); border: none; padding: 8px;
+      border-radius: 8px; font-weight: 700; font-size: 0.8rem; width: 100%; transition: 0.2s;
     }
     .team-card.selected .btn-select { background: var(--accent); color: white; }
 
     /* FORMULARIO DE CHECKOUT */
     .checkout-section {
-      background: white; border-radius: 20px; padding: 25px 18px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.06); margin-top: 35px; border: 1px solid #e2e8f0;
+      background: var(--card-bg); border-radius: 16px; padding: 20px 15px;
+      box-shadow: 0 4px 20px rgba(15, 30, 54, 0.08); margin-top: 30px;
+      border-top: 4px solid var(--primary);
     }
 
-    .form-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 18px; }
+    .form-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 15px; }
     .form-group { display: flex; flex-direction: column; text-align: left; }
-    .form-group label { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group label { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
     
     .form-group input, .form-group select {
       padding: 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1rem; outline: none; background: #fff;
-      transition: border-color 0.2s;
-      -webkit-appearance: none;
+      -webkit-appearance: none; color: var(--text-dark);
     }
-    .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
 
     /* TARJETA DINÁMICA DE DATOS BANCARIOS */
     .bank-details-box {
       background: var(--bank-bg);
       border: 1.5px dashed var(--bank-border);
-      border-radius: 14px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 15px;
       margin-top: 10px;
       grid-column: span 1 / -1;
     }
@@ -173,115 +214,74 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--accent);
-      font-weight: 700;
+      color: var(--primary);
+      font-weight: 800;
       font-size: 0.95rem;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .bank-info-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.9rem;
-      padding: 8px 0;
-      border-bottom: 1px solid #dbeafe;
+      font-size: 0.88rem;
+      padding: 6px 0;
+      border-bottom: 1px solid #e2e8f0;
     }
     .bank-info-item:last-child { border-bottom: none; }
     .bank-info-item span.label { color: var(--text-muted); font-weight: 500; }
     .bank-info-item span.value { color: var(--text-dark); font-weight: 700; user-select: all; }
     
     .concepto-badge {
-      background: #fef3c7;
-      color: #92400e;
-      padding: 4px 10px;
+      background: var(--highlight);
+      color: var(--highlight-text);
+      padding: 3px 8px;
       border-radius: 6px;
       font-weight: 800;
-      border: 1px solid #fde68a;
-    }
-
-    /* NOTA ACLARATORIA DE FOLIO */
-    .info-notice-box {
-      background: var(--info-bg);
-      border: 1.5px solid var(--info-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 20px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      grid-column: span 1 / -1;
-    }
-
-    .info-notice-box i {
-      color: var(--info-text);
-      font-size: 1.25rem;
-      margin-top: 2px;
-      flex-shrink: 0;
-    }
-
-    .info-notice-text {
-      color: var(--info-text);
-      font-size: 0.88rem;
-      line-height: 1.45;
-    }
-
-    .info-notice-text b {
-      font-weight: 700;
+      border: 1px solid #fca5a5;
     }
 
     .btn-submit {
       width: 100%; background: var(--accent); color: white; border: none; padding: 16px;
-      font-size: 1.1rem; font-weight: 800; border-radius: 12px; cursor: pointer; margin-top: 15px; transition: 0.2s;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
-      -webkit-tap-highlight-color: transparent;
+      font-size: 1.05rem; font-weight: 800; border-radius: 10px; cursor: pointer; margin-top: 15px; transition: 0.2s;
+      -webkit-tap-highlight-color: transparent; shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
     }
-    .btn-submit:hover { background: var(--accent-hover); }
-    .btn-submit:active { transform: scale(0.99); }
+    .btn-submit:active { background: var(--accent-hover); }
 
     /* NOSOTROS & CONTACTO */
-    .about-section { 
-      background: white; padding: 35px 20px; border-radius: 20px; margin: 30px 0; text-align: center; 
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;
-    }
-    .contact-card { 
-      background: white; padding: 30px 20px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
-      border: 1px solid #e2e8f0;
-    }
+    .about-section { background: #e2e8f0; padding: 30px 15px; border-radius: 16px; margin: 30px 0; text-align: center; border-left: 4px solid var(--primary); }
+    .contact-card { background: var(--card-bg); padding: 20px 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 4px solid var(--accent); }
 
     /* FOOTER & BOTONES FLOTANTES */
-    .footer { background: var(--primary); color: white; padding: 40px 15px 80px 15px; text-align: center; margin-top: 50px; }
+    .footer { background: var(--primary); color: white; padding: 35px 15px 80px 15px; text-align: center; margin-top: 40px; border-t: 3px solid var(--accent); }
     .social-links { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
     
     .social-btn {
       width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1);
       display: flex; align-items: center; justify-content: center; color: white;
-      text-decoration: none; font-size: 1.2rem; transition: 0.2s;
+      text-decoration: none; font-size: 1.2rem; transition: background 0.2s;
     }
     .social-btn:hover { background: var(--accent); }
 
     .whatsapp-float {
       position: fixed; bottom: 20px; right: 20px; z-index: 999;
-      background: #25d366; color: white; width: 58px; height: 58px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 2rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-decoration: none; transition: transform 0.2s;
+      background: #25d366; color: white; width: 55px; height: 55px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none;
     }
-    .whatsapp-float:hover { transform: scale(1.08); }
 
     @media(min-width: 768px) {
       .hamburger-btn { display: none; }
       .nav-links {
-        position: static; max-height: none; background: none; flex-direction: row; gap: 25px; box-shadow: none; width: auto;
+        position: static; max-height: none; background: none; flex-direction: row; gap: 25px; box-shadow: none; width: auto; border: none;
       }
-      .hero { padding: 90px 20px; }
-      .hero h1 { font-size: 2.8rem; }
+      .hero { padding: 80px 20px; }
+      .hero h1 { font-size: 2.6rem; }
       .teams-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-      .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-      .team-logo { width: 95px; height: 95px; }
-      .checkout-section { padding: 40px; }
-      .about-section, .contact-card { padding: 40px; }
+      .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+      .team-logo { width: 90px; height: 90px; }
+      .checkout-section { padding: 35px; }
     }
-    
   </style>
 </head>
 <body>
@@ -302,62 +302,68 @@
       <li><a href="#eventos" onclick="closeMenu()">Eventos</a></li>
       <li><a href="#nosotros" onclick="closeMenu()">Nosotros</a></li>
       <li><a href="#contacto" onclick="closeMenu()">Contacto</a></li>
-      <li><a href="admin.html" onclick="closeMenu()">Administrador</a></li>
-      <li><a href="validador.html" onclick="closeMenu()">Validador</a></li>
     </ul>
   </header>
-
-  <!-- HERO BANNER -->
-  <section id="inicio" class="hero">
-    <!-- Logo Planet Boletos sobre el título -->
-    <img src="planet-boletos.jpg" alt="Planet Boletos" class="hero-logo" onerror="this.src='planet-boletos.png'">
-    <h1>La Pasión del Deporte a un Clic</h1>
-    <p>Consigue tus entradas oficiales de forma rápida y segura desde tu smartphone.</p>
-  </section>
+  
+  <!-- HERO BANNER CON LOGO DESTACADO Y MEJOR PRESENTACIÓN -->
+<section id="inicio" class="hero">
+  <div class="hero-badge">
+    <i class="fas fa-ticket-alt"></i> Venta Oficial
+  </div>
+  
+  <img src="planet-boletos.png" alt="Logo Planet Boletos" class="hero-logo-img" onerror="this.style.display='none'">
+  
+  <h1>La Pasión del Béisbol en <span>Planet Boletos</span></h1>
+  <p>Consigue tus entradas oficiales para Barreteros, Halcones, Indios y Agricultores de forma rápida, directa y segura.</p>
+  
+  <div class="hero-actions">
+    <a href="#eventos" class="btn-hero-primary">Comprar Boletos</a>
+  </div>
+</section>
 
   <!-- SECCIÓN EVENTOS Y COMPRA -->
   <main id="eventos" class="section-container">
     <div class="section-title">
-      <h2>Selecciona Tu Equipo Favorito</h2>
-      <p>Toca la tarjeta del equipo al que deseas asistir para cargar tu boleto</p>
+      <h2>Selecciona A Tu Equipo Favorito</h2>
+      <p>Toca la tarjeta del partido al que deseas asistir</p>
     </div>
 
-<!-- TARJETAS DE EQUIPOS -->
-<div class="teams-grid">
-  <div class="team-card selected" data-equipo="Barreteros" onclick="seleccionarEquipo('Barreteros', this)">
-    <img src="logo.jpg" alt="Barreteros" class="team-logo" onerror="this.src='img/logob.jpg'">
-    <div class="team-name">Barreteros</div>
-    <div class="team-price">$50.00 MXN</div>
-    <button type="button" class="btn-select">Elegir</button>
-  </div>
-  
-  <div class="team-card" data-equipo="Halcones" onclick="seleccionarEquipo('Halcones', this)">
-    <img src="logoh.jpg" alt="Halcones" class="team-logo" onerror="this.src='img/logoh.jpg'">
-    <div class="team-name">Halcones</div>
-    <div class="team-price">$50.00 MXN</div>
-    <button type="button" class="btn-select">Elegir</button>
-  </div>
+    <!-- TARJETAS DE EQUIPOS -->
+    <div class="teams-grid">
+      <div class="team-card selected" onclick="seleccionarEquipo('Barreteros', this)">
+        <img src="img/logob.jpg" alt="Barreteros" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Barreteros'">
+        <div class="team-name">Barreteros</div>
+        <div class="team-price">$50.00 MXN</div>
+        <button type="button" class="btn-select">Elegir</button>
+      </div>
 
-  <div class="team-card" data-equipo="Indios" onclick="seleccionarEquipo('Indios', this)">
-    <img src="logoi.jpg" alt="Indios" class="team-logo" onerror="this.src='img/logom.jpg'">
-    <div class="team-name">Indios</div>
-    <div class="team-price">$50.00 MXN</div>
-    <button type="button" class="btn-select">Elegir</button>
-  </div>
+      <div class="team-card" onclick="seleccionarEquipo('Halcones', this)">
+        <img src="img/logoh.jpg" alt="Halcones" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Halcones'">
+        <div class="team-name">Halcones</div>
+        <div class="team-price">$50.00 MXN</div>
+        <button type="button" class="btn-select">Elegir</button>
+      </div>
 
-  <div class="team-card" data-equipo="Agricultores" onclick="seleccionarEquipo('Agricultores', this)">
-    <img src="logoa.jpg" alt="Agricultores" class="team-logo" onerror="this.src='img/logoa.jpg'">
-    <div class="team-name">Agricultores</div>
-    <div class="team-price">$50.00 MXN</div>
-    <button type="button" class="btn-select">Elegir</button>
-  </div>
-</div>
+      <div class="team-card" onclick="seleccionarEquipo('Indios', this)">
+        <img src="img/logom.jpg" alt="Indios" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Indios'">
+        <div class="team-name">Indios</div>
+        <div class="team-price">$50.00 MXN</div>
+        <button type="button" class="btn-select">Elegir</button>
+      </div>
+
+      <div class="team-card" onclick="seleccionarEquipo('Agricultores', this)">
+        <img src="img/logoa.jpg" alt="Agricultores" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Agricultores'">
+        <div class="team-name">Agricultores</div>
+        <div class="team-price">$50.00 MXN</div>
+        <button type="button" class="btn-select">Elegir</button>
+      </div>
+    </div>
 
     <!-- FORMULARIO DE CHECKOUT -->
     <div class="checkout-section">
       <div class="section-title" style="margin-bottom: 15px; text-align: left;">
-        <h3 style="font-size: 1.4rem; color: var(--primary);">Orden de Compra</h3>
-        <p>Equipo seleccionado: <b id="lblEquipoSeleccionado" style="color: var(--accent); font-size: 1.05rem;">Barreteros</b></p>
+        <h3 style="font-size: 1.3rem; color: var(--primary);">Orden de Compra</h3>
+        <p>Equipo: <b id="lblEquipoSeleccionado" style="color: var(--accent);">Barreteros</b></p>
       </div>
 
       <form id="formCompra" onsubmit="realizarCompra(event)">
@@ -395,7 +401,7 @@
           <!-- TARJETA CON DATOS DE CUENTA BANCARIA -->
           <div class="bank-details-box" id="boxDatosBancarios">
             <div class="bank-details-header">
-              <i class="fas fa-university"></i>
+              <i class="fas fa-university" style="color: var(--accent);"></i>
               <span id="txtTituloPago">Datos para Transferencia (SPEI)</span>
             </div>
             
@@ -416,8 +422,8 @@
               <span class="value">4152 3138 1234 5678</span>
             </div>
             <!-- CONCEPTO / MOTIVO DE PAGO -->
-            <div class="bank-info-item" style="background: #e0f2fe; margin-top: 6px; padding: 8px 12px; border-radius: 8px;">
-              <span class="label" style="color: #0369a1; font-weight: 700;">Concepto / Motivo:</span>
+            <div class="bank-info-item" style="background: var(--highlight); margin-top: 6px; padding: 8px; border-radius: 6px;">
+              <span class="label" style="color: var(--highlight-text); font-weight: 700;">Concepto / Motivo:</span>
               <span class="value concepto-badge" id="txtConcepto">BOL-TU NOMBRE</span>
             </div>
           </div>
@@ -427,17 +433,9 @@
             <input type="text" id="folioBanco" placeholder="Número de autorización/rastreo" required>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" style="grid-column: span 1 / -1;">
             <label>Total a Pagar</label>
             <input type="text" id="total" value="$50.00 MXN" style="font-weight: 800; color: var(--accent); font-size: 1.25rem; background: #f8fafc;" readonly>
-          </div>
-
-          <!-- NOTA INFORMATIVA ANTES DE CONFIRMAR COMPRA -->
-          <div class="info-notice-box">
-            <i class="fas fa-info-circle"></i>
-            <div class="info-notice-text">
-              <b>Nota importante:</b> Al confirmar tu compra, te generaremos un <b>Folio de Compra</b> el cual debes guardar para ingresar a tu evento. También te llegará por correo la información de tu compra.
-            </div>
           </div>
         </div>
 
@@ -449,22 +447,20 @@
   <!-- NOSOTROS -->
   <section id="nosotros" class="section-container">
     <div class="about-section">
-      <h2 style="font-size: 1.6rem; color: var(--primary);"><i class="fas fa-shield-alt" style="color: var(--accent);"></i> Sobre Planet Boletos</h2>
-      <p style="margin-top: 12px; font-size: 0.95rem; color: var(--text-muted); max-width: 750px; margin-left: auto; margin-right: auto;">
-        Somos la plataforma digital oficial de venta y control de acceso de boletos para tus eventos deportivos favoritos. Garantizamos rapidez, máxima seguridad y transparencia total para que solo te preocupes por disfrutar el partido.
-      </p>
+      <h2 style="font-size: 1.4rem; color: var(--primary);">Sobre Planet Boletos</h2>
+      <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark);">Somos la plataforma digital oficial de venta y control de acceso de boletos para eventos deportivos. Rapidez, seguridad y transparencia para la afición.</p>
     </div>
   </section>
 
   <!-- CONTACTO MÓVIL -->
   <section id="contacto" class="section-container">
     <div class="contact-card">
-      <div class="section-title" style="margin-bottom: 20px;">
-        <h2><i class="fas fa-headset" style="color: var(--accent);"></i> Solicitar Información</h2>
-        <p>¿Tienes alguna duda sobre la compra o validación de tus boletos?</p>
+      <div class="section-title" style="margin-bottom: 15px;">
+        <h2>Solicitar Información</h2>
+        <p>¿Tienes alguna duda sobre tus boletos?</p>
       </div>
       
-      <form onsubmit="alert('¡Gracias! Nos pondremos en contacto contigo a la brevedad.'); this.reset(); return false;">
+      <form onsubmit="alert('¡Gracias! Nos pondremos en contacto contigo.'); this.reset(); return false;">
         <div class="form-grid">
           <div class="form-group">
             <label>Tu Nombre</label>
@@ -479,7 +475,7 @@
             <input type="text" required placeholder="¿En qué podemos ayudarte?">
           </div>
         </div>
-        <button type="submit" class="btn-submit" style="background: var(--primary); box-shadow: none;">Enviar Mensaje</button>
+        <button type="submit" class="btn-submit" style="background: var(--primary);">Enviar Mensaje</button>
       </form>
     </div>
   </section>
@@ -491,11 +487,11 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="logo-container" style="justify-content: center; margin-bottom: 10px;">
-      <img src="planet-boletos.png" alt="Planet Boletos" style="height: 32px;" onerror="this.style.display='none'">
-      <span style="font-size: 1.2rem;">Planet Boletos</span>
+    <div class="logo-container" style="justify-content: center; margin-bottom: 8px;">
+      <img src="planet-boletos.png" alt="Planet Boletos" style="height: 35px;" onerror="this.style.display='none'">
+      <span style="font-size: 1.1rem;">Planet Boletos</span>
     </div>
-    <p style="font-size: 0.9rem; color: #cbd5e1;">Tu acceso directo a la emoción del deporte.</p>
+    <p style="font-size: 0.85rem; color: #cbd5e1;">Tu acceso directo al deporte.</p>
 
     <div class="social-links">
       <a href="https://facebook.com" target="_blank" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -503,16 +499,14 @@
       <a href="https://wa.me/5210000000000" target="_blank" class="social-btn" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
 
-    <p style="font-size: 0.8rem; color: #64748b; margin-top: 15px;">&copy; 2026 Planet Boletos. Todos los derechos reservados.</p>
+    <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px;">&copy; 2026 Planet Boletos. Todos los derechos reservados.</p>
   </footer>
 
   <!-- LÓGICA JAVASCRIPT -->
-<script>
+  <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
-
     const PRECIO_BOLETO = 50;
 
-    // Abrir/Cerrar Menú Hamburguesa
     function toggleMenu() {
       document.getElementById('navMenu').classList.toggle('active');
     }
@@ -520,7 +514,6 @@
       document.getElementById('navMenu').classList.remove('active');
     }
 
-    // Seleccionar Tarjeta de Equipo
     function seleccionarEquipo(nombreEquipo, elementoCard) {
       document.querySelectorAll('.team-card').forEach(card => card.classList.remove('selected'));
       elementoCard.classList.add('selected');
@@ -529,14 +522,12 @@
       document.getElementById('lblEquipoSeleccionado').innerText = nombreEquipo;
     }
 
-    // Calcular Precio Total
     function calcularTotal() {
       const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
       const total = cantidad * PRECIO_BOLETO;
       document.getElementById('total').value = `$${total.toFixed(2)} MXN`;
     }
 
-    // Actualizar dinámicamente el Concepto de Pago con el nombre del cliente
     function actualizarConcepto() {
       const nombreInput = document.getElementById('cliente').value.trim();
       const txtConcepto = document.getElementById('txtConcepto');
@@ -549,7 +540,6 @@
       }
     }
 
-    // Cambiar texto de Datos Bancarios según Selección
     function actualizarMetodoPago() {
       const metodo = document.getElementById('metodoPago').value;
       const txtTitulo = document.getElementById('txtTituloPago');
@@ -564,7 +554,6 @@
       }
     }
 
-    // Petición a Backend
     async function realizarCompra(e) {
       e.preventDefault();
 
@@ -613,7 +602,6 @@
         btn.innerText = "🎟️ Confirmar Compra";
       }
     }
-
   </script>
 </body>
 </html>

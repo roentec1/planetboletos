@@ -1,607 +1,1919 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Planet Boletos - Venta Oficial de Boletos</title>
-  
-  <!-- FontAwesome para Íconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planet Boletos | Compra de Boletos Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    /* VARIABLES ADAPTADAS AL LOGO PLANET BOLETOS */
     :root {
-      --primary: #0f1e36;        /* Azul marino profundo de la pelota */
-      --primary-light: #1e293b;  /* Azul oscuro contrastante */
-      --accent: #dc2626;         /* Rojo primario de las costuras */
-      --accent-hover: #b91c1c;   /* Rojo oscuro para hover/active */
-      --bg-light: #f8fafc;       /* Gris plata muy suave */
-      --card-bg: #ffffff;        /* Blanco puro */
-      --text-dark: #0f172a;      /* Texto principal */
-      --text-muted: #64748b;     /* Texto secundario */
-      --bank-bg: #f1f5f9;        /* Fondo caja bancaria plata */
-      --bank-border: #cbd5e1;    /* Borde caja bancaria */
-      --highlight: #fee2e2;     /* Fondo rojo suave para insignias */
-      --highlight-text: #991b1b;/* Texto rojo oscuro para insignias */
+      --navy: #0B1E3D;
+      --navy-dark: #071428;
+      --red: #C41E3A;
+      --red-dark: #9B1830;
+      --silver: #A8B0BC;
+      --silver-light: #E8ECF1;
+      --white: #FFFFFF;
+      --gray-100: #F5F7FA;
+      --gray-200: #E2E8F0;
+      --gray-600: #4A5568;
+      --gray-800: #1A202C;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --radius: 16px;
+      --shadow: 0 10px 40px rgba(11, 30, 61, 0.12);
+      --shadow-lg: 0 20px 60px rgba(11, 30, 61, 0.18);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; overflow-x: hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* NAVEGACIÓN MOBILE-FIRST */
-    .header-navbar {
-      position: sticky; top: 0; z-index: 1000;
-      background: var(--primary);
-      backdrop-filter: blur(8px);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 20px; color: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-      border-b: 3px solid var(--accent);
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
-    
-    .logo-container { display: flex; align-items: center; gap: 10px; }
-    .logo-container img { height: 42px; width: auto; object-fit: contain; }
-    .logo-container span { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
 
-    /* MENÚ HAMBURGUESA MÓVIL */
-    .hamburger-btn {
-      display: block; background: none; border: none; color: white;
-      font-size: 1.5rem; cursor: pointer; padding: 5px; outline: none;
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    /* ========== HEADER ========== */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(11, 30, 61, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      transition: var(--transition);
     }
+
+    .header.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 48px;
+      width: auto;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.35rem;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span { color: var(--red); }
 
     .nav-links {
-      position: absolute; top: 100%; left: 0; width: 100%;
-      background: var(--primary); list-style: none;
-      display: flex; flex-direction: column; text-align: center;
-      max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
-      box-shadow: 0 10px 15px rgba(0,0,0,0.3);
-    }
-
-    .nav-links.active { max-height: 300px; padding: 10px 0; border-bottom: 3px solid var(--accent); }
-    .nav-links li { margin: 12px 0; }
-    .nav-links a { color: #e2e8f0; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--accent); }
-
-/* HERO BANNER MEJORADO CON LOGO DESTACADO */
-.hero {
-  position: relative;
-  background: linear-gradient(135deg, rgba(15, 30, 54, 0.94) 0%, rgba(15, 30, 54, 0.88) 100%), 
-              url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-  color: white; 
-  text-align: center; 
-  padding: 60px 20px 50px 20px;
-  border-bottom: 4px solid var(--accent);
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center;
-}
-
-.hero-badge {
-  display: inline-flex; 
-  align-items: center; 
-  gap: 6px;
-  background: rgba(220, 38, 38, 0.2); 
-  border: 1px solid var(--accent);
-  color: #fca5a5; 
-  font-size: 0.8rem; 
-  font-weight: 700; 
-  text-transform: uppercase;
-  padding: 6px 14px; 
-  border-radius: 20px; 
-  margin-bottom: 20px;
-  letter-spacing: 1px; 
-  backdrop-filter: blur(4px);
-}
-
-.hero-logo-img {
-  width: 140px; 
-  height: auto; 
-  max-width: 80%;
-  margin-bottom: 18px; 
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5));
-  transition: transform 0.3s ease;
-}
-
-.hero-logo-img:hover { 
-  transform: scale(1.04); 
-}
-
-.hero h1 { 
-  font-size: 2rem; 
-  margin-bottom: 12px; 
-  font-weight: 900; 
-  line-height: 1.25; 
-  text-shadow: 0 3px 6px rgba(0,0,0,0.6); 
-  color: #ffffff;
-  max-width: 700px;
-}
-
-.hero h1 span { 
-  color: #ef4444; 
-}
-
-.hero p { 
-  font-size: 1.05rem; 
-  color: #e2e8f0; 
-  max-width: 600px; 
-  margin: 0 auto 25px auto; 
-  line-height: 1.6; 
-  font-weight: 400; 
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-
-.btn-hero-primary {
-  background: var(--accent); 
-  color: white; 
-  padding: 14px 28px; 
-  border-radius: 30px;
-  text-decoration: none; 
-  font-weight: 800; 
-  font-size: 1rem; 
-  transition: all 0.2s;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); 
-  display: inline-block;
-}
-
-@media(min-width: 768px) {
-  .hero { padding: 90px 20px 80px 20px; }
-  .hero-logo-img { width: 180px; margin-bottom: 22px; }
-  .hero h1 { font-size: 2.8rem; }
-}
-
-    /* SECCIÓN DE EVENTOS & TARJETAS */
-    .section-container { padding: 35px 15px; max-width: 1200px; margin: 0 auto; }
-    .section-title { text-align: center; margin-bottom: 25px; }
-    .section-title h2 { font-size: 1.6rem; color: var(--primary); font-weight: 800; }
-    .section-title p { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
-
-    /* GRID RESPONSIVO DE EQUIPOS */
-    .teams-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    
-    .team-card {
-      background: var(--card-bg); border-radius: 14px; padding: 15px 10px;
-      box-shadow: 0 3px 12px rgba(15, 30, 54, 0.08); transition: transform 0.2s, border-color 0.2s;
-      cursor: pointer; border: 2px solid #e2e8f0; text-align: center;
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-    }
-    .team-card:active { transform: scale(0.98); }
-    .team-card.selected { border-color: var(--accent); background: #fef2f2; }
-
-    .team-logo { width: 70px; height: 70px; object-fit: contain; margin-bottom: 8px; border-radius: 50%; padding: 4px; background: #f1f5f9; border: 1px solid #cbd5e1; }
-    .team-name { font-size: 1rem; font-weight: 700; color: var(--primary); }
-    .team-price { font-weight: 800; color: var(--accent); font-size: 0.95rem; margin: 4px 0 10px 0; }
-    
-    .btn-select {
-      background: #e2e8f0; color: var(--primary); border: none; padding: 8px;
-      border-radius: 8px; font-weight: 700; font-size: 0.8rem; width: 100%; transition: 0.2s;
-    }
-    .team-card.selected .btn-select { background: var(--accent); color: white; }
-
-    /* FORMULARIO DE CHECKOUT */
-    .checkout-section {
-      background: var(--card-bg); border-radius: 16px; padding: 20px 15px;
-      box-shadow: 0 4px 20px rgba(15, 30, 54, 0.08); margin-top: 30px;
-      border-top: 4px solid var(--primary);
-    }
-
-    .form-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 15px; }
-    .form-group { display: flex; flex-direction: column; text-align: left; }
-    .form-group label { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
-    
-    .form-group input, .form-group select {
-      padding: 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1rem; outline: none; background: #fff;
-      -webkit-appearance: none; color: var(--text-dark);
-    }
-    .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
-
-    /* TARJETA DINÁMICA DE DATOS BANCARIOS */
-    .bank-details-box {
-      background: var(--bank-bg);
-      border: 1.5px dashed var(--bank-border);
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 10px;
-      grid-column: span 1 / -1;
-    }
-
-    .bank-details-header {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 0.95rem;
-      margin-bottom: 10px;
+      list-style: none;
     }
 
-    .bank-info-item {
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 10px 18px;
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--white);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .btn-nav {
+      background: var(--red) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+
+    .btn-nav:hover { background: var(--red-dark) !important; }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, #132B4A 100%);
+      overflow: hidden;
+      padding-top: 72px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(168, 176, 188, 0.1) 0%, transparent 40%);
+    }
+
+    .hero-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 24px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(196, 30, 58, 0.2);
+      border: 1px solid rgba(196, 30, 58, 0.4);
+      color: #FF6B81;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .hero h1 span { color: var(--red); }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: white;
+      box-shadow: 0 8px 24px rgba(196, 30, 58, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(196, 30, 58, 0.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-logo-card {
+      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-lg);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-logo-card img {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-16px); }
+    }
+
+    /* ========== SECTIONS ========== */
+    section {
+      padding: 90px 24px;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .section-header .tag {
+      display: inline-block;
+      background: rgba(196, 30, 58, 0.1);
+      color: var(--red);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .section-header p {
+      color: var(--gray-600);
+      font-size: 1.1rem;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ========== CATEGORY TABS ========== */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: 2px solid var(--gray-200);
+      background: white;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover { border-color: var(--navy); color: var(--navy); }
+
+    .tab-btn.active {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+      box-shadow: 0 6px 20px rgba(11, 30, 61, 0.25);
+    }
+
+    /* ========== EVENT CARDS ========== */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .event-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .event-card-image {
+      position: relative;
+      height: 180px;
+      background: var(--navy);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .event-card:hover .event-card-image img { transform: scale(1.05); }
+
+    .event-card-image.team-logo {
+      background: linear-gradient(135deg, #0B1E3D, #1a365d);
+      padding: 24px;
+    }
+
+    .event-card-image.team-logo img {
+      object-fit: contain;
+      max-height: 140px;
+      width: auto;
+    }
+
+    .event-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--red);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .event-badge.music { background: #7C3AED; }
+    .event-badge.sports { background: var(--red); }
+    .event-badge.cultural { background: #059669; }
+
+    .event-card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-card-body h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .event-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .event-meta span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .event-meta i {
+      width: 18px;
+      color: var(--red);
+      text-align: center;
+    }
+
+    .event-stock {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      background: var(--gray-100);
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+
+    .stock-label { color: var(--gray-600); font-weight: 500; }
+
+    .stock-value {
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .stock-value.low { color: var(--warning); }
+    .stock-value.out { color: var(--red); }
+
+    .event-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .event-price small {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--gray-600);
+    }
+
+    .btn-buy {
+      width: 100%;
+      justify-content: center;
+      background: var(--navy);
+      color: white;
+      margin-top: auto;
+    }
+
+    .btn-buy:hover {
+      background: var(--navy-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-buy:disabled {
+      background: var(--gray-200);
+      color: var(--gray-600);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ========== CONTACT ========== */
+    .contact-section {
+      background: white;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .contact-info h3 {
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .contact-info p {
+      color: var(--gray-600);
+      margin-bottom: 28px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(196, 30, 58, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--red);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .contact-item strong {
+      display: block;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .contact-item span { color: var(--gray-600); font-size: 0.95rem; }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .social-links a {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .social-links a:hover {
+      background: var(--red);
+      transform: translateY(-3px);
+    }
+
+    .contact-form {
+      background: var(--gray-100);
+      padding: 36px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: var(--transition);
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 4px rgba(11, 30, 61, 0.1);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      background: var(--navy-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 60px 24px 30px;
+    }
+
+    .footer-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand img {
+      height: 42px;
+      margin-bottom: 16px;
+    }
+
+    .footer-brand p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 300px;
+    }
+
+    .footer h4 {
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .footer ul { list-style: none; }
+
+    .footer ul li { margin-bottom: 10px; }
+
+    .footer ul a {
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .footer ul a:hover { color: white; }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.88rem;
-      padding: 6px 0;
-      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .bank-info-item:last-child { border-bottom: none; }
-    .bank-info-item span.label { color: var(--text-muted); font-weight: 500; }
-    .bank-info-item span.value { color: var(--text-dark); font-weight: 700; user-select: all; }
-    
-    .concepto-badge {
-      background: var(--highlight);
-      color: var(--highlight-text);
-      padding: 3px 8px;
-      border-radius: 6px;
+
+    /* ========== MODAL COMPRA ========== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 20, 40, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal { transform: translateY(0); }
+
+    .modal-header {
+      padding: 24px 28px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+
+    .modal-header img {
+      height: 36px;
+    }
+
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover { background: var(--red); color: white; }
+
+    .modal-body { padding: 24px 28px 32px; }
+
+    .modal-event-info {
+      background: var(--gray-100);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .modal-event-info img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border-radius: 10px;
+      background: white;
+      padding: 6px;
+    }
+
+    .modal-event-info h4 {
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .modal-event-info p {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+
+    .qty-selector {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .qty-selector label {
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .qty-btn {
+      width: 42px;
+      height: 42px;
+      border: none;
+      background: var(--gray-100);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--navy);
+      transition: var(--transition);
+    }
+
+    .qty-btn:hover { background: var(--navy); color: white; }
+
+    .qty-value {
+      width: 50px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--navy);
+    }
+
+    .transfer-box {
+      background: linear-gradient(135deg, #0B1E3D, #1a365d);
+      color: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .transfer-box h5 {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .transfer-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .transfer-row strong { font-weight: 600; }
+
+    .file-upload {
+      border: 2px dashed var(--gray-200);
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: var(--gray-100);
+    }
+
+    .file-upload:hover, .file-upload.dragover {
+      border-color: var(--navy);
+      background: rgba(11, 30, 61, 0.05);
+    }
+
+    .file-upload i {
+      font-size: 2rem;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .file-upload p {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+    }
+
+    .file-upload input { display: none; }
+
+    .file-name {
+      margin-top: 10px;
+      font-weight: 600;
+      color: var(--success);
+      font-size: 0.9rem;
+    }
+
+    .total-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      border-top: 2px solid var(--gray-200);
+      margin-top: 8px;
+    }
+
+    .total-box span { font-size: 1rem; color: var(--gray-600); }
+    .field-error {
+      color: #C41E3A;
+      font-size: 0.82rem;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .form-group input.invalid,
+    .form-group textarea.invalid {
+      border-color: #C41E3A !important;
+      box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.15);
+    }
+    .total-box strong {
+      font-size: 1.6rem;
+      color: var(--navy);
       font-weight: 800;
-      border: 1px solid #fca5a5;
     }
 
-    .btn-submit {
-      width: 100%; background: var(--accent); color: white; border: none; padding: 16px;
-      font-size: 1.05rem; font-weight: 800; border-radius: 10px; cursor: pointer; margin-top: 15px; transition: 0.2s;
-      -webkit-tap-highlight-color: transparent; shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
-    }
-    .btn-submit:active { background: var(--accent-hover); }
-
-    /* NOSOTROS & CONTACTO */
-    .about-section { background: #e2e8f0; padding: 30px 15px; border-radius: 16px; margin: 30px 0; text-align: center; border-left: 4px solid var(--primary); }
-    .contact-card { background: var(--card-bg); padding: 20px 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); border-top: 4px solid var(--accent); }
-
-    /* FOOTER & BOTONES FLOTANTES */
-    .footer { background: var(--primary); color: white; padding: 35px 15px 80px 15px; text-align: center; margin-top: 40px; border-t: 3px solid var(--accent); }
-    .social-links { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-    
-    .social-btn {
-      width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: center; color: white;
-      text-decoration: none; font-size: 1.2rem; transition: background 0.2s;
-    }
-    .social-btn:hover { background: var(--accent); }
-
-    .whatsapp-float {
-      position: fixed; bottom: 20px; right: 20px; z-index: 999;
-      background: #25d366; color: white; width: 55px; height: 55px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none;
+    .alert {
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      display: none;
     }
 
-    @media(min-width: 768px) {
-      .hamburger-btn { display: none; }
+    .alert-success {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+
+    .alert-error {
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FECACA;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero p { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-visual { order: -1; }
+      .hero-logo-card { padding: 24px; }
+      .hero-logo-card img { max-width: 240px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
       .nav-links {
-        position: static; max-height: none; background: none; flex-direction: row; gap: 25px; box-shadow: none; width: auto; border: none;
+        position: fixed;
+        top: 72px;
+        left: 0; right: 0;
+        background: var(--navy);
+        flex-direction: column;
+        padding: 20px;
+        gap: 4px;
+        transform: translateY(-120%);
+        transition: var(--transition);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
       }
-      .hero { padding: 80px 20px; }
-      .hero h1 { font-size: 2.6rem; }
-      .teams-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-      .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
-      .team-logo { width: 90px; height: 90px; }
-      .checkout-section { padding: 35px; }
+      .nav-links.open { transform: translateY(0); }
+      .menu-toggle { display: block; }
+      .footer-grid { grid-template-columns: 1fr; }
     }
+
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <!-- NAVEGACIÓN MÓVIL CON MENÚ HAMBURGUESA -->
-  <header class="header-navbar">
-    <div class="logo-container">
-      <img src="planet-boletos.png" alt="Planet Boletos" onerror="this.src='https://via.placeholder.com/150x45?text=Planet+Boletos'">
-      <span>Planet Boletos</span>
+  <!-- HEADER -->
+  <header class="header" id="header">
+    <div class="nav-container">
+      <a href="#inicio" class="logo">
+        <img src="planet-boletos.png" alt="Planet Boletos" />
+        <span class="logo-text">Planet <span>Boletos</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menú">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#inicio" class="active">Inicio</a></li>
+        <li><a href="#eventos">Eventos</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+        <li><a href="admin.html" class="btn-nav">Admin</a></li>
+      </ul>
     </div>
-    
-    <button class="hamburger-btn" onclick="toggleMenu()" aria-label="Menú">
-      <i class="fas fa-bars"></i>
-    </button>
-
-    <ul class="nav-links" id="navMenu">
-      <li><a href="#inicio" onclick="closeMenu()">Inicio</a></li>
-      <li><a href="#eventos" onclick="closeMenu()">Eventos</a></li>
-      <li><a href="#nosotros" onclick="closeMenu()">Nosotros</a></li>
-      <li><a href="#contacto" onclick="closeMenu()">Contacto</a></li>
-    </ul>
   </header>
-  
-  <!-- HERO BANNER CON LOGO DESTACADO Y MEJOR PRESENTACIÓN -->
-<section id="inicio" class="hero">
-  <div class="hero-badge">
-    <i class="fas fa-ticket-alt"></i> Venta Oficial
-  </div>
-  
-  <img src="planet-boletos.png" alt="Logo Planet Boletos" class="hero-logo-img" onerror="this.style.display='none'">
-  
-  <h1>La Pasión del Béisbol en <span>Planet Boletos</span></h1>
-  <p>Consigue tus entradas oficiales para Barreteros, Halcones, Indios y Agricultores de forma rápida, directa y segura.</p>
-  
-  <div class="hero-actions">
-    <a href="#eventos" class="btn-hero-primary">Comprar Boletos</a>
-  </div>
-</section>
 
-  <!-- SECCIÓN EVENTOS Y COMPRA -->
-  <main id="eventos" class="section-container">
-    <div class="section-title">
-      <h2>Selecciona A Tu Equipo Favorito</h2>
-      <p>Toca la tarjeta del partido al que deseas asistir</p>
-    </div>
-
-    <!-- TARJETAS DE EQUIPOS -->
-    <div class="teams-grid">
-      <div class="team-card selected" onclick="seleccionarEquipo('Barreteros', this)">
-        <img src="img/logob.jpg" alt="Barreteros" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Barreteros'">
-        <div class="team-name">Barreteros</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-pattern"></div>
+    <div class="hero-content">
+      <div>
+        <div class="hero-badge">
+          <i class="fas fa-ticket-alt"></i> Venta oficial de boletos
+        </div>
+        <h1>Tu entrada al <span>mejor</span> entretenimiento</h1>
+        <p>Compra boletos de forma segura para conciertos, partidos de béisbol y eventos culturales. Pago por transferencia y entrega digital con código QR.</p>
+        <div class="hero-actions">
+          <a href="#eventos" class="btn btn-primary">
+            <i class="fas fa-calendar-alt"></i> Ver Eventos
+          </a>
+          <a href="#contacto" class="btn btn-outline">
+            <i class="fas fa-headset"></i> Contacto
+          </a>
+        </div>
       </div>
-
-      <div class="team-card" onclick="seleccionarEquipo('Halcones', this)">
-        <img src="img/logoh.jpg" alt="Halcones" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Halcones'">
-        <div class="team-name">Halcones</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
-
-      <div class="team-card" onclick="seleccionarEquipo('Indios', this)">
-        <img src="img/logom.jpg" alt="Indios" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Indios'">
-        <div class="team-name">Indios</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
-      </div>
-
-      <div class="team-card" onclick="seleccionarEquipo('Agricultores', this)">
-        <img src="img/logoa.jpg" alt="Agricultores" class="team-logo" onerror="this.src='https://via.placeholder.com/90?text=Agricultores'">
-        <div class="team-name">Agricultores</div>
-        <div class="team-price">$50.00 MXN</div>
-        <button type="button" class="btn-select">Elegir</button>
+      <div class="hero-visual">
+        <div class="hero-logo-card">
+          <img src="planet-boletos.png" alt="Planet Boletos" />
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- FORMULARIO DE CHECKOUT -->
-    <div class="checkout-section">
-      <div class="section-title" style="margin-bottom: 15px; text-align: left;">
-        <h3 style="font-size: 1.3rem; color: var(--primary);">Orden de Compra</h3>
-        <p>Equipo: <b id="lblEquipoSeleccionado" style="color: var(--accent);">Barreteros</b></p>
+  <!-- EVENTOS -->
+  <section id="eventos">
+    <div class="container">
+      <div class="section-header">
+        <span class="tag">Cartelera</span>
+        <h2>Próximos Eventos</h2>
+        <p>Selecciona la categoría y encuentra tu boleto ideal</p>
       </div>
 
-      <form id="formCompra" onsubmit="realizarCompra(event)">
-        <input type="hidden" id="equipo" value="Barreteros">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="all">
+          <i class="fas fa-th-large"></i> Todos
+        </button>
+        <button class="tab-btn" data-tab="musica">
+          <i class="fas fa-music"></i> Música
+        </button>
+        <button class="tab-btn" data-tab="deportes">
+          <i class="fas fa-baseball-ball"></i> Deportes
+        </button>
+        <button class="tab-btn" data-tab="culturales">
+          <i class="fas fa-theater-masks"></i> Culturales
+        </button>
+      </div>
 
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Nombre Completo</label>
-            <input type="text" id="cliente" placeholder="Ej. Raúl Rosas" oninput="actualizarConcepto()" required>
+      <div class="events-grid" id="eventsGrid">
+        <!-- Cards generadas por JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contact-section" id="contacto">
+    <div class="container">
+      <div class="section-header">
+        <span class="tag">Contáctanos</span>
+        <h2>Estamos para ayudarte</h2>
+        <p>¿Dudas sobre tu compra o un evento? Escríbenos</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Información de contacto</h3>
+          <p>Nuestro equipo responde en menos de 24 horas hábiles.</p>
+
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <strong>Correo</strong>
+              <span>planetpublicidadmva@gmail.com</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+            <div>
+              <strong>WhatsApp</strong>
+              <span>+52 866 163 3223</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <strong>Oficina</strong>
+              <span>Monclova Coahuila, México</span>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Teléfono (WhatsApp)</label>
-            <input type="tel" id="telefono" placeholder="Ej. 8112345678" required>
+          <div class="social-links">
+            <a href="https://www.facebook.com/profile.php?id=100041638765131" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://wa.me/528661633223" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://tiktok.com" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label>Correo Electrónico</label>
-            <input type="email" id="correo" placeholder="correo@ejemplo.com" required>
+        <form class="contact-form" id="contactForm">
+          <div class="alert alert-success" id="contactSuccess">¡Mensaje enviado! Te responderemos pronto.</div>
+          <div class="alert alert-error" id="contactError">Hubo un error. Intenta de nuevo.</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cNombre">Nombre completo</label>
+              <input type="text" id="cNombre" name="nombre" required placeholder="Tu nombre" />
+            </div>
+            <div class="form-group">
+              <label for="cTelefono">Teléfono / WhatsApp</label>
+              <input type="tel" id="cTelefono" name="telefono" required placeholder="866 1234 567" />
+            </div>
           </div>
-
           <div class="form-group">
-            <label>Cantidad de Boletos</label>
-            <input type="number" id="cantidad" value="1" min="1" max="10" oninput="calcularTotal()" required>
+            <label for="cEmail">Correo electrónico</label>
+            <input type="email" id="cEmail" name="email" required placeholder="correo@ejemplo.com" />
           </div>
-
           <div class="form-group">
-            <label>Método de Pago</label>
-            <select id="metodoPago" onchange="actualizarMetodoPago()">
-              <option value="Transferencia">Transferencia Bancaria (SPEI)</option>
-              <option value="Depósito OXXO">Depósito en OXXO</option>
+            <label for="cAsunto">Asunto</label>
+            <select id="cAsunto" name="asunto" required>
+              <option value="">Selecciona...</option>
+              <option value="Consulta boletos">Consulta sobre boletos</option>
+              <option value="Problema pago">Problema con el pago</option>
+              <option value="Evento">Información de evento</option>
+              <option value="Otro">Otro</option>
             </select>
           </div>
-
-          <!-- TARJETA CON DATOS DE CUENTA BANCARIA -->
-          <div class="bank-details-box" id="boxDatosBancarios">
-            <div class="bank-details-header">
-              <i class="fas fa-university" style="color: var(--accent);"></i>
-              <span id="txtTituloPago">Datos para Transferencia (SPEI)</span>
-            </div>
-            
-            <div class="bank-info-item">
-              <span class="label">Banco:</span>
-              <span class="value" id="txtBanco">BBVA</span>
-            </div>
-            <div class="bank-info-item">
-              <span class="label">Titular:</span>
-              <span class="value">Planet Boletos S.A.</span>
-            </div>
-            <div class="bank-info-item" id="rowClabe">
-              <span class="label">CLABE SPEI:</span>
-              <span class="value">012 180 00123456789 0</span>
-            </div>
-            <div class="bank-info-item" id="rowTarjeta">
-              <span class="label">N° Tarjeta / Cuenta:</span>
-              <span class="value">4152 3138 1234 5678</span>
-            </div>
-            <!-- CONCEPTO / MOTIVO DE PAGO -->
-            <div class="bank-info-item" style="background: var(--highlight); margin-top: 6px; padding: 8px; border-radius: 6px;">
-              <span class="label" style="color: var(--highlight-text); font-weight: 700;">Concepto / Motivo:</span>
-              <span class="value concepto-badge" id="txtConcepto">BOL-TU NOMBRE</span>
-            </div>
-          </div>
-
           <div class="form-group">
-            <label>Folio Banco / Comprobante</label>
-            <input type="text" id="folioBanco" placeholder="Número de autorización/rastreo" required>
+            <label for="cMensaje">Mensaje</label>
+            <textarea id="cMensaje" name="mensaje" required placeholder="Escribe tu mensaje..."></textarea>
           </div>
-
-          <div class="form-group" style="grid-column: span 1 / -1;">
-            <label>Total a Pagar</label>
-            <input type="text" id="total" value="$50.00 MXN" style="font-weight: 800; color: var(--accent); font-size: 1.25rem; background: #f8fafc;" readonly>
-          </div>
-        </div>
-
-        <button type="submit" id="btnComprar" class="btn-submit">🎟️ Confirmar Compra</button>
-      </form>
-    </div>
-  </main>
-
-  <!-- NOSOTROS -->
-  <section id="nosotros" class="section-container">
-    <div class="about-section">
-      <h2 style="font-size: 1.4rem; color: var(--primary);">Sobre Planet Boletos</h2>
-      <p style="margin-top: 10px; font-size: 0.9rem; color: var(--text-dark);">Somos la plataforma digital oficial de venta y control de acceso de boletos para eventos deportivos. Rapidez, seguridad y transparencia para la afición.</p>
-    </div>
-  </section>
-
-  <!-- CONTACTO MÓVIL -->
-  <section id="contacto" class="section-container">
-    <div class="contact-card">
-      <div class="section-title" style="margin-bottom: 15px;">
-        <h2>Solicitar Información</h2>
-        <p>¿Tienes alguna duda sobre tus boletos?</p>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+            <i class="fas fa-paper-plane"></i> Enviar mensaje
+          </button>
+        </form>
       </div>
-      
-      <form onsubmit="alert('¡Gracias! Nos pondremos en contacto contigo.'); this.reset(); return false;">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Tu Nombre</label>
-            <input type="text" required placeholder="Nombre completo">
-          </div>
-          <div class="form-group">
-            <label>Teléfono o Correo</label>
-            <input type="text" required placeholder="Contacto directo">
-          </div>
-          <div class="form-group" style="grid-column: span 1 / -1;">
-            <label>Mensaje</label>
-            <input type="text" required placeholder="¿En qué podemos ayudarte?">
-          </div>
-        </div>
-        <button type="submit" class="btn-submit" style="background: var(--primary);">Enviar Mensaje</button>
-      </form>
     </div>
   </section>
-
-  <!-- BOTÓN FLOTANTE DIRECTO A WHATSAPP -->
-  <a href="https://wa.me/5210000000000" target="_blank" class="whatsapp-float" title="Contactar por WhatsApp">
-    <i class="fab fa-whatsapp"></i>
-  </a>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="logo-container" style="justify-content: center; margin-bottom: 8px;">
-      <img src="planet-boletos.png" alt="Planet Boletos" style="height: 35px;" onerror="this.style.display='none'">
-      <span style="font-size: 1.1rem;">Planet Boletos</span>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="planet-boletos.png" alt="Planet Boletos" />
+        <p>La plataforma confiable para comprar boletos de música, deportes y eventos culturales en México.</p>
+      </div>
+      <div>
+        <h4>Eventos</h4>
+        <ul>
+          <li><a href="#eventos">Música</a></li>
+          <li><a href="#eventos">Deportes</a></li>
+          <li><a href="#eventos">Culturales</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="#">Términos</a></li>
+          <li><a href="#">Privacidad</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Admin</h4>
+        <ul>
+          <li><a href="admin.html">Panel Admin</a></li>
+          <li><a href="validador.html">Validador QR</a></li>
+        </ul>
+      </div>
     </div>
-    <p style="font-size: 0.85rem; color: #cbd5e1;">Tu acceso directo al deporte.</p>
-
-    <div class="social-links">
-      <a href="https://facebook.com" target="_blank" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://instagram.com" target="_blank" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="https://wa.me/5210000000000" target="_blank" class="social-btn" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    <div class="footer-bottom">
+      <span>© 2026 Planet Boletos. Todos los derechos reservados.</span>
+      <span>Pago seguro por transferencia electrónica</span>
     </div>
-
-    <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 15px;">&copy; 2026 Planet Boletos. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- LÓGICA JAVASCRIPT -->
+  <!-- MODAL COMPRA -->
+  <div class="modal-overlay" id="purchaseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <img src="planet-boletos.png" alt="Planet Boletos" />
+        <button class="modal-close" id="closeModal" aria-label="Cerrar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-success" id="purchaseSuccess">¡Solicitud enviada! Recibirás tu folio y QR por correo y WhatsApp una vez autorizado el pago.</div>
+        <div class="alert alert-error" id="purchaseError">Error al procesar. Intenta de nuevo.</div>
+
+        <div class="modal-event-info" id="modalEventInfo">
+          <!-- llenado por JS -->
+        </div>
+
+        <form id="purchaseForm">
+          <input type="hidden" id="pEventId" name="eventId" />
+
+          <div class="qty-selector">
+            <label>Cantidad de boletos (máx. 4):</label>
+            <div class="qty-controls">
+              <button type="button" class="qty-btn" id="qtyMinus">−</button>
+              <span class="qty-value" id="qtyValue">1</span>
+              <button type="button" class="qty-btn" id="qtyPlus">+</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pNombre">Nombre completo *</label>
+              <input type="text" id="pNombre" name="nombre" required placeholder="Nombre y apellidos" minlength="3" autocomplete="name" />
+              <p id="errNombre" class="field-error" style="display:none;"></p>
+            </div>
+            <div class="form-group">
+              <label for="pTelefono">Teléfono / WhatsApp *</label>
+              <input type="tel" id="pTelefono" name="telefono" required placeholder="866 1234 567" inputmode="numeric" autocomplete="tel" />
+              <p id="errTelefono" class="field-error" style="display:none;"></p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="pEmail">Correo electrónico *</label>
+            <input type="email" id="pEmail" name="email" required placeholder="correo@ejemplo.com" autocomplete="email" />
+            <p id="errEmail" class="field-error" style="display:none;"></p>
+          </div>
+
+          <div class="transfer-box">
+            <h5><i class="fas fa-university"></i> Datos para transferencia</h5>
+            <div class="transfer-row">
+              <span>Banco</span>
+              <strong>BBVA México</strong>
+            </div>
+            <div class="transfer-row">
+              <span>Cuenta CLABE</span>
+              <strong>012 180 001234567890</strong>
+            </div>
+            <div class="transfer-row">
+              <span>Beneficiario</span>
+              <strong>Planet Boletos SA de CV</strong>
+            </div>
+            <div class="transfer-row">
+              <span>Concepto</span>
+              <strong id="conceptoPago">BOL-NOMBREAPELLIDO</strong>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Comprobante de pago *</label>
+            <div class="file-upload" id="fileUploadArea">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p>Arrastra o haz clic para subir tu comprobante<br><small>JPG, PNG o PDF (máx. 2.5 MB)</small></p>
+              <input type="file" id="pComprobante" name="comprobante" accept="image/jpeg,image/png,image/webp,application/pdf" />
+              <div class="file-name" id="fileName"></div>
+            </div>
+            <p id="errComprobante" class="field-error" style="display:none;"></p>
+          </div>
+
+          <div class="form-group" style="margin-top:8px;">
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-weight:500;">
+              <input type="checkbox" id="pConfirmaPago" style="margin-top:4px; width:18px; height:18px;" />
+              <span>Confirmo que realicé la transferencia por el <strong>total exacto</strong> usando el concepto indicado y que los datos son correctos.</span>
+            </label>
+            <p id="errConfirma" class="field-error" style="display:none;"></p>
+          </div>
+
+          <div class="total-box" id="totalBoxDetail" style="flex-direction:column; align-items:stretch; gap:8px;">
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--gray-600);">
+              <span>Boletos (<span id="sumQty">1</span> × <span id="sumPrecio">$0</span>)</span>
+              <span id="sumSubtotal">$0.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; color:var(--gray-600);">
+              <span>Comisión (<span id="sumQtyCom">1</span> × <span id="sumComUnit">$0</span>)</span>
+              <span id="sumComision">$0.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08);">
+              <span style="font-weight:600;">Total a pagar</span>
+              <strong id="totalPrice">$0.00</strong>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:12px;">
+            <i class="fas fa-check-circle"></i> Enviar solicitud de compra
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
-    const PRECIO_BOLETO = 50;
-
-    function toggleMenu() {
-      document.getElementById('navMenu').classList.toggle('active');
-    }
-    function closeMenu() {
-      document.getElementById('navMenu').classList.remove('active');
+    // ========== CONFIGURACIÓN GOOGLE SHEETS ==========
+    // Se toma de Admin → Configuración (localStorage). También puedes pegar la URL aquí:
+    function getSheetsUrl() {
+      return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
     }
 
-    function seleccionarEquipo(nombreEquipo, elementoCard) {
-      document.querySelectorAll('.team-card').forEach(card => card.classList.remove('selected'));
-      elementoCard.classList.add('selected');
-
-      document.getElementById('equipo').value = nombreEquipo;
-      document.getElementById('lblEquipoSeleccionado').innerText = nombreEquipo;
-    }
-
-    function calcularTotal() {
-      const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
-      const total = cantidad * PRECIO_BOLETO;
-      document.getElementById('total').value = `$${total.toFixed(2)} MXN`;
-    }
-
-    function actualizarConcepto() {
-      const nombreInput = document.getElementById('cliente').value.trim();
-      const txtConcepto = document.getElementById('txtConcepto');
-      
-      if (nombreInput !== "") {
-        const nombreLimpio = nombreInput.replace(/\s+/g, '').toUpperCase();
-        txtConcepto.innerText = `BOL-${nombreLimpio}`;
-      } else {
-        txtConcepto.innerText = "BOL-TU NOMBRE";
+    /** Envía datos a Google Apps Script (compatible con CORS del navegador) */
+    async function postToSheets(action, data) {
+      const url = getSheetsUrl();
+      if (!url || url.includes('TU_SCRIPT') || url.includes('XXXX')) {
+        console.warn('Google Sheets no configurado. Guarda la URL en Admin → Configuración.');
+        return false;
+      }
+      const payload = JSON.stringify({ action, data });
+      try {
+        // Método 1: fetch text/plain (recomendado para Apps Script)
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: payload
+        });
+        // Método 2: sendBeacon de respaldo
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(url, new Blob([payload], { type: 'text/plain;charset=utf-8' }));
+          }
+        } catch (_) {}
+        return true;
+      } catch (err) {
+        console.error('Error enviando a Sheets:', err);
+        return false;
       }
     }
 
-    function actualizarMetodoPago() {
-      const metodo = document.getElementById('metodoPago').value;
-      const txtTitulo = document.getElementById('txtTituloPago');
-      const rowClabe = document.getElementById('rowClabe');
+    // ========== DATOS INICIALES (se sincronizan con admin / localStorage) ==========
+    const DEFAULT_EVENTS = {
+      musica: [
+        {
+          id: 'm1',
+          tipo: 'musica',
+          titulo: 'Noche de Rock Latino',
+          fecha: '2026-10-15T21:00',
+          ciudad: 'Ciudad de México',
+          imagen: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&h=400&fit=crop',
+          disponibles: 120,
+          precio: 850,
+          comision: 50
+        },
+        {
+          id: 'm2',
+          tipo: 'musica',
+          titulo: 'Festival Indie 2026',
+          fecha: '2026-11-08T18:00',
+          ciudad: 'Guadalajara',
+          imagen: 'https://images.unsplash.com/photo-1459749411175-047f9839f5c4?w=600&h=400&fit=crop',
+          disponibles: 85,
+          precio: 650,
+          comision: 40
+        },
+        {
+          id: 'm3',
+          tipo: 'musica',
+          titulo: 'Salsa & Bachata Night',
+          fecha: '2026-09-28T20:30',
+          ciudad: 'Monterrey',
+          imagen: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=400&fit=crop',
+          disponibles: 200,
+          precio: 450,
+          comision: 30
+        },
+        {
+          id: 'm4',
+          tipo: 'musica',
+          titulo: 'Concierto Sinfónico',
+          fecha: '2026-12-05T19:00',
+          ciudad: 'Puebla',
+          imagen: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&h=400&fit=crop',
+          disponibles: 60,
+          precio: 1200,
+          comision: 70
+        }
+      ],
+      deportes: [
+        {
+          id: 'd1',
+          tipo: 'deportes',
+          equipo: 'Barreteros',
+          equipoLocal: 'Barreteros',
+          equipoVisitante: 'Por definir',
+          fecha: '2026-09-20T19:00',
+          ciudad: 'Barroterán, Coahuila',
+          imagen: 'logob.jpg',
+          disponibles: 150,
+          precio: 180,
+          comision: 20,
+          logo: 'logob.jpg'
+        },
+        {
+          id: 'd2',
+          tipo: 'deportes',
+          equipo: 'Halcones CEUC',
+          equipoLocal: 'Halcones CEUC',
+          equipoVisitante: 'Por definir',
+          fecha: '2026-09-22T18:30',
+          ciudad: 'Ciudad del Norte',
+          imagen: 'logoh.jpg',
+          disponibles: 200,
+          precio: 150,
+          comision: 15,
+          logo: 'logoh.jpg'
+        },
+        {
+          id: 'd3',
+          tipo: 'deportes',
+          equipo: 'Indios',
+          equipoLocal: 'Indios',
+          equipoVisitante: 'Por definir',
+          fecha: '2026-09-25T19:00',
+          ciudad: 'Chihuahua',
+          imagen: 'logom.jpg',
+          disponibles: 180,
+          precio: 160,
+          comision: 18,
+          logo: 'logom.jpg'
+        },
+        {
+          id: 'd4',
+          tipo: 'deportes',
+          equipo: 'Agricultores',
+          equipoLocal: 'Agricultores',
+          equipoVisitante: 'Por definir',
+          fecha: '2026-09-27T18:00',
+          ciudad: 'Los Mochis',
+          imagen: 'logoa.jpg',
+          disponibles: 170,
+          precio: 140,
+          comision: 15,
+          logo: 'logoa.jpg'
+        }
+      ],
+      culturales: []
+    };
 
-      if (metodo === "Transferencia") {
-        txtTitulo.innerText = "Datos para Transferencia (SPEI)";
-        rowClabe.style.display = "flex";
-      } else {
-        txtTitulo.innerText = "Datos para Depósito en Ventanilla / OXXO";
-        rowClabe.style.display = "none";
+    // ========== STATE ==========
+    let events = loadEvents();
+    let currentTab = 'all';
+    let selectedEvent = null;
+    let qty = 1;
+
+    function loadEvents() {
+      const defaults = JSON.parse(JSON.stringify(DEFAULT_EVENTS));
+      const saved = localStorage.getItem('planetBoletos_events');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          // Asegura que cada evento tenga comisión numérica
+          ['musica', 'deportes'].forEach(tipo => {
+            if (!Array.isArray(data[tipo])) data[tipo] = defaults[tipo] || [];
+            data[tipo] = data[tipo].map(ev => ({
+              ...ev,
+              precio: Number(ev.precio) || 0,
+              comision: Number(ev.comision) || 0,
+              disponibles: Number(ev.disponibles) || 0
+            }));
+          });
+          return data;
+        } catch (e) {}
       }
+      localStorage.setItem('planetBoletos_events', JSON.stringify(defaults));
+      return defaults;
     }
 
-    async function realizarCompra(e) {
+    /** Precio unitario con comisión incluida */
+    function precioConComision(ev) {
+      return (Number(ev.precio) || 0) + (Number(ev.comision) || 0);
+    }
+
+    function saveEvents() {
+      localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+    }
+
+    // ========== RENDER CARDS ==========
+    function formatDate(iso) {
+      if (!iso) return 'Por confirmar';
+      const d = new Date(iso);
+      return d.toLocaleDateString('es-MX', {
+        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    function formatMoney(n) {
+      return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n);
+    }
+
+    function getAllEvents() {
+      return [
+        ...events.musica,
+        ...events.deportes,
+        ...(events.culturales || [])
+      ];
+    }
+
+    function renderEvents() {
+      const grid = document.getElementById('eventsGrid');
+      let list = getAllEvents();
+
+      if (currentTab !== 'all') {
+        list = list.filter(e => e.tipo === currentTab);
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--gray-600);">
+            <i class="fas fa-calendar-times" style="font-size:3rem; margin-bottom:16px; opacity:0.4;"></i>
+            <p>No hay eventos en esta categoría por el momento.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(ev => {
+        const stockClass = ev.disponibles <= 0 ? 'out' : (ev.disponibles <= 20 ? 'low' : '');
+        const stockText = ev.disponibles <= 0 ? 'Agotado' : `${ev.disponibles} disponibles`;
+        const isTeam = ev.tipo === 'deportes';
+        const title = isTeam
+          ? `${ev.equipoLocal} vs ${ev.equipoVisitante}`
+          : ev.titulo;
+        const badgeClass = ev.tipo === 'musica' ? 'music' : (ev.tipo === 'deportes' ? 'sports' : 'cultural');
+        const badgeLabel = ev.tipo === 'musica' ? 'Música' : (ev.tipo === 'deportes' ? 'Béisbol' : 'Cultural');
+
+        return `
+          <article class="event-card" data-id="${ev.id}">
+            <div class="event-card-image ${isTeam ? 'team-logo' : ''}">
+              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy"
+                   onerror="this.src='planet-boletos.png'" />
+              <span class="event-badge ${badgeClass}">${badgeLabel}</span>
+            </div>
+            <div class="event-card-body">
+              <h3>${title}</h3>
+              <div class="event-meta">
+                <span><i class="fas fa-calendar"></i> ${formatDate(ev.fecha)}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${ev.ciudad || 'Por confirmar'}</span>
+                ${isTeam ? `<span><i class="fas fa-baseball-ball"></i> ${ev.equipo}</span>` : ''}
+              </div>
+              <div class="event-stock">
+                <span class="stock-label">Boletos en línea</span>
+                <span class="stock-value ${stockClass}">${stockText}</span>
+              </div>
+              <div class="event-price">${formatMoney(precioConComision(ev))} <small>/ boleto</small></div>
+              ${(Number(ev.comision)||0) > 0 ? `<div style="font-size:0.75rem;color:var(--gray-600);margin-top:2px;">Incluye comisión ${formatMoney(ev.comision)}</div>` : ''}
+              <button class="btn btn-buy" ${ev.disponibles <= 0 ? 'disabled' : ''}
+                      onclick="openPurchase('${ev.id}')">
+                <i class="fas fa-ticket-alt"></i>
+                ${ev.disponibles <= 0 ? 'Agotado' : 'Comprar boletos'}
+              </button>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    // ========== TABS ==========
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = btn.dataset.tab;
+        renderEvents();
+      });
+    });
+
+    // ========== PURCHASE MODAL ==========
+    function openPurchase(eventId) {
+      selectedEvent = getAllEvents().find(e => e.id === eventId);
+      if (!selectedEvent || selectedEvent.disponibles <= 0) return;
+
+      qty = 1;
+      document.getElementById('qtyValue').textContent = '1';
+      document.getElementById('pEventId').value = eventId;
+      document.getElementById('purchaseSuccess').style.display = 'none';
+      document.getElementById('purchaseError').style.display = 'none';
+      document.getElementById('purchaseForm').style.display = 'block';
+      document.getElementById('fileName').textContent = '';
+      document.getElementById('pComprobante').value = '';
+      const conf = document.getElementById('pConfirmaPago'); if (conf) conf.checked = false;
+      clearPaymentErrors();
+
+      const isTeam = selectedEvent.tipo === 'deportes';
+      const title = isTeam
+        ? `${selectedEvent.equipoLocal} vs ${selectedEvent.equipoVisitante}`
+        : selectedEvent.titulo;
+
+      document.getElementById('modalEventInfo').innerHTML = `
+        <img src="${selectedEvent.imagen || selectedEvent.logo}" alt="${title}" />
+        <div>
+          <h4>${title}</h4>
+          <p>${formatDate(selectedEvent.fecha)} · ${selectedEvent.ciudad}</p>
+          <p style="font-weight:700; color:var(--navy); margin-top:4px;">${formatMoney(selectedEvent.precio)} + ${formatMoney(selectedEvent.comision || 0)} comisión = ${formatMoney(precioConComision(selectedEvent))} c/u</p>
+        </div>`;
+
+      updateTotal();
+      updateConcepto();
+      document.getElementById('purchaseModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePurchase() {
+      document.getElementById('purchaseModal').classList.remove('active');
+      document.body.style.overflow = '';
+      selectedEvent = null;
+    }
+
+    document.getElementById('closeModal').addEventListener('click', closePurchase);
+    document.getElementById('purchaseModal').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closePurchase();
+    });
+
+    document.getElementById('qtyMinus').addEventListener('click', () => {
+      if (qty > 1) { qty--; document.getElementById('qtyValue').textContent = qty; updateTotal(); }
+    });
+    document.getElementById('qtyPlus').addEventListener('click', () => {
+      const max = Math.min(4, selectedEvent?.disponibles || 4);
+      if (qty < max) { qty++; document.getElementById('qtyValue').textContent = qty; updateTotal(); }
+    });
+
+    function updateTotal() {
+      if (!selectedEvent) return;
+      const precio = Number(selectedEvent.precio) || 0;
+      const comUnit = Number(selectedEvent.comision) || 0;
+      const subtotal = precio * qty;
+      const comisionTotal = comUnit * qty;
+      // TOTAL CON COMISIÓN INCLUIDA
+      const total = subtotal + comisionTotal;
+
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set('sumQty', String(qty));
+      set('sumQtyCom', String(qty));
+      set('sumPrecio', formatMoney(precio));
+      set('sumComUnit', formatMoney(comUnit));
+      set('sumSubtotal', formatMoney(subtotal));
+      set('sumComision', formatMoney(comisionTotal));
+      set('totalPrice', formatMoney(total));
+    }
+
+    function updateConcepto() {
+      const nombre = document.getElementById('pNombre').value.trim().toUpperCase().replace(/\s+/g, '') || 'NOMBREAPELLIDO';
+      document.getElementById('conceptoPago').textContent = `BOL-${nombre.substring(0, 20)}`;
+    }
+
+    document.getElementById('pNombre').addEventListener('input', updateConcepto);
+
+    // File upload
+    const fileArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('pComprobante');
+    fileArea.addEventListener('click', () => fileInput.click());
+    fileArea.addEventListener('dragover', e => { e.preventDefault(); fileArea.classList.add('dragover'); });
+    fileArea.addEventListener('dragleave', () => fileArea.classList.remove('dragover'));
+    fileArea.addEventListener('drop', e => {
       e.preventDefault();
+      fileArea.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        showFileName();
+      }
+    });
+    fileInput.addEventListener('change', showFileName);
 
-      const btn = document.getElementById("btnComprar");
-      btn.disabled = true;
-      btn.innerText = "Procesando...";
+    function showFileName() {
+      const f = fileInput.files[0];
+      document.getElementById('fileName').textContent = f ? `✓ ${f.name}` : '';
+    }
 
-      const totalCalculado = (parseInt(document.getElementById("cantidad").value) || 1) * PRECIO_BOLETO;
+    // Submit purchase
+    function clearPaymentErrors() {
+      ['errNombre','errTelefono','errEmail','errComprobante','errConfirma'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.style.display = 'none'; el.textContent = ''; }
+      });
+      ['pNombre','pTelefono','pEmail'].forEach(id => {
+        document.getElementById(id)?.classList.remove('invalid');
+      });
+      document.getElementById('fileUploadArea')?.classList.remove('invalid');
+    }
 
-      const payload = {
-        action: "registrarCompra",
-        equipo: document.getElementById("equipo").value,
-        cliente: document.getElementById("cliente").value,
-        telefono: document.getElementById("telefono").value,
-        correo: document.getElementById("correo").value,
-        cantidad: document.getElementById("cantidad").value,
-        metodoPago: document.getElementById("metodoPago").value,
-        folioBanco: document.getElementById("folioBanco").value,
-        total: totalCalculado
+    function showErr(id, msg, inputId) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = msg; el.style.display = 'block'; }
+      if (inputId) document.getElementById(inputId)?.classList.add('invalid');
+    }
+
+    /** Valida datos de pago del cliente antes de registrar la compra */
+    function validarDatosPago() {
+      clearPaymentErrors();
+      let ok = true;
+      const nombre = document.getElementById('pNombre').value.trim();
+      const telefono = document.getElementById('pTelefono').value.trim();
+      const email = document.getElementById('pEmail').value.trim();
+      const file = document.getElementById('pComprobante').files[0];
+      const confirma = document.getElementById('pConfirmaPago')?.checked;
+
+      // Nombre
+      if (nombre.length < 3) {
+        showErr('errNombre', 'Ingresa tu nombre completo (mín. 3 caracteres).', 'pNombre');
+        ok = false;
+      } else if (nombre.split(/\s+/).filter(Boolean).length < 2) {
+        showErr('errNombre', 'Escribe nombre y apellido.', 'pNombre');
+        ok = false;
+      }
+
+      // Teléfono MX: 10 dígitos (permite espacios/guiones)
+      const digitos = telefono.replace(/\D/g, '');
+      if (digitos.length !== 10 && digitos.length !== 12 && digitos.length !== 13) {
+        showErr('errTelefono', 'Teléfono inválido. Usa 10 dígitos (ej. 5512345678).', 'pTelefono');
+        ok = false;
+      }
+
+      // Email
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email);
+      if (!emailOk) {
+        showErr('errEmail', 'Correo electrónico no válido.', 'pEmail');
+        ok = false;
+      }
+
+      // Cantidad
+      if (!qty || qty < 1 || qty > 4) {
+        alert('La cantidad de boletos debe ser entre 1 y 4.');
+        ok = false;
+      }
+      if (selectedEvent && qty > selectedEvent.disponibles) {
+        alert('No hay suficientes boletos disponibles (' + selectedEvent.disponibles + ').');
+        ok = false;
+      }
+
+      // Total / precio
+      const precio = Number(selectedEvent?.precio) || 0;
+      const comision = Number(selectedEvent?.comision) || 0;
+      const total = (precio + comision) * qty;
+      if (total <= 0) {
+        alert('El total a pagar no es válido. Revisa precio y comisión del evento.');
+        ok = false;
+      }
+
+      // Comprobante
+      if (!file) {
+        showErr('errComprobante', 'Adjunta el comprobante de transferencia (imagen o PDF).');
+        document.getElementById('fileUploadArea')?.classList.add('invalid');
+        ok = false;
+      } else {
+        const allowed = ['image/jpeg','image/png','image/webp','image/jpg','application/pdf'];
+        const typeOk = allowed.includes(file.type) || /\.(jpe?g|png|webp|pdf)$/i.test(file.name);
+        if (!typeOk) {
+          showErr('errComprobante', 'Formato no permitido. Solo JPG, PNG, WEBP o PDF.');
+          ok = false;
+        }
+        if (file.size > 2.5 * 1024 * 1024) {
+          showErr('errComprobante', 'El archivo supera 2.5 MB. Reduce el tamaño e inténtalo de nuevo.');
+          ok = false;
+        }
+      }
+
+      // Confirmación de transferencia
+      if (!confirma) {
+        showErr('errConfirma', 'Marca la casilla confirmando que realizaste la transferencia.');
+        ok = false;
+      }
+
+      // Concepto de pago
+      const concepto = document.getElementById('conceptoPago')?.textContent || '';
+      if (!concepto.startsWith('BOL-') || concepto.length < 6) {
+        alert('El concepto de pago no es válido. Escribe tu nombre para generarlo.');
+        ok = false;
+      }
+
+      if (!ok) {
+        const firstErr = document.querySelector('.field-error[style*="block"]');
+        firstErr?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return ok;
+    }
+
+    document.getElementById('purchaseForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!selectedEvent) return;
+
+      if (!validarDatosPago()) return;
+
+      const nombre = document.getElementById('pNombre').value.trim();
+      const telefono = document.getElementById('pTelefono').value.trim().replace(/\D/g, '');
+      const email = document.getElementById('pEmail').value.trim().toLowerCase();
+      const concepto = document.getElementById('conceptoPago').textContent;
+
+      // Generar folio temporal
+      const folio = 'PB-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+      const order = {
+        folio,
+        eventId: selectedEvent.id,
+        evento: selectedEvent.tipo === 'deportes'
+          ? `${selectedEvent.equipoLocal} vs ${selectedEvent.equipoVisitante}`
+          : selectedEvent.titulo,
+        tipo: selectedEvent.tipo,
+        cantidad: qty,
+        precioUnitario: selectedEvent.precio,
+        comisionUnitaria: Number(selectedEvent.comision) || 0,
+        comision: (Number(selectedEvent.comision) || 0) * qty,
+        subtotal: (Number(selectedEvent.precio) || 0) * qty,
+        // Total a pagar = (precio + comisión) × cantidad
+        total: ((Number(selectedEvent.precio) || 0) + (Number(selectedEvent.comision) || 0)) * qty,
+        nombre,
+        telefono,
+        email,
+        concepto,
+        estado: 'en_proceso', // en_proceso | autorizado | rechazado | entregado | usado
+        fechaCompra: new Date().toISOString(),
+        comprobante: fileInput.files[0]?.name || '',
+        comprobanteNombre: fileInput.files[0]?.name || '',
+        comprobanteTipo: fileInput.files[0]?.type || '',
+        comprobanteData: null
       };
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (data.status === "OK") {
-          alert(`🎉 ¡Compra Exitosa!\n\nTu Folio es: ${data.folio}\n\nGuarda tu folio para la validación de tu boleto.`);
-          document.getElementById("formCompra").reset();
-          seleccionarEquipo('Barreteros', document.querySelectorAll('.team-card')[0]);
-          calcularTotal();
-          actualizarMetodoPago();
-          actualizarConcepto();
-        } else {
-          alert("⚠️ " + data.message);
+      // Leer comprobante como DataURL para verlo en Admin
+      const file = fileInput.files[0];
+      if (file) {
+        if (file.size > 2.5 * 1024 * 1024) {
+          alert('El comprobante supera 2.5 MB. Usa una imagen más liviana o un PDF más pequeño.');
+          return;
         }
-      } catch (err) {
-        console.error(err);
-        alert("❌ Error de comunicación: Revisa tu conexión a internet.");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "🎟️ Confirmar Compra";
+        order.comprobanteData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
       }
-    }
+
+      // Guardar localmente
+      const orders = JSON.parse(localStorage.getItem('planetBoletos_orders') || '[]');
+      orders.push(order);
+      localStorage.setItem('planetBoletos_orders', JSON.stringify(orders));
+
+      // Reducir stock
+      selectedEvent.disponibles -= qty;
+      saveEvents();
+      renderEvents();
+
+      // Preferencias de plantilla de correo (configuradas en Admin)
+      try {
+        const raw = localStorage.getItem('planetBoletos_emailConfig');
+        if (raw) {
+          const c = JSON.parse(raw);
+          order.fromName = c.fromName || 'Planet Boletos';
+          order.contact = c.contact || '';
+          order.subject = (c.subjRecibida || 'Planet Boletos – Recibimos tu solicitud · {FOLIO}').replace(/\{FOLIO\}/g, order.folio);
+          order.message = c.msgRecibida || '';
+          order.skipEmail = c.sendRecibida === false;
+          order.whatsapp = {
+            enabled: !!c.waEnabled,
+            provider: c.waProvider || 'none',
+            apiKey: c.waApiKey || '',
+            webhookUrl: c.waWebhookUrl || ''
+          };
+        }
+      } catch (e) {}
+
+      // Enviar a Google Sheets
+      const sent = await postToSheets('nuevaVenta', order);
+      const sheetsOk = !!getSheetsUrl() && !getSheetsUrl().includes('XXXX');
+
+      // UI success
+      document.getElementById('purchaseForm').style.display = 'none';
+      document.getElementById('purchaseSuccess').style.display = 'block';
+      document.getElementById('purchaseSuccess').innerHTML = `
+        ¡Solicitud enviada correctamente!<br><br>
+        <strong>Folio:</strong> ${folio}<br>
+        Recibirás tu código QR por correo una vez que se autorice el pago.
+        <br><small style="opacity:0.85">${sheetsOk
+          ? '✓ Enviado a Google Sheets (revisa la hoja Ventas en unos segundos).'
+          : '⚠ Google Sheets no está configurado. La compra quedó en el Admin local. Ve a Admin → Configuración.'}</small>
+      `;
+
+      // En producción: aquí se enviaría correo + WhatsApp con QR
+    });
+
+    // ========== CONTACT FORM ==========
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = {
+        nombre: document.getElementById('cNombre').value,
+        telefono: document.getElementById('cTelefono').value,
+        email: document.getElementById('cEmail').value,
+        asunto: document.getElementById('cAsunto').value,
+        mensaje: document.getElementById('cMensaje').value,
+        fecha: new Date().toISOString()
+      };
+
+      // Guardar local
+      const contacts = JSON.parse(localStorage.getItem('planetBoletos_contacts') || '[]');
+      contacts.push(data);
+      localStorage.setItem('planetBoletos_contacts', JSON.stringify(contacts));
+
+      await postToSheets('contacto', data);
+
+      document.getElementById('contactSuccess').style.display = 'block';
+      document.getElementById('contactForm').reset();
+      setTimeout(() => {
+        document.getElementById('contactSuccess').style.display = 'none';
+      }, 5000);
+    });
+
+    // ========== NAV ==========
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('open');
+      });
+    });
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Sync from admin (storage event)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'planetBoletos_events') {
+        events = loadEvents();
+        renderEvents();
+      }
+    });
+
+    // Init
+    renderEvents();
+
+    // Expose for onclick
+    window.openPurchase = openPurchase;
   </script>
 </body>
 </html>

@@ -1,725 +1,2028 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Planet Boletos</title>
-  
-  <!-- FontAwesome icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | Planet Boletos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --bg-light: #f8fafc;
-      --text-dark: #1e293b;
-      --text-muted: #64748b;
-      --success: #16a34a;
-      --warning: #d97706;
-      --danger: #dc2626;
-      --team-barreteros: #d97706;
-      --team-halcones: #2563eb;
-      --team-indios: #dc2626;
-      --team-agricultores: #16a34a;
+      --navy: #0B1E3D;
+      --navy-dark: #071428;
+      --red: #C41E3A;
+      --red-dark: #9B1830;
+      --silver: #A8B0BC;
+      --white: #FFFFFF;
+      --gray-100: #F5F7FA;
+      --gray-200: #E2E8F0;
+      --gray-600: #4A5568;
+      --gray-800: #1A202C;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(11, 30, 61, 0.08);
+      --transition: all 0.25s ease;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-light); color: var(--text-dark); min-height: 100vh; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* NAVBAR HEADER */
-    .header-navbar {
-      background: var(--primary);
-      padding: 15px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+
+    /* Layout */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: var(--navy-dark);
       color: white;
-      flex-wrap: wrap;
-      gap: 15px;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    .logo-container {
+    .sidebar-brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      padding: 0 24px 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
     }
 
-    .logo-container img {
-      height: 40px;
-      width: auto;
-      object-fit: contain;
+    .sidebar-brand img { height: 40px; }
+
+    .sidebar-brand span {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
     }
 
-    .logo-container span {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
+    .sidebar-brand span b { color: var(--red); }
 
-    .header-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    /* HEADER BUTTONS */
-    .btn-header {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
+    .nav-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      padding: 12px 24px;
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .btn-header:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-    }
-
-    .btn-header-primary {
-      background: var(--accent);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      cursor: pointer;
       border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
     }
 
-    .btn-header-primary:hover {
-      background: var(--accent-hover);
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255,255,255,0.08);
+      color: white;
     }
 
-    /* MAIN CONTAINER */
-    .main-container {
-      max-width: 1400px;
-      margin: 30px auto;
-      padding: 0 20px;
+    .nav-item.active { border-left: 3px solid var(--red); }
+
+    .nav-item i { width: 20px; text-align: center; }
+
+    .main {
+      padding: 28px 32px;
+      overflow-x: hidden;
     }
 
-    .dashboard-header {
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 16px;
     }
 
-    .dashboard-title h2 {
-      font-size: 1.5rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .topbar h1 {
+      font-size: 1.7rem;
+      color: var(--navy);
+      font-weight: 800;
     }
 
-    .dashboard-title p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 2px;
-    }
+    .topbar-actions { display: flex; gap: 12px; align-items: center; }
 
-    .section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--primary);
-      margin: 25px 0 12px 0;
-      display: flex;
+    .btn {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-    }
-
-    /* SEARCH BOX */
-    .search-box {
-      position: relative;
-      min-width: 280px;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 10px 15px 10px 38px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
       font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
     }
 
-    .search-box input:focus {
-      border-color: var(--accent);
-    }
+    .btn-primary { background: var(--red); color: white; }
+    .btn-primary:hover { background: var(--red-dark); }
 
-    .search-box i {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
+    .btn-navy { background: var(--navy); color: white; }
+    .btn-navy:hover { background: var(--navy-dark); }
 
-    /* STATS SUMMARY CARDS */
+    .btn-outline {
+      background: white;
+      border: 2px solid var(--gray-200);
+      color: var(--navy);
+    }
+    .btn-outline:hover { border-color: var(--navy); }
+
+    .btn-sm { padding: 7px 12px; font-size: 0.82rem; }
+
+    .btn-success { background: var(--success); color: white; }
+    .btn-warning { background: var(--warning); color: white; }
+    .btn-danger { background: var(--red); color: white; }
+
+    /* Stats */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
     }
 
     .stat-card {
       background: white;
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border-left: 4px solid var(--accent);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
     }
 
-    .stat-card.approved { border-left-color: var(--success); }
-    .stat-card.pending { border-left-color: var(--warning); }
-    .stat-card.rejected { border-left-color: var(--danger); }
-    .stat-card.revenue { border-left-color: #0d9488; background: #f0fdfa; }
-
-    .stat-info div {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
+    .stat-card .label {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      margin-bottom: 6px;
     }
 
-    .stat-info span {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--text-dark);
-    }
-
-    .stat-icon {
+    .stat-card .value {
       font-size: 1.8rem;
-      opacity: 0.25;
+      font-weight: 800;
+      color: var(--navy);
+      font-family: 'Outfit', sans-serif;
     }
 
-    /* TEAM CARDS GRID */
-    .teams-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
-    }
-
-    .team-card {
-      background: white;
-      padding: 16px 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border-top: 4px solid var(--accent);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .team-card.barreteros { border-top-color: var(--team-barreteros); }
-    .team-card.halcones { border-top-color: var(--team-halcones); }
-    .team-card.indios { border-top-color: var(--team-indios); }
-    .team-card.agricultores { border-top-color: var(--team-agricultores); }
-
-    .team-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #f1f5f9;
-      padding-bottom: 8px;
-    }
-
-    .team-card-header h3 {
-      font-size: 1.05rem;
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .team-card-metrics {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .stat-card .sub {
+      font-size: 0.8rem;
+      color: var(--gray-600);
       margin-top: 4px;
     }
 
-    .team-metric-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .team-metric-item label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .team-metric-item val {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text-dark);
-    }
-
-    .team-metric-item.money val {
-      color: #0d9488;
-    }
-
-    /* TABLE */
-    .table-container {
+    /* Cards & panels */
+    .panel {
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      overflow-x: auto;
-      border: 1px solid #e2e8f0;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 28px;
+      overflow: hidden;
     }
+
+    .panel-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.15rem;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .panel-body { padding: 24px; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 950px;
-      font-size: 0.88rem;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
     }
 
     th {
-      background: #f1f5f9;
-      color: var(--primary);
-      font-weight: 700;
+      text-align: left;
+      padding: 12px 14px;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      font-weight: 600;
+      font-size: 0.8rem;
       text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: rgba(11, 30, 61, 0.02); }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 50px;
       font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-proceso { background: #FEF3C7; color: #92400E; }
+    .badge-autorizado { background: #D1FAE5; color: #065F46; }
+    .badge-rechazado { background: #FEE2E2; color: #991B1B; }
+    .badge-entregado { background: #DBEAFE; color: #1E40AF; }
+    .badge-usado { background: #E5E7EB; color: #374151; }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(11, 30, 61, 0.1);
+    }
+
+    .event-edit-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      background: var(--gray-100);
+    }
+
+    .event-edit-card h3 {
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .event-edit-card h3 img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 6px;
+      background: white;
+      padding: 3px;
+    }
+
+    .section-view { display: none; }
+    .section-view.active { display: block; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray-600);
+    }
+
+    .empty-state i { font-size: 2.5rem; opacity: 0.3; margin-bottom: 12px; }
+
+    /* Login */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+      padding: 20px;
+    }
+
+    .login-box {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .login-box img {
+      height: 48px;
+      display: block;
+      margin: 0 auto 20px;
+    }
+
+    .login-box h1 {
+      text-align: center;
+      font-size: 1.4rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      text-align: center;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+
+    .login-error {
+      background: #FEE2E2;
+      color: #991B1B;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        z-index: 100;
+        transition: left 0.3s ease;
+        width: 260px;
+      }
+      .sidebar.open { left: 0; }
+      .mobile-menu-btn { display: inline-flex !important; }
+    }
+
+    .mobile-menu-btn { display: none; }
+
+    /* Modal QR / Email */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(7, 20, 40, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.35);
+      padding: 28px;
+      text-align: center;
+    }
+    .modal-box h2 {
+      font-size: 1.35rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .modal-box .sub {
+      color: var(--gray-600);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    #qrPreview {
+      display: inline-block;
+      padding: 16px;
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      margin: 12px auto;
+    }
+    #qrPreview img, #qrPreview canvas {
+      display: block;
+      margin: 0 auto;
+    }
+    .folio-big {
+      font-family: monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--navy);
+      background: var(--gray-100);
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin: 12px 0;
       letter-spacing: 0.5px;
     }
-
-    tr:hover {
-      background-color: #f8fafc;
-    }
-
-    /* BADGES */
-    .badge {
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: inline-block;
-      text-align: center;
-    }
-
-    .badge-Aprobado { background: #dcfce7; color: var(--success); }
-    .badge-Pendiente { background: #fef3c7; color: var(--warning); }
-    .badge-Rechazado { background: #fee2e2; color: var(--danger); }
-
-    /* ACTION BUTTONS */
-    .action-btn-group {
+    .modal-actions {
       display: flex;
-      gap: 6px;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 20px;
     }
-
-    .btn-action {
-      border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      color: white;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: opacity 0.2s;
+    .email-status {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: none;
     }
-
-    .btn-action:hover { opacity: 0.85; }
-    .btn-app { background: var(--success); }
-    .btn-rej { background: var(--danger); }
-
-    /* LOADING SPINNER */
-    .loading-spinner {
-      text-align: center;
-      padding: 30px;
-      color: var(--text-muted);
-      font-size: 1rem;
-    }
-
-    .loading-spinner i {
-      margin-right: 8px;
-    }
-
-    @media (max-width: 768px) {
-      .header-navbar { flex-direction: column; align-items: flex-start; }
-      .header-actions { width: 100%; justify-content: space-between; }
-      .btn-header { flex: 1; justify-content: center; }
-    }
+    .email-status.ok { display: block; background: #D1FAE5; color: #065F46; }
+    .email-status.err { display: block; background: #FEE2E2; color: #991B1B; }
+    .email-status.info { display: block; background: #DBEAFE; color: #1E40AF; }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR WITH LOGO AND ACTIONS -->
-  <header class="header-navbar">
-    <div class="logo-container">
-      <img src="planet-boletos.png" alt="Planet Boletos" onerror="this.src='https://via.placeholder.com/150x45?text=Planet+Boletos'">
-      <span>Planet Boletos</span>
+  <!-- LOGIN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <img src="planet-boletos.png" alt="Planet Boletos" />
+      <h1>Panel de Administración</h1>
+      <p>Ingresa tus credenciales para continuar</p>
+      <div class="login-error" id="loginError">Usuario o contraseña incorrectos</div>
+      <form id="loginForm">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Usuario</label>
+          <input type="text" id="loginUser" required placeholder="admin" autocomplete="username" />
+        </div>
+        <div class="form-group" style="margin-bottom:20px;">
+          <label>Contraseña</label>
+          <input type="password" id="loginPass" required placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+          <i class="fas fa-sign-in-alt"></i> Entrar
+        </button>
+      </form>
+      <p style="margin-top:16px; font-size:0.8rem; color:#999; text-align:center;">
+        Demo: usuario <strong>admin</strong> / contraseña <strong>planet2026</strong>
+      </p>
     </div>
+  </div>
 
-    <div class="header-actions">
-      <!-- Refresh Button -->
-      <button class="btn-header" onclick="cargarVentas()" id="btnReload">
-        <i class="fas fa-sync-alt" id="iconReload"></i>
-        <span>Actualizar</span>
+  <!-- ADMIN -->
+  <div class="admin-layout" id="adminApp" style="display:none;">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <img src="planet-boletos.png" alt="" />
+        <span>Planet <b>Boletos</b></span>
+      </div>
+      <button class="nav-item active" data-section="dashboard">
+        <i class="fas fa-chart-line"></i> Dashboard
       </button>
+      <button class="nav-item" data-section="musica">
+        <i class="fas fa-music"></i> Eventos Música
+      </button>
+      <button class="nav-item" data-section="deportes">
+        <i class="fas fa-baseball-ball"></i> Eventos Deportes
+      </button>
+      <button class="nav-item" data-section="ventas">
+        <i class="fas fa-receipt"></i> Ventas / Órdenes
+      </button>
+      <button class="nav-item" data-section="contactos">
+        <i class="fas fa-envelope"></i> Contactos
+      </button>
+      <button class="nav-item" data-section="config">
+        <i class="fas fa-cog"></i> Configuración
+      </button>
+      <div style="margin-top:30px; padding:0 24px;">
+        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:white; border-color:rgba(255,255,255,0.3);">
+          <i class="fas fa-external-link-alt"></i> Ver sitio
+        </a>
+      </div>
+      <button class="nav-item" style="margin-top:12px;" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </aside>
 
-      <!-- Link to Validator -->
-      <a href="validador.html" class="btn-header btn-header-primary">
-        <i class="fas fa-qrcode"></i>
-        <span>Ir a Validador</span>
-      </a>
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="btn btn-outline mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <a href="validador.html" class="btn btn-navy btn-sm">
+            <i class="fas fa-qrcode"></i> Validador QR
+          </a>
+          <button type="button" class="btn btn-primary btn-sm" onclick="testEmailSend()" title="Probar envío de correo">
+            <i class="fas fa-envelope"></i> Probar correo
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="exportData()">
+            <i class="fas fa-download"></i> Exportar
+          </button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="section-view active" id="sec-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Ventas recientes</h2>
+          </div>
+          <div class="panel-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Evento</th>
+                  <th>Cliente</th>
+                  <th>Cant.</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÚSICA -->
+      <div class="section-view" id="sec-musica">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Eventos de Música</h2>
+            <button class="btn btn-primary btn-sm" onclick="addMusicEvent()">
+              <i class="fas fa-plus"></i> Nuevo evento
+            </button>
+          </div>
+          <div class="panel-body" id="musicaList"></div>
+        </div>
+      </div>
+
+      <!-- DEPORTES -->
+      <div class="section-view" id="sec-deportes">
+        <div class="panel">
+          <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <h2 style="margin:0;">Equipos de Béisbol – Boletos</h2>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addSportEvent()" style="white-space:nowrap;">
+              <i class="fas fa-plus"></i> Nuevo evento deportivo
+            </button>
+          </div>
+          <div class="panel-body" id="deportesList"></div>
+        </div>
+      </div>
+
+      <!-- VENTAS -->
+      <div class="section-view" id="sec-ventas">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Todas las órdenes</h2>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <select id="filterEstado" style="padding:8px 12px; border-radius:8px; border:2px solid var(--gray-200);">
+                <option value="">Todos los estados</option>
+                <option value="en_proceso">En proceso</option>
+                <option value="autorizado">Autorizado</option>
+                <option value="rechazado">Rechazado</option>
+                <option value="entregado">Entregado</option>
+                <option value="usado">Usado</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="syncPendingToSheets()" title="Reenviar estados a Google Sheets">
+                <i class="fas fa-cloud-upload-alt"></i> Sincronizar Sheets
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="clearAllOrders()">
+                <i class="fas fa-trash"></i> Vaciar tabla local
+              </button>
+            </div>
+          </div>
+          <div class="panel-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Evento</th>
+                  <th>Cliente</th>
+                  <th>Tel / Email</th>
+                  <th>Cant.</th>
+                  <th>Total</th>
+                  <th>Comprobante</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACTOS -->
+      <div class="section-view" id="sec-contactos">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Mensajes de contacto</h2>
+            <button type="button" class="btn btn-danger btn-sm" onclick="clearAllContacts()" title="Eliminar todos los mensajes">
+              <i class="fas fa-trash"></i> Vaciar mensajes
+            </button>
+          </div>
+          <div class="panel-body table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Nombre</th>
+                  <th>Teléfono</th>
+                  <th>Email</th>
+                  <th>Asunto</th>
+                  <th>Mensaje</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="contactsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="section-view" id="sec-config">
+        <div class="panel">
+          <div class="panel-header"><h2>Google Sheets / Conexión</h2></div>
+          <div class="panel-body">
+            <p style="margin-bottom:16px; color:var(--gray-600); font-size:0.95rem;">
+              URL del Web App de Google Apps Script. Sin esta URL no se envían correos ni se sincronizan ventas.
+            </p>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>URL del Web App (termina en /exec)</label>
+              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+              <button type="button" class="btn btn-primary" onclick="saveConfig()">
+                <i class="fas fa-save"></i> Guardar todo
+              </button>
+              <button type="button" class="btn btn-outline" onclick="testSheetsConnection()">
+                <i class="fas fa-vial"></i> Probar conexión Sheets
+              </button>
+            </div>
+            <div style="margin:16px 0; padding:18px; background:#EFF6FF; border:2px solid #3B82F6; border-radius:12px;">
+              <p style="margin:0 0 12px; font-weight:700; color:#1E40AF; font-size:0.95rem;">
+                <i class="fas fa-envelope"></i> Prueba de correo (obligatorio si no llega el QR)
+              </p>
+              <p style="margin:0 0 14px; font-size:0.88rem; color:#4A5568;">
+                Envía un correo de prueba a tu email para verificar que Gmail del Apps Script funciona.
+              </p>
+              <button type="button" class="btn btn-navy" onclick="testEmailSend()" style="background:#2563EB; font-size:1rem; padding:12px 22px;">
+                <i class="fas fa-paper-plane"></i> Probar envío de correo ahora
+              </button>
+            </div>
+            <p id="testSheetsResult" style="margin-top:12px; font-size:0.9rem; display:none;"></p>
+            <p id="testEmailResult" style="margin-top:8px; font-size:0.9rem; display:none;"></p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-envelope"></i> Plantillas de correo</h2></div>
+          <div class="panel-body">
+            <p style="margin-bottom:20px; color:var(--gray-600); font-size:0.95rem;">
+              Personaliza el remitente, asuntos y textos que ve el cliente. Estos valores se envían al Apps Script en cada notificación.
+            </p>
+
+            <h3 style="font-size:1rem; color:var(--navy); margin-bottom:14px;">Remitente y contacto</h3>
+            <div class="form-grid" style="margin-bottom:24px;">
+              <div class="form-group">
+                <label>Nombre del remitente</label>
+                <input type="text" id="emailFromName" placeholder="Planet Boletos" />
+              </div>
+              <div class="form-group">
+                <label>Email / WhatsApp de contacto (en el correo)</label>
+                <input type="text" id="emailContact" placeholder="contacto@planetboletos.com · +52 55 1234 5678" />
+              </div>
+            </div>
+
+            <h3 style="font-size:1rem; color:var(--navy); margin-bottom:14px;">Asuntos de correo</h3>
+            <div class="form-grid" style="margin-bottom:24px;">
+              <div class="form-group">
+                <label>Solicitud recibida (en proceso)</label>
+                <input type="text" id="subjRecibida" placeholder="Planet Boletos – Recibimos tu solicitud · {FOLIO}" />
+              </div>
+              <div class="form-group">
+                <label>Boleto autorizado (+ QR)</label>
+                <input type="text" id="subjAutorizado" placeholder="Planet Boletos – Tu boleto autorizado · {FOLIO}" />
+              </div>
+              <div class="form-group">
+                <label>Compra rechazada</label>
+                <input type="text" id="subjRechazado" placeholder="Planet Boletos – No pudimos autorizar tu compra · {FOLIO}" />
+              </div>
+            </div>
+
+            <h3 style="font-size:1rem; color:var(--navy); margin-bottom:14px;">Textos del cuerpo</h3>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>Mensaje extra en “Solicitud recibida”</label>
+              <textarea id="msgRecibida" rows="2" placeholder="Estamos revisando tu comprobante de transferencia."></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>Mensaje extra en “Autorizado”</label>
+              <textarea id="msgAutorizado" rows="2" placeholder="Conserva este correo para ingresar al evento."></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>Motivo de rechazo por defecto</label>
+              <textarea id="msgRechazadoDefault" rows="2" placeholder="No se pudo verificar el comprobante de pago."></textarea>
+            </div>
+
+            <h3 style="font-size:1rem; color:var(--navy); margin-bottom:14px;">Activar / desactivar envíos</h3>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+              <label style="display:flex; align-items:center; gap:10px; font-weight:500; cursor:pointer;">
+                <input type="checkbox" id="sendRecibida" checked /> Enviar correo al registrar compra (en proceso)
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-weight:500; cursor:pointer;">
+                <input type="checkbox" id="sendAutorizado" checked /> Enviar correo al autorizar (con QR)
+              </label>
+              <label style="display:flex; align-items:center; gap:10px; font-weight:500; cursor:pointer;">
+                <input type="checkbox" id="sendRechazado" checked /> Enviar correo al rechazar
+              </label>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveConfig()">
+              <i class="fas fa-save"></i> Guardar plantillas
+            </button>
+            <button class="btn btn-outline" onclick="resetEmailTemplates()" style="margin-left:8px;">
+              <i class="fas fa-undo"></i> Restaurar valores por defecto
+            </button>
+
+            <div style="margin-top:28px; padding:20px; background:var(--gray-100); border-radius:12px; font-size:0.9rem;">
+              <strong>Variables disponibles en asuntos:</strong>
+              <code style="display:block; margin-top:8px;">{FOLIO}</code>
+              <p style="margin-top:12px; color:var(--gray-600);">
+                Usa <code>{FOLIO}</code> en el asunto y se reemplazará por el folio real.
+                Las plantillas HTML completas están en <code>email-templates/</code> y embebidas en el Apps Script.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fab fa-whatsapp"></i> Notificaciones WhatsApp</h2></div>
+          <div class="panel-body">
+            <p style="margin-bottom:16px; color:var(--gray-600); font-size:0.95rem;">
+              Envía el mismo aviso por WhatsApp al teléfono del cliente (además del correo).
+            </p>
+            <label style="display:flex; align-items:center; gap:10px; font-weight:500; margin-bottom:16px; cursor:pointer;">
+              <input type="checkbox" id="waEnabled" /> Activar notificaciones WhatsApp
+            </label>
+            <div class="form-grid" style="margin-bottom:16px;">
+              <div class="form-group">
+                <label>Proveedor</label>
+                <select id="waProvider">
+                  <option value="none">Ninguno</option>
+                  <option value="callmebot">CallMeBot (simple / gratis)</option>
+                  <option value="webhook">Webhook (Twilio, Evolution, Meta API…)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>API Key (CallMeBot)</label>
+                <input type="text" id="waApiKey" placeholder="Tu apikey de CallMeBot" />
+              </div>
+              <div class="form-group" style="grid-column:1/-1;">
+                <label>URL Webhook (si usas webhook)</label>
+                <input type="url" id="waWebhookUrl" placeholder="https://tu-servidor.com/enviar-whatsapp" />
+              </div>
+            </div>
+            <p style="font-size:0.85rem; color:var(--gray-600); margin-bottom:16px;">
+              <strong>CallMeBot:</strong> agrega el bot en WhatsApp y obtén tu apikey en
+              <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank" rel="noopener">callmebot.com</a>.<br>
+              <strong>Webhook:</strong> tu servidor recibe JSON <code>{telefono, mensaje, folio, tipo}</code> y envía el mensaje.
+              Guía completa: <code>INTEGRACION-EMAIL-WHATSAPP.md</code>
+            </p>
+            <button class="btn btn-primary" onclick="saveConfig()">
+              <i class="fas fa-save"></i> Guardar WhatsApp
+            </button>
+            <button class="btn btn-outline" onclick="previewWhatsAppLink()" style="margin-left:8px;">
+              <i class="fab fa-whatsapp"></i> Probar enlace wa.me
+            </button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2><i class="fas fa-credit-card"></i> Pasarela de pagos (Mercado Pago)</h2></div>
+          <div class="panel-body">
+            <p style="margin-bottom:16px; color:var(--gray-600); font-size:0.95rem;">
+              Activa el pago en línea con <strong>Mercado Pago Checkout Pro</strong>.
+              El cliente puede pagar con tarjeta, SPEI o saldo MP. La transferencia bancaria sigue disponible como opción.
+            </p>
+            <label style="display:flex; align-items:center; gap:10px; font-weight:500; margin-bottom:14px; cursor:pointer;">
+              <input type="checkbox" id="mpEnabled" /> Activar pago en línea (Mercado Pago)
+            </label>
+            <label style="display:flex; align-items:center; gap:10px; font-weight:500; margin-bottom:16px; cursor:pointer;">
+              <input type="checkbox" id="transferEnabled" checked /> Mantener pago por transferencia
+            </label>
+            <div class="form-grid" style="margin-bottom:16px;">
+              <div class="form-group" style="grid-column:1/-1;">
+                <label>Access Token (producción o TEST-...)</label>
+                <input type="password" id="mpAccessToken" placeholder="APP_USR-... o TEST-..." autocomplete="off" />
+              </div>
+              <div class="form-group" style="grid-column:1/-1;">
+                <label>Public Key (opcional)</label>
+                <input type="text" id="mpPublicKey" placeholder="APP_USR-... o TEST-..." />
+              </div>
+            </div>
+            <p style="font-size:0.85rem; color:var(--gray-600); margin-bottom:16px;">
+              Obtén las claves en
+              <a href="https://www.mercadopago.com.mx/developers/panel/app" target="_blank" rel="noopener">Mercado Pago Developers</a>.
+              Al guardar se envían de forma segura a las Propiedades del Apps Script (no viajan en cada compra).
+            </p>
+            <button type="button" class="btn btn-primary" onclick="saveMpConfig()">
+              <i class="fas fa-save"></i> Guardar pasarela
+            </button>
+            <p id="mpConfigResult" style="margin-top:12px; font-size:0.9rem; display:none;"></p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+  <!-- MODAL COMPROBANTE -->
+  <div class="modal-overlay" id="comprobanteModal">
+    <div class="modal-box" style="max-width:720px; text-align:left;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 id="comprobanteModalTitle" style="margin:0; font-size:1.2rem; color:var(--navy);">Comprobante</h2>
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeComprobanteModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="comprobanteModalBody"></div>
+      <div style="margin-top:16px; text-align:right;">
+        <button type="button" class="btn btn-outline" onclick="closeComprobanteModal()">Cerrar</button>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <!-- MAIN CONTENT -->
-  <div class="main-container">
-    
-    <div class="dashboard-header">
-      <div class="dashboard-title">
-        <h2><i class="fas fa-tasks" style="color: var(--accent);"></i> Panel de Control de Ventas</h2>
-        <p>Administra y aprueba las transacciones registradas</p>
-      </div>
-
-      <!-- Smart Search -->
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="inputBuscar" onkeyup="filtrarTabla()" placeholder="Buscar por Folio, Cliente, Equipo...">
-      </div>
-    </div>
-
-    <!-- GENERAL SUMMARY CARDS -->
-    <div class="stats-grid">
-      <!-- Total Revenue -->
-      <div class="stat-card revenue">
-        <div class="stat-info">
-          <div>Total Recaudado</div>
-          <span id="statMontoTotal" style="color: #0f766e;">$0.00</span>
-        </div>
-        <i class="fas fa-dollar-sign stat-icon" style="color: #0d9488;"></i>
-      </div>
-
-      <!-- Total Tickets Sold -->
-      <div class="stat-card approved">
-        <div class="stat-info">
-          <div>Boletos Vendidos</div>
-          <span id="statBoletosVendidos">0</span>
-        </div>
-        <i class="fas fa-ticket-alt stat-icon" style="color: var(--success);"></i>
-      </div>
-
-      <!-- Approved Sales -->
-      <div class="stat-card approved">
-        <div class="stat-info">
-          <div>Aprobadas</div>
-          <span id="statAprobadas">0</span>
-        </div>
-        <i class="fas fa-check-circle stat-icon" style="color: var(--success);"></i>
-      </div>
-
-      <!-- Pending Sales -->
-      <div class="stat-card pending">
-        <div class="stat-info">
-          <div>Pendientes</div>
-          <span id="statPendientes">0</span>
-        </div>
-        <i class="fas fa-clock stat-icon" style="color: var(--warning);"></i>
-      </div>
-
-      <!-- Rejected Sales -->
-      <div class="stat-card rejected">
-        <div class="stat-info">
-          <div>Rechazadas</div>
-          <span id="statRechazadas">0</span>
-        </div>
-        <i class="fas fa-times-circle stat-icon" style="color: var(--danger);"></i>
+  <!-- MODAL QR + EMAIL -->
+  <div class="modal-overlay" id="qrModal">
+    <div class="modal-box">
+      <h2><i class="fas fa-check-circle" style="color:var(--success);"></i> Boleto autorizado</h2>
+      <p class="sub">Se generó el folio y el código QR para el cliente</p>
+      <div class="folio-big" id="modalFolio">—</div>
+      <div id="qrPreview"></div>
+      <p style="font-size:0.85rem; color:var(--gray-600); margin-top:8px;" id="modalCliente"></p>
+      <div class="email-status info" id="emailStatus">Enviando correo con folio y QR…</div>
+      <div class="modal-actions" style="flex-wrap:wrap;">
+        <button class="btn btn-navy btn-sm" id="btnDownloadQr">
+          <i class="fas fa-download"></i> Descargar QR
+        </button>
+        <button class="btn btn-primary btn-sm" id="btnResendEmail">
+          <i class="fas fa-envelope"></i> Reenviar correo
+        </button>
+        <button type="button" class="btn btn-sm" id="btnSendWhatsApp" style="background:#25D366;color:#fff;border:none;">
+          <i class="fab fa-whatsapp"></i> Enviar por WhatsApp
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="closeQrModal()">
+          Cerrar
+        </button>
       </div>
     </div>
-
-    <!-- BREAKDOWN BY TEAM -->
-    <div class="section-title">
-      <i class="fas fa-baseball-ball" style="color: var(--accent);"></i> Desglose por Equipo (Ventas Aprobadas)
-    </div>
-
-    <div class="teams-grid">
-      <!-- Barreteros -->
-      <div class="team-card barreteros">
-        <div class="team-card-header">
-          <h3>Barreteros</h3>
-          <i class="fas fa-baseball-ball" style="color: var(--team-barreteros);"></i>
-        </div>
-        <div class="team-card-metrics">
-          <div class="team-metric-item">
-            <label>Boletos</label>
-            <val id="teamBoletosBarreteros">0</val>
-          </div>
-          <div class="team-metric-item money">
-            <label>Recaudado</label>
-            <val id="teamMontoBarreteros">$0.00</val>
-          </div>
-        </div>
-      </div>
-
-      <!-- Halcones -->
-      <div class="team-card halcones">
-        <div class="team-card-header">
-          <h3>Halcones</h3>
-          <i class="fas fa-baseball-ball" style="color: var(--team-halcones);"></i>
-        </div>
-        <div class="team-card-metrics">
-          <div class="team-metric-item">
-            <label>Boletos</label>
-            <val id="teamBoletosHalcones">0</val>
-          </div>
-          <div class="team-metric-item money">
-            <label>Recaudado</label>
-            <val id="teamMontoHalcones">$0.00</val>
-          </div>
-        </div>
-      </div>
-
-      <!-- Indios -->
-      <div class="team-card indios">
-        <div class="team-card-header">
-          <h3>Indios</h3>
-          <i class="fas fa-baseball-ball" style="color: var(--team-indios);"></i>
-        </div>
-        <div class="team-card-metrics">
-          <div class="team-metric-item">
-            <label>Boletos</label>
-            <val id="teamBoletosIndios">0</val>
-          </div>
-          <div class="team-metric-item money">
-            <label>Recaudado</label>
-            <val id="teamMontoIndios">$0.00</val>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agricultores -->
-      <div class="team-card agricultores">
-        <div class="team-card-header">
-          <h3>Agricultores</h3>
-          <i class="fas fa-baseball-ball" style="color: var(--team-agricultores);"></i>
-        </div>
-        <div class="team-card-metrics">
-          <div class="team-metric-item">
-            <label>Boletos</label>
-            <val id="teamBoletosAgricultores">0</val>
-          </div>
-          <div class="team-metric-item money">
-            <label>Recaudado</label>
-            <val id="teamMontoAgricultores">$0.00</val>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SALES TABLE -->
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Folio</th>
-            <th>Fecha</th>
-            <th>Equipo</th>
-            <th>Cliente</th>
-            <th>Contacto</th>
-            <th>Cant.</th>
-            <th>Total</th>
-            <th>Método</th>
-            <th>Folio Banco</th>
-            <th>Estado</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody id="tablaVentas">
-          <tr>
-            <td colspan="11" class="loading-spinner">
-              <i class="fas fa-spinner fa-spin"></i> Cargando datos de ventas...
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
   </div>
 
   <script>
-    // Google Apps Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
+    // Credenciales demo (cámbialas en producción)
+    const ADMIN_USER = 'admin';
+    const ADMIN_PASS = 'planet2026';
 
-    let ventasGlobales = [];
+    let events = {};
+    let orders = [];
+    let contacts = [];
 
-    // Fetch sales list from Apps Script
-    async function cargarVentas() {
-      const iconReload = document.getElementById("iconReload");
-      iconReload.classList.add("fa-spin");
-
-      const tbody = document.getElementById("tablaVentas");
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="11" class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i> Obteniendo datos más recientes...
-          </td>
-        </tr>
-      `;
-
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "obtenerVentas" })
-        });
-
-        const data = await res.json();
-
-        if (data.status === "OK") {
-          ventasGlobales = data.ventas || [];
-          actualizarMetricas(ventasGlobales);
-          renderizarTabla(ventasGlobales);
-        } else {
-          tbody.innerHTML = `<tr><td colspan="11" style="color:var(--danger); text-align:center; padding: 20px;">⚠️ Error: ${data.message}</td></tr>`;
-        }
-      } catch (e) {
-        console.error(e);
-        tbody.innerHTML = `<tr><td colspan="11" style="color:var(--danger); text-align:center; padding: 20px;">❌ Error de conexión al servidor.</td></tr>`;
-      } finally {
-        iconReload.classList.remove("fa-spin");
+    // ========== AUTH ==========
+    function checkAuth() {
+      if (sessionStorage.getItem('planetBoletos_auth') === '1') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'grid';
+        initAdmin();
       }
     }
 
-    // Render table rows
-    function renderizarTabla(lista) {
-      const tbody = document.getElementById("tablaVentas");
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value;
+      if (u === ADMIN_USER && p === ADMIN_PASS) {
+        sessionStorage.setItem('planetBoletos_auth', '1');
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'grid';
+        initAdmin();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    });
 
-      if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:20px; color:var(--text-muted);">No se encontraron ventas registradas.</td></tr>`;
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('planetBoletos_auth');
+      location.reload();
+    });
+
+    // ========== DATA ==========
+    function loadData() {
+      const saved = localStorage.getItem('planetBoletos_events');
+      if (saved) {
+        events = JSON.parse(saved);
+      } else {
+        // defaults from index
+        events = {
+          musica: [
+            { id: 'm1', tipo: 'musica', titulo: 'Noche de Rock Latino', fecha: '2026-10-15T21:00', ciudad: 'Ciudad de México', imagen: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&h=400&fit=crop', disponibles: 120, precio: 850, comision: 50 },
+            { id: 'm2', tipo: 'musica', titulo: 'Festival Indie 2026', fecha: '2026-11-08T18:00', ciudad: 'Guadalajara', imagen: 'https://images.unsplash.com/photo-1459749411175-047f9839f5c4?w=600&h=400&fit=crop', disponibles: 85, precio: 650, comision: 40 },
+            { id: 'm3', tipo: 'musica', titulo: 'Salsa & Bachata Night', fecha: '2026-09-28T20:30', ciudad: 'Monterrey', imagen: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=400&fit=crop', disponibles: 200, precio: 450, comision: 30 },
+            { id: 'm4', tipo: 'musica', titulo: 'Concierto Sinfónico', fecha: '2026-12-05T19:00', ciudad: 'Puebla', imagen: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600&h=400&fit=crop', disponibles: 60, precio: 1200, comision: 70 }
+          ],
+          deportes: [
+            { id: 'd1', tipo: 'deportes', equipo: 'Barreteros', equipoLocal: 'Barreteros', equipoVisitante: 'Por definir', fecha: '2026-09-20T19:00', ciudad: 'Barroterán, Coahuila', imagen: 'logob.jpg', disponibles: 150, precio: 180, comision: 20, logo: 'logob.jpg' },
+            { id: 'd2', tipo: 'deportes', equipo: 'Halcones CEUC', equipoLocal: 'Halcones CEUC', equipoVisitante: 'Por definir', fecha: '2026-09-22T18:30', ciudad: 'Ciudad del Norte', imagen: 'logoh.jpg', disponibles: 200, precio: 150, comision: 15, logo: 'logoh.jpg' },
+            { id: 'd3', tipo: 'deportes', equipo: 'Indios', equipoLocal: 'Indios', equipoVisitante: 'Por definir', fecha: '2026-09-25T19:00', ciudad: 'Chihuahua', imagen: 'logom.jpg', disponibles: 180, precio: 160, comision: 18, logo: 'logom.jpg' },
+            { id: 'd4', tipo: 'deportes', equipo: 'Agricultores', equipoLocal: 'Agricultores', equipoVisitante: 'Por definir', fecha: '2026-09-27T18:00', ciudad: 'Los Mochis', imagen: 'logoa.jpg', disponibles: 170, precio: 140, comision: 15, logo: 'logoa.jpg' }
+          ],
+          culturales: []
+        };
+        localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+      }
+      orders = JSON.parse(localStorage.getItem('planetBoletos_orders') || '[]');
+      contacts = JSON.parse(localStorage.getItem('planetBoletos_contacts') || '[]');
+    }
+
+    function saveEvents() {
+      localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+    }
+
+    function saveOrders() {
+      localStorage.setItem('planetBoletos_orders', JSON.stringify(orders));
+    }
+
+    function formatMoney(n) {
+      return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n || 0);
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    // ========== NAV ==========
+    document.querySelectorAll('.nav-item[data-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.section-view').forEach(s => s.classList.remove('active'));
+        document.getElementById('sec-' + btn.dataset.section).classList.add('active');
+        const titles = {
+          dashboard: 'Dashboard',
+          musica: 'Eventos de Música',
+          deportes: 'Eventos Deportivos',
+          ventas: 'Ventas y Órdenes',
+          contactos: 'Contactos',
+          config: 'Configuración'
+        };
+        document.getElementById('pageTitle').textContent = titles[btn.dataset.section] || '';
+        if (btn.dataset.section === 'dashboard') renderDashboard();
+        if (btn.dataset.section === 'musica') renderMusica();
+        if (btn.dataset.section === 'deportes') renderDeportes();
+        if (btn.dataset.section === 'ventas') renderOrders();
+        if (btn.dataset.section === 'contactos') renderContacts();
+        if (btn.dataset.section === 'config') {
+          document.getElementById('sheetsUrl').value = localStorage.getItem('planetBoletos_sheetsUrl') || '';
+        }
+        document.getElementById('sidebar').classList.remove('open');
+      });
+    });
+
+    document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // ========== DASHBOARD ==========
+    function renderDashboard() {
+      const totalVentas = orders.filter(o => ['autorizado','entregado','usado'].includes(o.estado))
+        .reduce((s, o) => s + (o.total || 0), 0);
+      const boletosVendidos = orders.filter(o => ['autorizado','entregado','usado'].includes(o.estado))
+        .reduce((s, o) => s + (o.cantidad || 0), 0);
+      const enProceso = orders.filter(o => o.estado === 'en_proceso').length;
+      const comisiones = orders.filter(o => ['autorizado','entregado','usado'].includes(o.estado))
+        .reduce((s, o) => s + (o.comision || 0), 0);
+
+      document.getElementById('statsGrid').innerHTML = `
+        <div class="stat-card">
+          <div class="label">Ingresos autorizados</div>
+          <div class="value">${formatMoney(totalVentas)}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Boletos vendidos</div>
+          <div class="value">${boletosVendidos}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Órdenes en proceso</div>
+          <div class="value">${enProceso}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Comisiones</div>
+          <div class="value">${formatMoney(comisiones)}</div>
+        </div>
+      `;
+
+      const recent = [...orders].reverse().slice(0, 8);
+      document.getElementById('recentOrdersBody').innerHTML = recent.length ? recent.map(o => `
+        <tr>
+          <td><code>${o.folio}</code></td>
+          <td>${o.evento}</td>
+          <td>${o.nombre}</td>
+          <td>${o.cantidad}</td>
+          <td>${formatMoney(o.total)}</td>
+          <td><span class="badge badge-${o.estado.replace('_','')}">${o.estado.replace('_',' ')}</span></td>
+          <td>${formatDate(o.fechaCompra)}</td>
+        </tr>
+      `).join('') : '<tr><td colspan="7" class="empty-state">Sin órdenes aún</td></tr>';
+    }
+
+    // ========== MÚSICA ==========
+    function renderMusica() {
+      const list = document.getElementById('musicaList');
+      if (!events.musica?.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-music"></i><p>No hay eventos de música</p></div>';
+        return;
+      }
+      list.innerHTML = events.musica.map((ev, i) => `
+        <div class="event-edit-card">
+          <h3><i class="fas fa-music" style="color:var(--red);"></i> ${ev.titulo || 'Sin título'}</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Título del evento</label>
+              <input type="text" value="${ev.titulo || ''}" data-field="titulo" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>Fecha y hora</label>
+              <input type="datetime-local" value="${(ev.fecha || '').slice(0,16)}" data-field="fecha" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" value="${ev.ciudad || ''}" data-field="ciudad" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>URL de imagen</label>
+              <input type="url" value="${ev.imagen || ''}" data-field="imagen" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>Boletos disponibles</label>
+              <input type="number" min="0" value="${ev.disponibles ?? 0}" data-field="disponibles" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>Precio (MXN)</label>
+              <input type="number" min="0" step="1" value="${ev.precio ?? 0}" data-field="precio" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+            <div class="form-group">
+              <label>Comisión por boleto (MXN)</label>
+              <input type="number" min="0" step="1" value="${ev.comision ?? 0}" data-field="comision" data-idx="${i}" onchange="updateMusic(this)" />
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn btn-danger btn-sm" onclick="deleteMusic(${i})">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateMusic(el) {
+      const i = +el.dataset.idx;
+      const field = el.dataset.field;
+      let val = el.value;
+      if (['disponibles','precio','comision'].includes(field)) val = Number(val) || 0;
+      events.musica[i][field] = val;
+      saveEvents();
+    }
+
+    function addMusicEvent() {
+      events.musica = events.musica || [];
+      events.musica.push({
+        id: 'm' + Date.now(),
+        tipo: 'musica',
+        titulo: 'Nuevo evento musical',
+        fecha: new Date().toISOString().slice(0,16),
+        ciudad: '',
+        imagen: '',
+        disponibles: 100,
+        precio: 500,
+        comision: 30
+      });
+      saveEvents();
+      renderMusica();
+    }
+
+    function deleteMusic(i) {
+      if (!confirm('¿Eliminar este evento?')) return;
+      events.musica.splice(i, 1);
+      saveEvents();
+      renderMusica();
+    }
+
+    // ========== DEPORTES ==========
+    function renderDeportes() {
+      const list = document.getElementById('deportesList');
+      list.innerHTML = events.deportes.map((ev, i) => `
+        <div class="event-edit-card">
+          <h3>
+            <img src="${ev.logo || ev.imagen}" alt="" onerror="this.style.display='none'" />
+            ${ev.equipo}
+          </h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Equipo local</label>
+              <input type="text" value="${ev.equipoLocal || ''}" data-field="equipoLocal" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Equipo visitante</label>
+              <input type="text" value="${ev.equipoVisitante || ''}" data-field="equipoVisitante" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Fecha y hora</label>
+              <input type="datetime-local" value="${(ev.fecha || '').slice(0,16)}" data-field="fecha" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" value="${ev.ciudad || ''}" data-field="ciudad" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Boletos disponibles</label>
+              <input type="number" min="0" value="${ev.disponibles ?? 0}" data-field="disponibles" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Precio (MXN)</label>
+              <input type="number" min="0" step="1" value="${ev.precio ?? 0}" data-field="precio" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group">
+              <label>Comisión por boleto (MXN)</label>
+              <input type="number" min="0" step="1" value="${ev.comision ?? 0}" data-field="comision" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+          </div>
+          <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteSportEvent(${i})">
+              <i class="fas fa-trash"></i> Eliminar evento
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateSport(el) {
+      const i = +el.dataset.idx;
+      const field = el.dataset.field;
+      let val = el.value;
+      if (['disponibles','precio','comision'].includes(field)) val = Number(val) || 0;
+      events.deportes[i][field] = val;
+      if (field === 'equipoLocal') events.deportes[i].equipo = val;
+      saveEvents();
+    }
+
+    function addSportEvent() {
+      events.deportes = events.deportes || [];
+      const n = events.deportes.length + 1;
+      events.deportes.push({
+        id: 'd' + Date.now(),
+        tipo: 'deportes',
+        equipo: 'Nuevo equipo',
+        equipoLocal: 'Nuevo equipo',
+        equipoVisitante: 'Por definir',
+        fecha: new Date().toISOString().slice(0, 16),
+        ciudad: '',
+        imagen: 'logob.jpg',
+        logo: 'logob.jpg',
+        disponibles: 100,
+        precio: 150,
+        comision: 15
+      });
+      saveEvents();
+      renderDeportes();
+    }
+
+    function deleteSportEvent(i) {
+      if (!confirm('¿Eliminar este evento deportivo?')) return;
+      events.deportes.splice(i, 1);
+      saveEvents();
+      renderDeportes();
+    }
+
+    // ========== ORDERS ==========
+    function renderOrders() {
+      const filter = document.getElementById('filterEstado')?.value || '';
+      let list = [...orders].reverse();
+      if (filter) list = list.filter(o => o.estado === filter);
+
+      document.getElementById('ordersBody').innerHTML = list.length ? list.map(o => {
+        const hasComp = !!(o.comprobanteData || o.comprobante);
+        const compBtn = hasComp
+          ? `<button type="button" class="btn btn-navy btn-sm" onclick="verComprobante('${o.folio}')" title="Ver comprobante">
+               <i class="fas fa-file-invoice"></i> Ver
+             </button>`
+          : `<span style="color:var(--gray-600);font-size:0.8rem;">Sin archivo</span>`;
+        return `
+        <tr>
+          <td><code>${o.folio}</code></td>
+          <td>${o.evento}</td>
+          <td>${o.nombre}</td>
+          <td style="font-size:0.82rem;">${o.telefono}<br>${o.email}</td>
+          <td>${o.cantidad}</td>
+          <td>${formatMoney(o.total)}</td>
+          <td>${compBtn}</td>
+          <td><span class="badge badge-${o.estado.replace('_','')}">${o.estado.replace('_',' ')}</span></td>
+          <td>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+              <select onchange="changeOrderStatus('${o.folio}', this.value)" style="padding:6px 8px; border-radius:6px; border:1px solid var(--gray-200); font-size:0.8rem;">
+                <option value="en_proceso" ${o.estado==='en_proceso'?'selected':''}>En proceso</option>
+                <option value="autorizado" ${o.estado==='autorizado'?'selected':''}>Autorizado</option>
+                <option value="rechazado" ${o.estado==='rechazado'?'selected':''}>Rechazado</option>
+                <option value="entregado" ${o.estado==='entregado'?'selected':''}>Entregado</option>
+                <option value="usado" ${o.estado==='usado'?'selected':''}>Usado</option>
+              </select>
+              <button type="button" class="btn btn-sm" onclick="enviarWhatsAppManual('${o.folio}')" title="Enviar folio y QR por WhatsApp"
+                style="background:#25D366;color:#fff;border:none;">
+                <i class="fab fa-whatsapp"></i>
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.folio}')" title="Eliminar esta orden">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('') : '<tr><td colspan="9" class="empty-state">No hay órdenes</td></tr>';
+    }
+
+    function verComprobante(folio) {
+      const o = orders.find(x => x.folio === folio);
+      if (!o) return;
+      const modal = document.getElementById('comprobanteModal');
+      const body = document.getElementById('comprobanteModalBody');
+      const title = document.getElementById('comprobanteModalTitle');
+      title.textContent = 'Comprobante · ' + (o.folio || '');
+      const nombre = o.comprobanteNombre || o.comprobante || 'archivo';
+      const data = o.comprobanteData;
+      const driveUrl = o.comprobanteDriveUrl || o.driveUrl || '';
+      if (!data && !driveUrl) {
+        body.innerHTML = '<p style="color:var(--gray-600);">Esta orden solo tiene el nombre del archivo (<strong>' + nombre + '</strong>) y no el archivo adjunto.<br>Las compras hechas <em>después</em> de esta actualización sí guardan el comprobante aquí y en Google Drive.</p>';
+        modal.classList.add('show');
+        return;
+      }
+      if (!data && driveUrl) {
+        body.innerHTML = `
+          <p style="margin-bottom:12px;">Archivo en Google Drive:</p>
+          <p><a class="btn btn-navy" href="${driveUrl}" target="_blank" rel="noopener"><i class="fab fa-google-drive"></i> Abrir en Drive</a></p>
+          <p style="margin-top:12px;font-size:0.85rem;color:var(--gray-600);">Nombre: <strong>${nombre}</strong></p>`;
+        modal.classList.add('show');
+        return;
+      }
+      const isPdf = (o.comprobanteTipo || '').includes('pdf') || String(data).startsWith('data:application/pdf');
+      if (isPdf) {
+        body.innerHTML = `
+          <p style="margin-bottom:12px;font-size:0.9rem;color:var(--gray-600);">Archivo: <strong>${nombre}</strong></p>
+          <iframe src="${data}" style="width:100%;height:70vh;border:1px solid var(--gray-200);border-radius:10px;"></iframe>
+          <p style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a class="btn btn-navy btn-sm" href="${data}" download="${nombre}">Descargar PDF</a>
+            ${driveUrl ? '<a class="btn btn-outline btn-sm" href="'+driveUrl+'" target="_blank" rel="noopener"><i class="fab fa-google-drive"></i> Ver en Drive</a>' : ''}
+          </p>`;
+      } else {
+        body.innerHTML = `
+          <p style="margin-bottom:12px;font-size:0.9rem;color:var(--gray-600);">Archivo: <strong>${nombre}</strong> · Cliente: <strong>${o.nombre}</strong> · Total: <strong>${formatMoney(o.total)}</strong></p>
+          <img src="${data}" alt="Comprobante" style="max-width:100%;border-radius:10px;border:1px solid var(--gray-200);" />
+          <p style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+            <a class="btn btn-navy btn-sm" href="${data}" download="${nombre}">Descargar imagen</a>
+            ${driveUrl ? '<a class="btn btn-outline btn-sm" href="'+driveUrl+'" target="_blank" rel="noopener"><i class="fab fa-google-drive"></i> Ver en Drive</a>' : ''}
+          </p>`;
+      }
+      modal.classList.add('show');
+    }
+
+    function closeComprobanteModal() {
+      document.getElementById('comprobanteModal').classList.remove('show');
+    }
+
+    document.getElementById('filterEstado')?.addEventListener('change', renderOrders);
+
+    let currentAuthOrder = null;
+    let currentQrDataUrl = null;
+
+    function getSheetsUrl() {
+      return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+    }
+
+    async function postToSheets(action, data) {
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX') || url.includes('TU_SCRIPT')) {
+        console.warn('Sheets no configurado');
+        return false;
+      }
+      const payload = JSON.stringify({ action, data });
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: payload
+        });
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(url, new Blob([payload], { type: 'text/plain;charset=utf-8' }));
+          }
+        } catch (_) {}
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    }
+
+    async function changeOrderStatus(folio, estado) {
+      const o = orders.find(x => x.folio === folio);
+      if (!o) return;
+      const prev = o.estado;
+      o.estado = estado;
+
+      let motivo = '';
+      if (estado === 'rechazado' && prev !== 'rechazado') {
+        const defMotivo = getEmailConfig().msgRechazadoDefault || 'No se pudo verificar el comprobante de pago';
+        motivo = prompt(
+          'Motivo del rechazo (se enviará por correo al cliente):',
+          defMotivo
+        ) || defMotivo;
+        o.motivoRechazo = motivo;
+      }
+
+      saveOrders();
+      renderOrders();
+      renderDashboard();
+
+      // Siempre sincronizar a Google Sheets con todos los datos de la orden
+      if (estado === 'autorizado' && prev !== 'autorizado') {
+        await postToSheets('nuevaVenta', { ...o, estado: 'autorizado' });
+        authorizeAndSend(o);
+      } else {
+        const payload = { ...o, folio, estado, ...emailOptsFor(o, estado === 'rechazado' ? 'rechazado' : 'recibida') };
+        if (motivo) payload.motivo = motivo;
+        if (estado === 'rechazado' && !getEmailConfig().sendRechazado) {
+          payload.skipEmail = true;
+        }
+        const ok = await postToSheets('actualizarEstado', payload);
+        if (!ok) {
+          console.warn('No se pudo sincronizar estado a Sheets. Revisa la URL en Configuración.');
+        } else if (estado === 'rechazado') {
+          alert('Estado: rechazado.\nSe envió (o intentó enviar) el correo de rechazo a ' + (o.email || 'sin email') + '.');
+        }
+      }
+    }
+
+    async function deleteOrder(folio) {
+      if (!confirm('¿Eliminar la orden ' + folio + ' del panel admin?\n(También se intentará borrar en Google Sheets)')) return;
+      orders = orders.filter(o => o.folio !== folio);
+      saveOrders();
+      renderOrders();
+      renderDashboard();
+      await postToSheets('eliminarVenta', { folio });
+    }
+
+    async function clearAllOrders() {
+      if (!confirm('¿Vaciar TODAS las órdenes del panel admin (solo local)?\nLas filas en Google Sheets NO se borran automáticamente.')) return;
+      if (!confirm('Confirma de nuevo: se borrarán todas las ventas locales de este navegador.')) return;
+      orders = [];
+      saveOrders();
+      renderOrders();
+      renderDashboard();
+      alert('Tabla local vaciada. Las nuevas compras volverán a aparecer aquí.');
+    }
+
+    async function syncPendingToSheets() {
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX')) {
+        alert('Configura primero la URL de Google Sheets en Configuración y usa Probar conexión.');
+        return;
+      }
+      if (!orders.length) {
+        alert('No hay órdenes locales para sincronizar.');
+        return;
+      }
+      let n = 0;
+      for (const o of orders) {
+        // Upsert completo por folio (no duplica en el script nuevo)
+        await postToSheets('nuevaVenta', o);
+        n++;
+        await new Promise(r => setTimeout(r, 300)); // pequeño delay
+      }
+      alert('Se enviaron ' + n + ' órdenes a Google Sheets.\nEspera 2–5 segundos y revisa la hoja Ventas.\nSi no aparece nada, vuelve a desplegar el Apps Script (Nueva implementación).');
+    }
+
+    
+    function normalizarTelWA(tel) {
+      let d = String(tel || '').replace(/\D/g, '');
+      if (!d) return '';
+      if (d.length === 10) d = '52' + d; // México
+      if (d.length === 11 && d.startsWith('1')) d = '52' + d.slice(1);
+      return d;
+    }
+
+    function mensajeWhatsAppBoleto(order) {
+      const folio = order.folio || '';
+      const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(folio);
+      const total = formatMoney(order.total || 0);
+      return (
+        '✅ *Planet Boletos – Boleto autorizado*\n\n' +
+        'Hola ' + (order.nombre || 'Cliente') + ', tu pago fue autorizado.\n\n' +
+        '*Folio:* ' + folio + '\n' +
+        '*Evento:* ' + (order.evento || '') + '\n' +
+        '*Cantidad:* ' + (order.cantidad || 1) + ' boleto(s)\n' +
+        '*Total:* ' + total + '\n\n' +
+        '📱 *Código QR de acceso:*\n' + qrUrl + '\n\n' +
+        'Presenta este folio o el código QR en la entrada del evento.\n' +
+        '¡Gracias por comprar en Planet Boletos!'
+      );
+    }
+
+    function enviarWhatsAppManual(folioOrOrder) {
+      const order = typeof folioOrOrder === 'string'
+        ? orders.find(x => x.folio === folioOrOrder)
+        : folioOrOrder;
+      if (!order) {
+        alert('No se encontró la orden.');
+        return;
+      }
+      const phone = normalizarTelWA(order.telefono);
+      if (!phone) {
+        alert('Esta orden no tiene un teléfono válido para WhatsApp.');
+        return;
+      }
+      const msg = mensajeWhatsAppBoleto(order);
+      const url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+      window.open(url, '_blank');
+    }
+
+    function authorizeAndSend(order) {
+      currentAuthOrder = order;
+      document.getElementById('modalFolio').textContent = order.folio;
+      document.getElementById('modalCliente').textContent =
+        `${order.nombre} · ${order.email} · ${order.telefono}`;
+
+      // Generar QR (contenido = folio para el validador)
+      const qrContainer = document.getElementById('qrPreview');
+      qrContainer.innerHTML = '';
+      try {
+        new QRCode(qrContainer, {
+          text: order.folio,
+          width: 220,
+          height: 220,
+          colorDark: '#0B1E3D',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+        // Esperar a que se dibuje el canvas/img
+        setTimeout(() => {
+          const canvas = qrContainer.querySelector('canvas');
+          const img = qrContainer.querySelector('img');
+          if (canvas) {
+            currentQrDataUrl = canvas.toDataURL('image/png');
+          } else if (img) {
+            currentQrDataUrl = img.src;
+          }
+          order.qrDataUrl = currentQrDataUrl;
+          order.autorizadoEn = new Date().toISOString();
+          saveOrders();
+        }, 300);
+      } catch (err) {
+        console.error('Error QR:', err);
+        qrContainer.innerHTML = '<p style="color:var(--red);">Error al generar QR</p>';
+      }
+
+      document.getElementById('emailStatus').className = 'email-status info';
+      document.getElementById('emailStatus').textContent = 'Enviando correo con folio y código QR…';
+      document.getElementById('qrModal').classList.add('show');
+
+      sendTicketEmail(order);
+
+      // WhatsApp automático al autorizar (folio + QR al teléfono registrado)
+      // Se llama en el mismo clic del usuario para evitar bloqueo de ventanas emergentes
+      try {
+        enviarWhatsAppManual(order);
+        const statusEl = document.getElementById('emailStatus');
+        if (statusEl) {
+          const phone = normalizarTelWA(order.telefono);
+          statusEl.innerHTML =
+            '<strong>Correo + WhatsApp</strong><br>' +
+            'Se abrió WhatsApp al <strong>' + (phone || order.telefono || '—') + '</strong> con folio y QR.<br>' +
+            '<small>Confirma el envío en la ventana de WhatsApp. Si no se abrió, usa el botón verde <em>Enviar por WhatsApp</em>.</small>';
+        }
+      } catch (err) {
+        console.warn('WhatsApp auto:', err);
+      }
+    }
+
+    async function sendTicketEmail(order) {
+      const sheetsUrl = localStorage.getItem('planetBoletos_sheetsUrl') || '';
+      const statusEl = document.getElementById('emailStatus');
+      const opts = emailOptsFor(order, 'autorizado');
+
+      if (!opts.sendAutorizado) {
+        statusEl.className = 'email-status info';
+        statusEl.innerHTML = 'Correo de autorización desactivado en Plantillas. El QR sí se generó.';
         return;
       }
 
-      tbody.innerHTML = lista.map(v => `
-        <tr>
-          <td><b>${v.folio}</b></td>
-          <td style="white-space: nowrap;">${v.fecha}</td>
-          <td><b>${v.equipo}</b></td>
-          <td>${v.cliente}</td>
-          <td><small style="color:var(--text-muted);">${v.correo}<br>${v.telefono}</small></td>
-          <td style="text-align:center;"><b>${v.cantidad}</b></td>
-          <td style="color:var(--accent); font-weight:700;">$${parseFloat(v.total).toFixed(2)}</td>
-          <td><small>${v.metodoPago}</small></td>
-          <td><code>${v.folioBanco || '-'}</code></td>
-          <td><span class="badge badge-${v.estado}">${v.estado}</span></td>
-          <td>
-            ${v.estado === "Pendiente" ? `
-              <div class="action-btn-group">
-                <button class="btn-action btn-app" title="Aprobar" onclick="cambiarEstado('${v.folio}', 'Aprobado')">
-                  <i class="fas fa-check"></i>
-                </button>
-                <button class="btn-action btn-rej" title="Rechazar" onclick="cambiarEstado('${v.folio}', 'Rechazado')">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            ` : '<span style="color:var(--text-muted); font-size:0.8rem;">Procesado</span>'}
-          </td>
-        </tr>
-      `).join("");
-    }
+      if (!order.email || !String(order.email).includes('@')) {
+        statusEl.className = 'email-status err';
+        statusEl.innerHTML = '<strong>Esta orden no tiene un email válido.</strong> No se puede enviar el correo. Edita la compra o pide al cliente que vuelva a comprar con correo correcto.';
+        return;
+      }
 
-    // Update Metrics and Per-Team Breakdown
-    function actualizarMetricas(lista) {
-      // Filter approved sales
-      const aprobadas = lista.filter(v => v.estado === "Aprobado");
+      // QR público vía API (para el correo HTML)
+      const qrPublicUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' +
+        encodeURIComponent(order.folio);
 
-      // Sum overall approved totals
-      const montoTotalAprobado = aprobadas.reduce((sum, v) => sum + (parseFloat(v.total) || 0), 0);
-      const totalBoletosAprobados = aprobadas.reduce((sum, v) => sum + (parseInt(v.cantidad) || 0), 0);
-
-      // Render general stats
-      document.getElementById("statMontoTotal").innerText = `$${montoTotalAprobado.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
-      document.getElementById("statBoletosVendidos").innerText = totalBoletosAprobados;
-      document.getElementById("statAprobadas").innerText = aprobadas.length;
-      document.getElementById("statPendientes").innerText = lista.filter(v => v.estado === "Pendiente").length;
-      document.getElementById("statRechazadas").innerText = lista.filter(v => v.estado === "Rechazado").length;
-
-      // Helper function for team calculations
-      const calcularPorEquipo = (nombreEquipo) => {
-        const ventasEquipo = aprobadas.filter(v => v.equipo && v.equipo.toLowerCase().trim() === nombreEquipo.toLowerCase());
-        const boletos = ventasEquipo.reduce((sum, v) => sum + (parseInt(v.cantidad) || 0), 0);
-        const monto = ventasEquipo.reduce((sum, v) => sum + (parseFloat(v.total) || 0), 0);
-        return { boletos, monto };
+      const payload = {
+        action: 'autorizarYEnviar',
+        data: {
+          folio: order.folio,
+          nombre: order.nombre,
+          email: order.email,
+          telefono: order.telefono,
+          evento: order.evento,
+          cantidad: order.cantidad,
+          total: order.total,
+          fechaCompra: order.fechaCompra,
+          qrUrl: qrPublicUrl,
+          fromName: opts.fromName,
+          contact: opts.contact,
+          subject: opts.subject,
+          message: opts.message,
+          whatsapp: opts.whatsapp
+        }
       };
 
-      // Teams list
-      const equipos = ["Barreteros", "Halcones", "Indios", "Agricultores"];
+      if (!sheetsUrl || sheetsUrl.includes('XXXX') || sheetsUrl.includes('TU_SCRIPT')) {
+        statusEl.className = 'email-status err';
+        statusEl.innerHTML = `
+          <strong>Correo no enviado automáticamente.</strong><br>
+          Configura la URL de Google Apps Script en <em>Configuración</em> para activar el envío.<br>
+          Mientras tanto puedes descargar el QR y reenviarlo manualmente.
+        `;
+        // Abrir mailto de respaldo
+        const subject = encodeURIComponent(`Planet Boletos – Tu boleto ${order.folio}`);
+        const body = encodeURIComponent(
+`Hola ${order.nombre},
 
-      equipos.forEach(equipo => {
-        const stats = calcularPorEquipo(equipo);
-        const elBoletos = document.getElementById(`teamBoletos${equipo}`);
-        const elMonto = document.getElementById(`teamMonto${equipo}`);
+Tu pago ha sido autorizado. Aquí tienes tu boleto de acceso:
 
-        if (elBoletos) elBoletos.innerText = stats.boletos;
-        if (elMonto) elMonto.innerText = `$${stats.monto.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+FOLIO: ${order.folio}
+Evento: ${order.evento}
+Cantidad: ${order.cantidad} boleto(s)
+Total: $${order.total}
+
+Código QR: ${qrPublicUrl}
+
+Presenta este folio o el código QR en la entrada del evento.
+
+¡Gracias por comprar en Planet Boletos!`
+        );
+        // No abrimos mailto automáticamente para no molestar; el admin puede reenviar
+        return;
+      }
+
+      // 1) POST (actualiza hoja / WhatsApp)
+      // 2) GET enviarAutorizado (más confiable para MailApp, igual que Probar correo)
+      const base = sheetsUrl.split('?')[0];
+      const qrPublicUrl2 = qrPublicUrl;
+      const getParams = new URLSearchParams({
+        action: 'enviarAutorizado',
+        to: order.email,
+        folio: order.folio || '',
+        nombre: order.nombre || '',
+        evento: order.evento || '',
+        cantidad: String(order.cantidad || 1),
+        total: String(order.total || 0),
+        fromName: opts.fromName || 'Planet Boletos',
+        contact: opts.contact || '',
+        message: opts.message || '',
+        qrUrl: qrPublicUrl2
       });
-    }
-
-    // Change sale status (Aprobado / Rechazado)
-    async function cambiarEstado(folio, nuevoEstado) {
-      if (!confirm(`¿Estás seguro de cambiar el estado del folio ${folio} a "${nuevoEstado}"?`)) return;
+      if (opts.subject) getParams.set('subject', opts.subject);
+      const authMailUrl = base + '?' + getParams.toString();
 
       try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "actualizarEstadoPago", folio: folio, nuevoEstado: nuevoEstado })
+        await fetch(sheetsUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
         });
+      } catch (err) {
+        console.warn('POST opcional falló', err);
+      }
 
-        const data = await res.json();
+      // Abrir GET: aquí sí se envía el correo con folio + QR de forma confiable
+      statusEl.className = 'email-status ok';
+      statusEl.innerHTML = `
+        <strong>✓ Enviando correo de autorización…</strong><br>
+        Se abrió una pestaña del Apps Script. Si dice <em>“Correo de autorización enviado”</em>,
+        el cliente (<strong>${order.email}</strong>) ya tiene folio <code>${order.folio}</code> + QR.<br>
+        <small>Revisa también spam. 
+        <a href="${authMailUrl}" target="_blank" rel="noopener">Reenviar de nuevo</a> ·
+        <a href="${base}?action=testMail&to=${encodeURIComponent(order.email)}" target="_blank" rel="noopener">Probar correo simple</a>
+        </small>
+      `;
+      order.emailEnviado = true;
+      order.emailEnviadoEn = new Date().toISOString();
+      saveOrders();
+      window.open(authMailUrl, '_blank');
+    }
 
-        if (data.status === "OK") {
-          alert(`✅ Folio ${folio} actualizado a ${nuevoEstado}`);
-          cargarVentas();
-        } else {
-          alert("⚠️ " + data.message);
-        }
-      } catch (e) {
-        alert("❌ Error de comunicación con el servidor.");
+    function closeQrModal() {
+      document.getElementById('qrModal').classList.remove('show');
+      currentAuthOrder = null;
+    }
+
+    document.getElementById('btnDownloadQr')?.addEventListener('click', () => {
+      if (!currentQrDataUrl && currentAuthOrder) {
+        // Intentar de nuevo desde el canvas
+        const canvas = document.querySelector('#qrPreview canvas');
+        if (canvas) currentQrDataUrl = canvas.toDataURL('image/png');
+      }
+      if (!currentQrDataUrl) {
+        alert('QR aún no listo. Espera un segundo e intenta de nuevo.');
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = currentQrDataUrl;
+      a.download = `QR-${currentAuthOrder?.folio || 'boleto'}.png`;
+      a.click();
+    });
+
+    document.getElementById('btnResendEmail')?.addEventListener('click', () => {
+      if (currentAuthOrder) {
+        document.getElementById('emailStatus').className = 'email-status info';
+        document.getElementById('emailStatus').textContent = 'Reenviando correo…';
+        sendTicketEmail(currentAuthOrder);
+      }
+    });
+
+    document.getElementById('btnSendWhatsApp')?.addEventListener('click', () => {
+      if (!currentAuthOrder) {
+        alert('No hay orden autorizada en el modal.');
+        return;
+      }
+      enviarWhatsAppManual(currentAuthOrder);
+    });
+
+    // ========== CONTACTOS ==========
+    function renderContacts() {
+      // Guardamos índice original para poder borrar
+      const list = contacts.map((c, idx) => ({ ...c, _idx: idx })).reverse();
+      document.getElementById('contactsBody').innerHTML = list.length ? list.map(c => `
+        <tr>
+          <td>${formatDate(c.fecha)}</td>
+          <td>${c.nombre || ''}</td>
+          <td>${c.telefono || ''}</td>
+          <td>${c.email || ''}</td>
+          <td>${c.asunto || ''}</td>
+          <td style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${(c.mensaje || '').replace(/"/g, '&quot;')}">${c.mensaje || ''}</td>
+          <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="deleteContact(${c._idx})" title="Eliminar mensaje">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') : '<tr><td colspan="7" class="empty-state">Sin mensajes</td></tr>';
+    }
+
+    function saveContacts() {
+      localStorage.setItem('planetBoletos_contacts', JSON.stringify(contacts));
+    }
+
+    function deleteContact(idx) {
+      if (!confirm('¿Eliminar este mensaje de contacto?')) return;
+      if (idx < 0 || idx >= contacts.length) return;
+      contacts.splice(idx, 1);
+      saveContacts();
+      renderContacts();
+    }
+
+    function clearAllContacts() {
+      if (!contacts.length) {
+        alert('No hay mensajes para eliminar.');
+        return;
+      }
+      if (!confirm('¿Eliminar TODOS los mensajes de contacto? Esta acción no se puede deshacer.')) return;
+      contacts = [];
+      saveContacts();
+      renderContacts();
+    }
+
+    // ========== CONFIG ==========
+
+    async function saveMpConfig() {
+      saveConfig();
+      const el = document.getElementById('mpConfigResult');
+      el.style.display = 'block';
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX')) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Configura primero la URL del Web App en Conexión.';
+        return;
+      }
+      const accessToken = document.getElementById('mpAccessToken')?.value.trim() || '';
+      const publicKey = document.getElementById('mpPublicKey')?.value.trim() || '';
+      const enabled = document.getElementById('mpEnabled')?.checked === true;
+      if (enabled && !accessToken) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Pega el Access Token de Mercado Pago para activar la pasarela.';
+        return;
+      }
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'setMpConfig',
+            data: { accessToken, publicKey, enabled }
+          })
+        });
+        el.style.color = '#065F46';
+        el.textContent = 'Pasarela guardada. El token quedó en el Apps Script. Prueba una compra con “Pago en línea”.';
+        if (accessToken) document.getElementById('mpAccessToken').value = '';
+      } catch (err) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Error al guardar: ' + err.message;
       }
     }
 
-    // Filter Table Search
-    function filtrarTabla() {
-      const texto = document.getElementById("inputBuscar").value.toLowerCase();
-      const filtrados = ventasGlobales.filter(v => 
-        (v.folio && v.folio.toLowerCase().includes(texto)) ||
-        (v.cliente && v.cliente.toLowerCase().includes(texto)) ||
-        (v.equipo && v.equipo.toLowerCase().includes(texto)) ||
-        (v.folioBanco && v.folioBanco.toLowerCase().includes(texto)) ||
-        (v.estado && v.estado.toLowerCase().includes(texto))
-      );
-      renderizarTabla(filtrados);
+    function testEmailSend() {
+      const url = (document.getElementById('sheetsUrl')?.value || getSheetsUrl() || '').trim();
+      const el = document.getElementById('testEmailResult');
+      el.style.display = 'block';
+      if (!url || url.includes('XXXX')) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Primero guarda la URL del Web App (/exec).';
+        return;
+      }
+      const to = prompt('¿A qué correo enviamos la prueba?', 'tu-email@gmail.com');
+      if (!to || !to.includes('@')) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Email inválido.';
+        return;
+      }
+      // Abrimos doGet del Apps Script: envía correo de forma confiable y muestra resultado
+      const testUrl = url.split('?')[0] + '?action=testMail&to=' + encodeURIComponent(to.trim());
+      el.style.color = '#1E40AF';
+      el.innerHTML = 'Se abrió una pestaña de prueba. Si el script está bien, verás “Correo enviado” y llegará el mail a <strong>' + to + '</strong> (revisa spam).<br><a href="' + testUrl + '" target="_blank" rel="noopener">Abrir de nuevo la prueba</a>';
+      window.open(testUrl, '_blank');
     }
 
-    // Initialize load on startup
-    window.onload = cargarVentas;
-  </script>
+    async function testSheetsConnection() {
+      const url = document.getElementById('sheetsUrl').value.trim();
+      const el = document.getElementById('testSheetsResult');
+      el.style.display = 'block';
+      if (!url || url.includes('XXXX') || url.includes('TU_SCRIPT')) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Pega primero la URL del Web App (debe terminar en /exec).';
+        return;
+      }
+      localStorage.setItem('planetBoletos_sheetsUrl', url);
+      el.style.color = '#1E40AF';
+      el.textContent = 'Enviando fila de prueba a la hoja Ventas…';
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'nuevaVenta',
+            data: {
+              folio: 'PRUEBA-' + Date.now(),
+              evento: 'Prueba de conexión',
+              tipo: 'test',
+              cantidad: 1,
+              precioUnitario: 0,
+              total: 0,
+              comision: 0,
+              nombre: 'Prueba Sistema',
+              telefono: '0000000000',
+              email: 'prueba@planetboletos.com',
+              concepto: 'BOL-PRUEBA',
+              estado: 'en_proceso',
+              fechaCompra: new Date().toISOString(),
+              comprobante: ''
+            }
+          })
+        });
+        el.style.color = '#065F46';
+        el.innerHTML = '✓ Solicitud enviada. Abre tu Google Sheet y revisa la hoja <strong>Ventas</strong> (puede tardar 1–3 segundos). Si no aparece nada, vuelve a desplegar el Apps Script y autoriza los permisos.';
+      } catch (err) {
+        el.style.color = '#991B1B';
+        el.textContent = 'Error de red: ' + err.message;
+      }
+    }
 
+    const EMAIL_DEFAULTS = {
+      fromName: 'Planet Boletos',
+      contact: 'contacto@planetboletos.com',
+      subjRecibida: 'Planet Boletos – Recibimos tu solicitud · {FOLIO}',
+      subjAutorizado: 'Planet Boletos – Tu boleto autorizado · {FOLIO}',
+      subjRechazado: 'Planet Boletos – No pudimos autorizar tu compra · {FOLIO}',
+      msgRecibida: 'Estamos revisando tu comprobante de transferencia.',
+      msgAutorizado: 'Conserva este correo para ingresar al evento. Presenta el código QR en la entrada.',
+      msgRechazadoDefault: 'No se pudo verificar el comprobante de pago. Si ya realizaste la transferencia, responde este correo con el comprobante claro.',
+      sendRecibida: true,
+      sendAutorizado: true,
+      sendRechazado: true,
+      waEnabled: false,
+      waProvider: 'none',
+      waApiKey: '',
+      waWebhookUrl: '',
+      mpEnabled: false,
+      transferEnabled: true,
+      mpPublicKey: ''
+    };
+
+    function getEmailConfig() {
+      try {
+        const raw = localStorage.getItem('planetBoletos_emailConfig');
+        if (raw) return { ...EMAIL_DEFAULTS, ...JSON.parse(raw) };
+      } catch (e) {}
+      return { ...EMAIL_DEFAULTS };
+    }
+
+    function loadEmailConfigToForm() {
+      const c = getEmailConfig();
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+      const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+      set('emailFromName', c.fromName);
+      set('emailContact', c.contact);
+      set('subjRecibida', c.subjRecibida);
+      set('subjAutorizado', c.subjAutorizado);
+      set('subjRechazado', c.subjRechazado);
+      set('msgRecibida', c.msgRecibida);
+      set('msgAutorizado', c.msgAutorizado);
+      set('msgRechazadoDefault', c.msgRechazadoDefault);
+      setChk('sendRecibida', c.sendRecibida);
+      setChk('sendAutorizado', c.sendAutorizado);
+      setChk('sendRechazado', c.sendRechazado);
+      setChk('waEnabled', c.waEnabled);
+      set('waProvider', c.waProvider || 'none');
+      set('waApiKey', c.waApiKey || '');
+      set('waWebhookUrl', c.waWebhookUrl || '');
+      setChk('mpEnabled', c.mpEnabled);
+      setChk('transferEnabled', c.transferEnabled !== false);
+      set('mpPublicKey', c.mpPublicKey || '');
+    }
+
+    function saveConfig() {
+      const url = document.getElementById('sheetsUrl').value.trim();
+      localStorage.setItem('planetBoletos_sheetsUrl', url);
+
+      const cfg = {
+        fromName: document.getElementById('emailFromName')?.value.trim() || EMAIL_DEFAULTS.fromName,
+        contact: document.getElementById('emailContact')?.value.trim() || EMAIL_DEFAULTS.contact,
+        subjRecibida: document.getElementById('subjRecibida')?.value.trim() || EMAIL_DEFAULTS.subjRecibida,
+        subjAutorizado: document.getElementById('subjAutorizado')?.value.trim() || EMAIL_DEFAULTS.subjAutorizado,
+        subjRechazado: document.getElementById('subjRechazado')?.value.trim() || EMAIL_DEFAULTS.subjRechazado,
+        msgRecibida: document.getElementById('msgRecibida')?.value.trim() || EMAIL_DEFAULTS.msgRecibida,
+        msgAutorizado: document.getElementById('msgAutorizado')?.value.trim() || EMAIL_DEFAULTS.msgAutorizado,
+        msgRechazadoDefault: document.getElementById('msgRechazadoDefault')?.value.trim() || EMAIL_DEFAULTS.msgRechazadoDefault,
+        sendRecibida: document.getElementById('sendRecibida')?.checked !== false,
+        sendAutorizado: document.getElementById('sendAutorizado')?.checked !== false,
+        sendRechazado: document.getElementById('sendRechazado')?.checked !== false,
+        waEnabled: document.getElementById('waEnabled')?.checked === true,
+        waProvider: document.getElementById('waProvider')?.value || 'none',
+        waApiKey: document.getElementById('waApiKey')?.value.trim() || '',
+        waWebhookUrl: document.getElementById('waWebhookUrl')?.value.trim() || '',
+        mpEnabled: document.getElementById('mpEnabled')?.checked === true,
+        transferEnabled: document.getElementById('transferEnabled')?.checked !== false,
+        mpPublicKey: document.getElementById('mpPublicKey')?.value.trim() || ''
+      };
+      localStorage.setItem('planetBoletos_emailConfig', JSON.stringify(cfg));
+      localStorage.setItem('planetBoletos_fromName', cfg.fromName);
+      alert('Configuración, plantillas y WhatsApp guardados.');
+    }
+
+    function resetEmailTemplates() {
+      if (!confirm('¿Restaurar asuntos y textos por defecto?')) return;
+      localStorage.setItem('planetBoletos_emailConfig', JSON.stringify(EMAIL_DEFAULTS));
+      loadEmailConfigToForm();
+      alert('Plantillas restauradas. Pulsa Guardar si quieres confirmar.');
+    }
+
+    function emailOptsFor(order, tipo) {
+      const c = getEmailConfig();
+      const folio = order.folio || '';
+      const subjKey = tipo === 'recibida' ? 'subjRecibida' : (tipo === 'autorizado' ? 'subjAutorizado' : 'subjRechazado');
+      const msgKey = tipo === 'recibida' ? 'msgRecibida' : (tipo === 'autorizado' ? 'msgAutorizado' : 'msgRechazadoDefault');
+      return {
+        fromName: c.fromName,
+        contact: c.contact,
+        subject: (c[subjKey] || '').replace(/\{FOLIO\}/g, folio),
+        message: c[msgKey] || '',
+        sendRecibida: c.sendRecibida,
+        sendAutorizado: c.sendAutorizado,
+        sendRechazado: c.sendRechazado,
+        whatsapp: {
+          enabled: !!c.waEnabled,
+          provider: c.waProvider || 'none',
+          apiKey: c.waApiKey || '',
+          webhookUrl: c.waWebhookUrl || ''
+        }
+      };
+    }
+
+    function previewWhatsAppLink() {
+      const phone = prompt('Teléfono de prueba (10 dígitos o con 52):', '5512345678');
+      if (!phone) return;
+      const d = phone.replace(/\D/g, '');
+      const full = d.length === 10 ? '52' + d : d;
+      const msg = encodeURIComponent('✅ Prueba Planet Boletos\nSi recibes esto, el enlace wa.me funciona.');
+      window.open('https://wa.me/' + full + '?text=' + msg, '_blank');
+    }
+
+    function exportData() {
+      const data = { events, orders, contacts, exportDate: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'planet-boletos-backup.json';
+      a.click();
+    }
+
+    // ========== INIT ==========
+    function initAdmin() {
+      loadData();
+      renderDashboard();
+      document.getElementById('sheetsUrl').value = localStorage.getItem('planetBoletos_sheetsUrl') || '';
+      loadEmailConfigToForm();
+    }
+
+    checkAuth();
+
+    // Expose
+    window.updateMusic = updateMusic;
+    window.addMusicEvent = addMusicEvent;
+    window.deleteMusic = deleteMusic;
+    window.updateSport = updateSport;
+    window.changeOrderStatus = changeOrderStatus;
+    window.enviarWhatsAppManual = enviarWhatsAppManual;
+    window.saveConfig = saveConfig;
+    window.testSheetsConnection = testSheetsConnection;
+    window.testEmailSend = testEmailSend;
+    window.saveMpConfig = saveMpConfig;
+    window.resetEmailTemplates = resetEmailTemplates;
+    window.previewWhatsAppLink = previewWhatsAppLink;
+    window.exportData = exportData;
+    window.syncPendingToSheets = syncPendingToSheets;
+    window.clearAllOrders = clearAllOrders;
+    window.deleteOrder = deleteOrder;
+    window.deleteContact = deleteContact;
+    window.clearAllContacts = clearAllContacts;
+    window.addSportEvent = addSportEvent;
+    window.deleteSportEvent = deleteSportEvent;
+    window.verComprobante = verComprobante;
+    window.closeComprobanteModal = closeComprobanteModal;
+    window.closeQrModal = closeQrModal;
+  </script>
 </body>
 </html>

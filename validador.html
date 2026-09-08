@@ -1,365 +1,694 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Control de Acceso - Planet Boletos</title>
-  
-  <!-- FontAwesome para Íconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validador QR | Planet Boletos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <style>
     :root {
-      --bg-dark: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #2563eb;
-      --text-light: #f8fafc;
-      --text-muted: #94a3b8;
-      
-      --success-bg: #059669;
-      --success-text: #ecfdf5;
-      
-      --error-bg: #dc2626;
-      --error-text: #fef2f2;
-      
-      --warn-bg: #d97706;
-      --warn-text: #fffbeb;
+      --navy: #0B1E3D;
+      --navy-dark: #071428;
+      --red: #C41E3A;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --gray-100: #F5F7FA;
+      --gray-200: #E2E8F0;
+      --gray-600: #4A5568;
+      --white: #FFFFFF;
+      --radius: 16px;
+      --shadow: 0 10px 40px rgba(11, 30, 61, 0.12);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    
-    body { 
-      background-color: var(--bg-dark); 
-      color: var(--text-light); 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--gray-100);
+      color: #1A202C;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 15px;
     }
 
-    /* HEADER DE CONTROL */
-    .app-header {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 5px 20px 5px;
-      border-bottom: 1px solid #334155;
-      margin-bottom: 20px;
-    }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
 
-    .app-header h1 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .counter-badge {
-      background: #334155;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #38bdf8;
-    }
-
-    /* CONTENEDOR PRINCIPAL */
-    .validator-card {
-      background: var(--card-bg);
-      width: 100%;
-      max-width: 480px;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      border: 1px solid #334155;
-      text-align: center;
-    }
-
-    /* FORMULARIO DE ENTRADA */
-    .input-group {
-      margin-bottom: 15px;
-    }
-
-    .input-group label {
-      display: block;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-
-    .scan-input {
-      width: 100%;
-      padding: 16px;
-      background: #0f172a;
-      border: 2px solid #475569;
-      border-radius: 12px;
-      color: #fff;
-      font-size: 1.25rem;
-      font-weight: 800;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .scan-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
-    }
-
-    .btn-validate {
-      width: 100%;
-      background: var(--accent);
+    .header {
+      background: var(--navy-dark);
       color: white;
-      border: none;
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 1.1rem;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-brand img { height: 40px; }
+
+    .header-brand span {
+      font-family: 'Outfit', sans-serif;
       font-weight: 800;
-      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .header-brand span b { color: var(--red); }
+
+    .header a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: 0.2s;
+    }
+
+    .header a:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title h1 {
+      font-size: 1.8rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .page-title p { color: var(--gray-600); }
+
+    .scanner-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .scanner-header {
+      background: var(--navy);
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .scanner-header h2 {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .video-wrap {
+      position: relative;
+      background: #000;
+      aspect-ratio: 4/3;
+      max-height: 420px;
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #canvas { display: none; }
+
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: background 0.2s;
+      pointer-events: none;
     }
 
-    .btn-validate:active {
-      transform: scale(0.98);
-    }
-
-    /* TARJETA DE RESULTADO */
-    #resultado {
-      margin-top: 20px;
+    .scan-frame {
+      width: 220px;
+      height: 220px;
+      border: 3px solid var(--red);
       border-radius: 16px;
-      padding: 20px;
-      display: none;
-      animation: fadeIn 0.2s ease-in-out;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+      position: relative;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .scan-frame::before,
+    .scan-frame::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--success);
     }
 
-    /* ESTADOS DE VALIDACIÓN */
-    .status-ok {
-      background: var(--success-bg);
-      color: var(--success-text);
-      display: block !important;
+    .scan-frame::before {
+      top: -3px; left: -3px;
+      border-right: none; border-bottom: none;
+      border-radius: 8px 0 0 0;
     }
 
-    .status-err {
-      background: var(--error-bg);
-      color: var(--error-text);
-      display: block !important;
+    .scan-frame::after {
+      bottom: -3px; right: -3px;
+      border-left: none; border-top: none;
+      border-radius: 0 0 8px 0;
     }
 
-    .status-warn {
-      background: var(--warn-bg);
-      color: var(--warn-text);
-      display: block !important;
+    .scanner-controls {
+      padding: 20px 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .status-loading {
-      background: #334155;
-      color: var(--text-light);
-      display: block !important;
-    }
-
-    /* DETALLES DEL BOLETO */
-    .status-icon {
-      font-size: 3.5rem;
-      margin-bottom: 10px;
-    }
-
-    .status-title {
-      font-size: 1.5rem;
-      font-weight: 900;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .ticket-info {
-      background: rgba(0, 0, 0, 0.2);
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
       border-radius: 10px;
-      padding: 12px;
-      text-align: left;
+      font-weight: 600;
       font-size: 0.95rem;
-      line-height: 1.6;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .ticket-info div {
+    .btn-primary { background: var(--red); color: white; }
+    .btn-primary:hover { background: #9B1830; }
+
+    .btn-navy { background: var(--navy); color: white; }
+    .btn-navy:hover { background: var(--navy-dark); }
+
+    .btn-outline {
+      background: white;
+      border: 2px solid var(--gray-200);
+      color: var(--navy);
+    }
+
+    .btn-success { background: var(--success); color: white; }
+    .btn-danger { background: var(--red); color: white; }
+
+    .manual-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 28px;
+    }
+
+    .manual-section h3 {
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .manual-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .manual-row input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .manual-row input:focus {
+      outline: none;
+      border-color: var(--navy);
+    }
+
+    .result-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
+      display: none;
+      text-align: center;
+    }
+
+    .result-card.show { display: block; }
+
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.2rem;
+    }
+
+    .result-icon.valid {
+      background: #D1FAE5;
+      color: var(--success);
+    }
+
+    .result-icon.invalid {
+      background: #FEE2E2;
+      color: var(--red);
+    }
+
+    .result-icon.used {
+      background: #FEF3C7;
+      color: var(--warning);
+    }
+
+    .result-card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+    }
+
+    .result-card.valid h2 { color: var(--success); }
+    .result-card.invalid h2 { color: var(--red); }
+    .result-card.used h2 { color: var(--warning); }
+
+    .result-details {
+      text-align: left;
+      background: var(--gray-100);
+      border-radius: 12px;
+      padding: 18px;
+      margin: 20px 0;
+      font-size: 0.95rem;
+    }
+
+    .result-details .row {
       display: flex;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 4px 0;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--gray-200);
     }
 
-    .ticket-info div:last-child {
-      border-bottom: none;
+    .result-details .row:last-child { border-bottom: none; }
+
+    .result-details .label { color: var(--gray-600); }
+    .result-details .value { font-weight: 600; color: var(--navy); }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px;
     }
 
-    .ticket-info span.label {
-      opacity: 0.8;
-      font-weight: 500;
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
     }
 
-    .ticket-info span.val {
-      font-weight: 800;
+    .log-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-200);
     }
 
-    /* BOTÓN LIMPIAR */
-    .btn-reset {
-      margin-top: 15px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
+    .log-section h3 {
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .log-list {
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 0.88rem;
+    }
+
+    .log-item:last-child { border-bottom: none; }
+
+    .log-item .folio { font-weight: 600; color: var(--navy); font-family: monospace; }
+
+    @media (max-width: 600px) {
+      .scan-frame { width: 180px; height: 180px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- CABECERA -->
-  <div class="app-header">
-    <h1><i class="fas fa-qrcode" style="color: var(--accent);"></i> Access Control</h1>
-    <div class="counter-badge" id="counterBox">Ingresos: 0</div>
-  </div>
+  <header class="header">
+    <div class="header-brand">
+      <img src="planet-boletos.png" alt="Planet Boletos" />
+      <span>Planet <b>Boletos</b> · Validador</span>
+    </div>
+    <div>
+      <a href="index.html"><i class="fas fa-home"></i> Sitio</a>
+      <a href="admin.html"><i class="fas fa-cog"></i> Admin</a>
+    </div>
+  </header>
 
-  <!-- TARJETA DE OPERACIÓN -->
-  <div class="validator-card">
-    <form onsubmit="validarAcceso(event)">
-      <div class="input-group">
-        <label for="folioInput">Escanear o Ingresar Folio</label>
-        <input 
-          type="text" 
-          id="folioInput" 
-          class="scan-input" 
-          placeholder="FOLIO..." 
-          autocomplete="off" 
-          autofocus
-          required
-        >
+  <div class="container">
+    <div class="page-title">
+      <h1><i class="fas fa-qrcode"></i> Validación de Boletos</h1>
+      <p>Escanea el código QR o ingresa el folio manualmente</p>
+    </div>
+
+    <!-- SCANNER -->
+    <div class="scanner-card">
+      <div class="scanner-header">
+        <h2><i class="fas fa-camera"></i> Escáner de cámara</h2>
+        <span id="scanStatus" style="font-size:0.85rem; opacity:0.8;">Detenido</span>
       </div>
+      <div class="video-wrap">
+        <video id="video" playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div class="scan-overlay">
+          <div class="scan-frame"></div>
+        </div>
+      </div>
+      <div class="scanner-controls">
+        <button class="btn btn-primary" id="startScanBtn">
+          <i class="fas fa-play"></i> Iniciar cámara
+        </button>
+        <button class="btn btn-outline" id="stopScanBtn" style="display:none;">
+          <i class="fas fa-stop"></i> Detener
+        </button>
+      </div>
+    </div>
 
-      <button type="submit" id="btnSubmit" class="btn-validate">
-        <i class="fas fa-search"></i> VALIDAR ENTRADA
-      </button>
-    </form>
+    <!-- MANUAL -->
+    <div class="manual-section">
+      <h3><i class="fas fa-keyboard"></i> Validar por folio</h3>
+      <div class="manual-row">
+        <input type="text" id="folioInput" placeholder="Ej: PB-XXXX-XXXX" autocomplete="off" />
+        <button class="btn btn-navy" id="validateFolioBtn">
+          <i class="fas fa-search"></i> Validar
+        </button>
+      </div>
+    </div>
 
-    <!-- ÁREA DE RESPUESTA VISUAL -->
-    <div id="resultado"></div>
+    <!-- RESULT -->
+    <div class="result-card" id="resultCard">
+      <div class="result-icon" id="resultIcon">
+        <i class="fas fa-check"></i>
+      </div>
+      <h2 id="resultTitle">Boleto válido</h2>
+      <p id="resultMsg"></p>
+      <div class="result-details" id="resultDetails"></div>
+      <div class="result-actions" id="resultActions"></div>
+    </div>
+
+    <!-- LOG -->
+    <div class="log-section">
+      <h3><i class="fas fa-history"></i> Últimas validaciones</h3>
+      <div class="log-list" id="logList">
+        <p style="color:var(--gray-600); font-size:0.9rem;">Aún no hay validaciones en esta sesión.</p>
+      </div>
+    </div>
   </div>
 
   <script>
-    // ⚠️ REEMPLAZA CON TU URL REAL OBTENIDA DEL DESPLIEGUE EN GOOGLE APPS SCRIPT
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwtq3OeJzSr3nCPTJ3MueiuB8BteLZhSHdlHT3rgmR3IqR9AFaOQLojf2dfNs5uS4Hr7g/exec";
+    let stream = null;
+    let scanning = false;
+    let lastScanned = '';
+    let scanCooldown = false;
 
-    let totalValidados = 0;
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
-    // Mantener el foco automático en el input para lectores de código de barras USB/Bluetooth
-    document.addEventListener("click", () => {
-      document.getElementById("folioInput").focus();
-    });
+    function getOrders() {
+      return JSON.parse(localStorage.getItem('planetBoletos_orders') || '[]');
+    }
 
-    async function validarAcceso(event) {
-      if (event) event.preventDefault();
+    function saveOrders(orders) {
+      localStorage.setItem('planetBoletos_orders', JSON.stringify(orders));
+    }
 
-      const input = document.getElementById("folioInput");
-      const div = document.getElementById("resultado");
-      const btn = document.getElementById("btnSubmit");
-      const folio = input.value.trim();
+    function formatDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString('es-MX', { dateStyle: 'medium', timeStyle: 'short' });
+    }
 
-      if (!folio) return;
+    function formatMoney(n) {
+      return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(n || 0);
+    }
 
-      // Estado Cargando
-      btn.disabled = true;
-      div.className = "status-loading";
-      div.innerHTML = `
-        <div class="status-icon"><i class="fas fa-spinner fa-spin"></i></div>
-        <div class="status-title">Consultando...</div>
-      `;
-
+    // ========== CAMERA ==========
+    async function startCamera() {
       try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "validarQR", folio: folio })
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
         });
-
-        const data = await res.json();
-
-        if (data.status === "OK") {
-          totalValidados++;
-          document.getElementById("counterBox").innerText = `Ingresos: ${totalValidados}`;
-
-          div.className = "status-ok";
-          div.innerHTML = `
-            <div class="status-icon"><i class="fas fa-check-circle"></i></div>
-            <div class="status-title">ACCESO PERMITIDO</div>
-            <div class="ticket-info">
-              <div><span class="label">Cliente:</span><span class="val">${data.venta.cliente}</span></div>
-              <div><span class="label">Equipo:</span><span class="val">${data.venta.equipo}</span></div>
-              <div><span class="label">Boletos:</span><span class="val">${data.venta.cantidad}</span></div>
-              <div><span class="label">Folio:</span><span class="val">${folio}</span></div>
-            </div>
-            <button class="btn-reset" onclick="resetForm()">SIGUIENTE ESCANEO</button>
-          `;
-          input.value = "";
-        } else if (data.status === "ALREADY_USED") {
-          div.className = "status-warn";
-          div.innerHTML = `
-            <div class="status-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="status-title">BOLETO YA USADO</div>
-            <p style="margin-bottom:10px;">${data.message || 'Este folio ya fue registrado previamente.'}</p>
-            <button class="btn-reset" onclick="resetForm()">ENTENDIDO</button>
-          `;
-        } else {
-          div.className = "status-err";
-          div.innerHTML = `
-            <div class="status-icon"><i class="fas fa-times-circle"></i></div>
-            <div class="status-title">ACCESO DENEGADO</div>
-            <p style="margin-bottom:10px;">${data.message || 'Folio no encontrado o no válido.'}</p>
-            <button class="btn-reset" onclick="resetForm()">REINTENTAR</button>
-          `;
-        }
-      } catch (e) {
-        console.error(e);
-        div.className = "status-err";
-        div.innerHTML = `
-          <div class="status-icon"><i class="fas fa-wifi"></i></div>
-          <div class="status-title">ERROR DE RED</div>
-          <p>Verifica la conexión a Internet del dispositivo.</p>
-          <button class="btn-reset" onclick="resetForm()">REINTENTAR</button>
-        `;
-      } finally {
-        btn.disabled = false;
-        input.focus();
+        video.srcObject = stream;
+        await video.play();
+        scanning = true;
+        document.getElementById('startScanBtn').style.display = 'none';
+        document.getElementById('stopScanBtn').style.display = 'inline-flex';
+        document.getElementById('scanStatus').textContent = 'Escaneando...';
+        requestAnimationFrame(tick);
+      } catch (err) {
+        alert('No se pudo acceder a la cámara. Verifica permisos o usa validación manual.\n\n' + err.message);
       }
     }
 
-    function resetForm() {
-      const div = document.getElementById("resultado");
-      div.className = "";
-      div.style.display = "none";
-      const input = document.getElementById("folioInput");
-      input.value = "";
-      input.focus();
+    function stopCamera() {
+      scanning = false;
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+        stream = null;
+      }
+      video.srcObject = null;
+      document.getElementById('startScanBtn').style.display = 'inline-flex';
+      document.getElementById('stopScanBtn').style.display = 'none';
+      document.getElementById('scanStatus').textContent = 'Detenido';
     }
+
+    function tick() {
+      if (!scanning) return;
+      if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+          inversionAttempts: 'dontInvert'
+        });
+        if (code && code.data && !scanCooldown) {
+          if (code.data !== lastScanned) {
+            lastScanned = code.data;
+            scanCooldown = true;
+            validateTicket(code.data);
+            setTimeout(() => { scanCooldown = false; }, 2500);
+          }
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    document.getElementById('startScanBtn').addEventListener('click', startCamera);
+    document.getElementById('stopScanBtn').addEventListener('click', stopCamera);
+
+    // ========== VALIDATE ==========
+    function validateTicket(codeOrFolio) {
+      // El QR puede contener solo el folio o un JSON {folio, ...}
+      let folio = codeOrFolio.trim();
+      try {
+        const parsed = JSON.parse(codeOrFolio);
+        if (parsed.folio) folio = parsed.folio;
+      } catch (e) {}
+
+      const orders = getOrders();
+      const order = orders.find(o => o.folio === folio);
+
+      const card = document.getElementById('resultCard');
+      const icon = document.getElementById('resultIcon');
+      const title = document.getElementById('resultTitle');
+      const msg = document.getElementById('resultMsg');
+      const details = document.getElementById('resultDetails');
+      const actions = document.getElementById('resultActions');
+
+      card.classList.remove('valid', 'invalid', 'used', 'show');
+      void card.offsetWidth; // reflow
+      card.classList.add('show');
+
+      if (!order) {
+        card.classList.add('invalid');
+        icon.className = 'result-icon invalid';
+        icon.innerHTML = '<i class="fas fa-times"></i>';
+        title.textContent = 'Boleto no encontrado';
+        msg.textContent = 'El folio no existe en el sistema.';
+        details.innerHTML = `<div class="row"><span class="label">Código leído</span><span class="value">${folio}</span></div>`;
+        actions.innerHTML = '';
+        addLog(folio, 'no_encontrado');
+        return;
+      }
+
+      if (order.estado === 'usado') {
+        card.classList.add('used');
+        icon.className = 'result-icon used';
+        icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+        title.textContent = 'Boleto ya utilizado';
+        msg.textContent = 'Este boleto ya fue procesado anteriormente.';
+        details.innerHTML = buildDetails(order);
+        actions.innerHTML = '';
+        addLog(folio, 'ya_usado');
+        return;
+      }
+
+      if (!['autorizado', 'entregado'].includes(order.estado)) {
+        card.classList.add('invalid');
+        icon.className = 'result-icon invalid';
+        icon.innerHTML = '<i class="fas fa-ban"></i>';
+        title.textContent = 'Boleto no autorizado';
+        msg.textContent = `Estado actual: ${order.estado.replace('_', ' ')}. Solo se admiten boletos autorizados o entregados.`;
+        details.innerHTML = buildDetails(order);
+        actions.innerHTML = '';
+        addLog(folio, 'no_autorizado');
+        return;
+      }
+
+      // VÁLIDO
+      card.classList.add('valid');
+      icon.className = 'result-icon valid';
+      icon.innerHTML = '<i class="fas fa-check"></i>';
+      title.textContent = '¡Boleto válido!';
+      msg.textContent = 'Puedes marcar este boleto como usado para evitar duplicados.';
+      details.innerHTML = buildDetails(order);
+      actions.innerHTML = `
+        <button class="btn btn-success" onclick="markAsUsed('${order.folio}')">
+          <i class="fas fa-check-double"></i> Marcar como usado / anular
+        </button>
+        <button class="btn btn-outline" onclick="document.getElementById('resultCard').classList.remove('show')">
+          Cerrar
+        </button>
+      `;
+      addLog(folio, 'valido');
+    }
+
+    function buildDetails(order) {
+      return `
+        <div class="row"><span class="label">Folio</span><span class="value">${order.folio}</span></div>
+        <div class="row"><span class="label">Evento</span><span class="value">${order.evento}</span></div>
+        <div class="row"><span class="label">Cliente</span><span class="value">${order.nombre}</span></div>
+        <div class="row"><span class="label">Cantidad</span><span class="value">${order.cantidad} boleto(s)</span></div>
+        <div class="row"><span class="label">Total pagado</span><span class="value">${formatMoney(order.total)}</span></div>
+        <div class="row"><span class="label">Estado</span><span class="value"><span class="status-badge" style="background:#D1FAE5;color:#065F46;">${order.estado}</span></span></div>
+        <div class="row"><span class="label">Fecha compra</span><span class="value">${formatDate(order.fechaCompra)}</span></div>
+      `;
+    }
+
+    function markAsUsed(folio) {
+      const orders = getOrders();
+      const order = orders.find(o => o.folio === folio);
+      if (!order) return;
+      order.estado = 'usado';
+      order.fechaUso = new Date().toISOString();
+      saveOrders(orders);
+
+      // Sync Google Sheets si está configurado
+      const sheetsUrl = localStorage.getItem('planetBoletos_sheetsUrl');
+      if (sheetsUrl) {
+        fetch(sheetsUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'marcarUsado', data: { folio, fechaUso: order.fechaUso } })
+        }).catch(() => {});
+      }
+
+      document.getElementById('resultTitle').textContent = 'Boleto anulado correctamente';
+      document.getElementById('resultMsg').textContent = 'El boleto ha sido marcado como usado y no podrá reutilizarse.';
+      document.getElementById('resultActions').innerHTML = `
+        <button class="btn btn-outline" onclick="document.getElementById('resultCard').classList.remove('show')">
+          Continuar escaneando
+        </button>
+      `;
+      document.getElementById('resultIcon').className = 'result-icon used';
+      document.getElementById('resultIcon').innerHTML = '<i class="fas fa-check-double"></i>';
+      addLog(folio, 'anulado');
+    }
+
+    // Manual
+    document.getElementById('validateFolioBtn').addEventListener('click', () => {
+      const folio = document.getElementById('folioInput').value.trim();
+      if (folio) validateTicket(folio);
+    });
+
+    document.getElementById('folioInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const folio = document.getElementById('folioInput').value.trim();
+        if (folio) validateTicket(folio);
+      }
+    });
+
+    // Log
+    const sessionLog = [];
+    function addLog(folio, resultado) {
+      sessionLog.unshift({ folio, resultado, hora: new Date().toLocaleTimeString('es-MX') });
+      if (sessionLog.length > 30) sessionLog.pop();
+      renderLog();
+    }
+
+    function renderLog() {
+      const el = document.getElementById('logList');
+      if (!sessionLog.length) {
+        el.innerHTML = '<p style="color:var(--gray-600); font-size:0.9rem;">Aún no hay validaciones en esta sesión.</p>';
+        return;
+      }
+      const labels = {
+        valido: '✓ Válido',
+        ya_usado: '⚠ Ya usado',
+        no_encontrado: '✗ No encontrado',
+        no_autorizado: '✗ No autorizado',
+        anulado: '✓ Anulado'
+      };
+      el.innerHTML = sessionLog.map(l => `
+        <div class="log-item">
+          <span class="folio">${l.folio}</span>
+          <span>${labels[l.resultado] || l.resultado}</span>
+          <span style="color:var(--gray-600);">${l.hora}</span>
+        </div>
+      `).join('');
+    }
+
+    // Expose
+    window.markAsUsed = markAsUsed;
+
+    // Cleanup
+    window.addEventListener('beforeunload', stopCamera);
   </script>
 </body>
 </html>

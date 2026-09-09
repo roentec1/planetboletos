@@ -4,10 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planet Boletos | Compra de Boletos Online</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#0B1E3D" />
+  <meta name="color-scheme" content="light" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://api.qrserver.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <!-- Fuentes: display=swap evita texto invisible (FOIT) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" /></noscript>
+  <!-- Font Awesome no bloqueante -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
   <style>
     :root {
       --navy: #0B1E3D;
@@ -825,6 +839,47 @@
       color: var(--navy);
     }
 
+    .pay-method-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .pay-method-tabs label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+      background: #fff;
+    }
+    .pay-method-tabs input { display: none; }
+    .pay-method-tabs label:has(input:checked) {
+      border-color: var(--navy);
+      background: rgba(11, 30, 61, 0.06);
+      color: var(--navy);
+    }
+    .card-box {
+      background: #F8FAFC;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .card-box .card-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 520px) {
+      .card-box .card-row { grid-template-columns: 1fr; }
+    }
     .transfer-box {
       background: linear-gradient(135deg, #0B1E3D, #1a365d);
       color: white;
@@ -932,36 +987,129 @@
       border: 1px solid #FECACA;
     }
 
-    /* ========== RESPONSIVE ========== */
+    /* ========== RESPONSIVE / MÓVIL ========== */
     @media (max-width: 900px) {
       .hero-content { grid-template-columns: 1fr; text-align: center; }
       .hero p { margin-left: auto; margin-right: auto; }
-      .hero-actions { justify-content: center; }
+      .hero-actions { justify-content: center; flex-wrap: wrap; }
       .hero-visual { order: -1; }
-      .hero-logo-card { padding: 24px; }
-      .hero-logo-card img { max-width: 240px; }
+      .hero-logo-card { padding: 20px; }
+      .hero-logo-card img { max-width: 200px; }
       .contact-grid { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
       .form-row { grid-template-columns: 1fr; }
+      .events-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
     }
 
     @media (max-width: 700px) {
+      .header { padding: 0; }
+      .nav-container { padding: 12px 16px; }
+      .logo img { height: 36px; }
+      .logo-text { font-size: 1rem; }
+
       .nav-links {
         position: fixed;
-        top: 72px;
+        top: 64px;
         left: 0; right: 0;
         background: var(--navy);
         flex-direction: column;
-        padding: 20px;
+        padding: 16px;
         gap: 4px;
-        transform: translateY(-120%);
+        transform: translateY(-130%);
         transition: var(--transition);
         border-bottom: 1px solid rgba(255,255,255,0.1);
+        z-index: 1000;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
       }
       .nav-links.open { transform: translateY(0); }
-      .menu-toggle { display: block; }
-      .footer-grid { grid-template-columns: 1fr; }
+      .nav-links a {
+        display: block;
+        padding: 14px 16px;
+        font-size: 1rem;
+        border-radius: 10px;
+      }
+      .menu-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+        background: transparent;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .hero { padding: 100px 16px 48px; }
+      .hero h1 { font-size: 1.75rem; line-height: 1.25; }
+      .hero p { font-size: 0.95rem; }
+
+      .section { padding: 48px 16px; }
+      .section-title { font-size: 1.5rem; }
+      .section-sub { font-size: 0.95rem; }
+
+      .events-grid { grid-template-columns: 1fr; gap: 16px; }
+      .event-card { border-radius: 14px; }
+      .event-card img, .event-card .event-img { height: 180px; object-fit: cover; }
+
+      .footer-grid { grid-template-columns: 1fr; text-align: center; }
+      .footer-social { justify-content: center; }
+
+      /* Modal compra a pantalla casi completa */
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+        -webkit-overflow-scrolling: touch;
+      }
+      .modal {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 94vh;
+        overflow-y: auto;
+        border-radius: 18px 18px 0 0 !important;
+        margin: 0 !important;
+      }
+      .modal-header { padding: 14px 16px; }
+      .modal-body { padding: 16px !important; }
+      .modal-event-info { flex-direction: column; text-align: center; }
+      .modal-event-info img { width: 100%; max-height: 140px; object-fit: cover; }
+      .transfer-row {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+      }
+      .transfer-row strong { word-break: break-all; }
+      .qty-controls { gap: 16px; }
+      .qty-btn { width: 44px; height: 44px; font-size: 1.25rem; }
+      .total-box strong { font-size: 1.35rem; }
+      .btn { min-height: 44px; }
+      .file-upload { padding: 20px 12px; }
     }
+
+    @media (max-width: 400px) {
+      .hero h1 { font-size: 1.5rem; }
+      .logo-text { display: none; }
+    }
+
+
+    /* Rendimiento y compatibilidad */
+    img, video { max-width: 100%; height: auto; }
+    img[loading="lazy"] { content-visibility: auto; }
+    .event-card, .panel, .scanner-card {
+      content-visibility: auto;
+      contain-intrinsic-size: 1px 320px;
+    }
+    .modal-overlay, .sidebar {
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    @supports not (backdrop-filter: blur(6px)) {
+      .modal-overlay { background: rgba(7, 20, 40, 0.92); }
+    }
+    /* Reduce layout shift */
+    .logo img { width: auto; height: 42px; object-fit: contain; }
 
     .hidden { display: none !important; }
   </style>
@@ -972,7 +1120,7 @@
   <header class="header" id="header">
     <div class="nav-container">
       <a href="#inicio" class="logo">
-        <img src="planet-boletos.png" alt="Planet Boletos" />
+        <img src="planet-boletos.png" alt="Planet Boletos" width="160" height="48" decoding="async" fetchpriority="high" />
         <span class="logo-text">Planet <span>Boletos</span></span>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Menú">
@@ -1062,29 +1210,29 @@
             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
             <div>
               <strong>Correo</strong>
-              <span>planetpublicidadmva@gmail.com</span>
+              <span>contacto@planetboletos.com</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
             <div>
               <strong>WhatsApp</strong>
-              <span>+52 866 163 3223</span>
+              <span>+52 55 1234 5678</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <strong>Oficina</strong>
-              <span>Monclova Coahuila, México</span>
+              <span>Ciudad de México, México</span>
             </div>
           </div>
 
           <div class="social-links">
-            <a href="https://www.facebook.com/profile.php?id=100041638765131" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://wa.me/528661633223" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             <a href="https://tiktok.com" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
           </div>
         </div>
@@ -1100,7 +1248,7 @@
             </div>
             <div class="form-group">
               <label for="cTelefono">Teléfono / WhatsApp</label>
-              <input type="tel" id="cTelefono" name="telefono" required placeholder="866 1234 567" />
+              <input type="tel" id="cTelefono" name="telefono" required placeholder="55 1234 5678" />
             </div>
           </div>
           <div class="form-group">
@@ -1203,7 +1351,7 @@
             </div>
             <div class="form-group">
               <label for="pTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="pTelefono" name="telefono" required placeholder="866 1234 567" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="pTelefono" name="telefono" required placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
               <p id="errTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -1214,7 +1362,27 @@
             <p id="errEmail" class="field-error" style="display:none;"></p>
           </div>
 
-          <div class="transfer-box">
+          <div class="form-group" id="pagoMetodoBox">
+            <label style="font-weight:600; margin-bottom:10px; display:block;">Método de pago *</label>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <label id="optMpLabel" style="display:none; align-items:flex-start; gap:10px; padding:12px 14px; border:2px solid var(--gray-200); border-radius:12px; cursor:pointer;">
+                <input type="radio" name="metodoPago" id="metodoMP" value="mercadopago" style="margin-top:3px;" />
+                <span>
+                  <strong><i class="fas fa-credit-card"></i> Pago en línea (Mercado Pago)</strong><br>
+                  <small style="color:var(--gray-600);">Tarjeta, SPEI o saldo MP · confirmación automática · total con comisión</small>
+                </span>
+              </label>
+              <label id="optTransferLabel" style="display:flex; align-items:flex-start; gap:10px; padding:12px 14px; border:2px solid var(--gray-200); border-radius:12px; cursor:pointer;">
+                <input type="radio" name="metodoPago" id="metodoTransfer" value="transferencia" checked style="margin-top:3px;" />
+                <span>
+                  <strong><i class="fas fa-university"></i> Transferencia bancaria</strong><br>
+                  <small style="color:var(--gray-600);">Sube tu comprobante · validación manual en Admin</small>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div class="transfer-box" id="transferBox">
             <h5><i class="fas fa-university"></i> Datos para transferencia</h5>
             <div class="transfer-row">
               <span>Banco</span>
@@ -1234,7 +1402,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="comprobanteGroup">
             <label>Comprobante de pago *</label>
             <div class="file-upload" id="fileUploadArea">
               <i class="fas fa-cloud-upload-alt"></i>
@@ -1245,10 +1413,10 @@
             <p id="errComprobante" class="field-error" style="display:none;"></p>
           </div>
 
-          <div class="form-group" style="margin-top:8px;">
+          <div class="form-group" id="confirmaGroup" style="margin-top:8px;">
             <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-weight:500;">
               <input type="checkbox" id="pConfirmaPago" style="margin-top:4px; width:18px; height:18px;" />
-              <span>Confirmo que realicé la transferencia por el <strong>total exacto</strong> usando el concepto indicado y que los datos son correctos.</span>
+              <span>Confirmo que realicé la transferencia por el <strong>total exacto</strong> (incluye comisión) usando el concepto indicado.</span>
             </label>
             <p id="errConfirma" class="field-error" style="display:none;"></p>
           </div>
@@ -1279,6 +1447,65 @@
   <script>
     // ========== CONFIGURACIÓN GOOGLE SHEETS ==========
     // Se toma de Admin → Configuración (localStorage). También puedes pegar la URL aquí:
+
+    function getPaymentConfig() {
+      try {
+        const raw = localStorage.getItem('planetBoletos_emailConfig');
+        if (raw) {
+          const c = JSON.parse(raw);
+          return {
+            mpEnabled: !!c.mpEnabled,
+            transferEnabled: c.transferEnabled !== false
+          };
+        }
+      } catch (e) {}
+      return { mpEnabled: false, transferEnabled: true };
+    }
+
+    function setupPaymentMethods() {
+      const cfg = getPaymentConfig();
+      const optMp = document.getElementById('optMpLabel');
+      const optTr = document.getElementById('optTransferLabel');
+      const radioMp = document.getElementById('metodoMP');
+      const radioTr = document.getElementById('metodoTransfer');
+      if (optMp) optMp.style.display = cfg.mpEnabled ? 'flex' : 'none';
+      if (optTr) optTr.style.display = cfg.transferEnabled ? 'flex' : 'none';
+      if (cfg.mpEnabled && !cfg.transferEnabled) {
+        if (radioMp) radioMp.checked = true;
+        if (radioTr) radioTr.checked = false;
+      } else if (!cfg.mpEnabled) {
+        if (radioTr) radioTr.checked = true;
+        if (radioMp) radioMp.checked = false;
+      }
+      togglePagoUI();
+    }
+
+    function getMetodoPago() {
+      const mp = document.getElementById('metodoMP');
+      if (mp && mp.checked) return 'mercadopago';
+      return 'transferencia';
+    }
+
+    function togglePagoUI() {
+      const online = getMetodoPago() === 'mercadopago';
+      const tr = document.getElementById('transferBox');
+      const cg = document.getElementById('comprobanteGroup');
+      const conf = document.getElementById('confirmaGroup');
+      if (tr) tr.style.display = online ? 'none' : 'block';
+      if (cg) cg.style.display = online ? 'none' : 'block';
+      if (conf) conf.style.display = online ? 'none' : 'block';
+      const btn = document.querySelector('#purchaseForm button[type="submit"]');
+      if (btn) {
+        btn.innerHTML = online
+          ? '<i class="fas fa-lock"></i> Pagar en línea de forma segura'
+          : '<i class="fas fa-check-circle"></i> Enviar solicitud de compra';
+      }
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.name === 'metodoPago') togglePagoUI();
+    });
+
     function getSheetsUrl() {
       return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
     }
@@ -1511,7 +1738,8 @@
         return `
           <article class="event-card" data-id="${ev.id}">
             <div class="event-card-image ${isTeam ? 'team-logo' : ''}">
-              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy"
+              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy" decoding="async"
+                   width="600" height="400"
                    onerror="this.src='planet-boletos.png'" />
               <span class="event-badge ${badgeClass}">${badgeLabel}</span>
             </div>
@@ -1627,6 +1855,11 @@
     }
 
     document.getElementById('pNombre').addEventListener('input', updateConcepto);
+    document.getElementById('pCardNumber')?.addEventListener('input', formatCardNumberInput);
+    document.getElementById('pCardExp')?.addEventListener('input', formatExpInput);
+    document.getElementById('pCardCvv')?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+    });
 
     // File upload
     const fileArea = document.getElementById('fileUploadArea');
@@ -1650,12 +1883,71 @@
     }
 
     // Submit purchase
+
+
+
+    /** Algoritmo de Luhn para validar número de tarjeta */
+    function luhnCheck(num) {
+      const s = String(num).replace(/\D/g, '');
+      if (s.length < 13 || s.length > 19) return false;
+      let sum = 0;
+      let alt = false;
+      for (let i = s.length - 1; i >= 0; i--) {
+        let n = parseInt(s.charAt(i), 10);
+        if (alt) {
+          n *= 2;
+          if (n > 9) n -= 9;
+        }
+        sum += n;
+        alt = !alt;
+      }
+      return sum % 10 === 0;
+    }
+
+    function detectarMarcaTarjeta(num) {
+      const s = String(num).replace(/\D/g, '');
+      if (/^4/.test(s)) return 'Visa';
+      if (/^5[1-5]/.test(s) || /^2[2-7]/.test(s)) return 'Mastercard';
+      if (/^3[47]/.test(s)) return 'American Express';
+      if (/^6(?:011|5)/.test(s)) return 'Discover';
+      return 'Tarjeta';
+    }
+
+    function validarVencimiento(mmAA) {
+      const m = String(mmAA || '').trim().match(/^(\d{2})\s*\/?\s*(\d{2})$/);
+      if (!m) return { ok: false, error: 'Usa el formato MM/AA.' };
+      const month = parseInt(m[1], 10);
+      const year = 2000 + parseInt(m[2], 10);
+      if (month < 1 || month > 12) return { ok: false, error: 'Mes inválido (01-12).' };
+      const now = new Date();
+      const exp = new Date(year, month, 0, 23, 59, 59); // fin del mes
+      if (exp < now) return { ok: false, error: 'La tarjeta está vencida.' };
+      return { ok: true, month, year };
+    }
+
+    function formatCardNumberInput() {
+      const input = document.getElementById('pCardNumber');
+      if (!input) return;
+      let v = input.value.replace(/\D/g, '').slice(0, 16);
+      const parts = v.match(/.{1,4}/g);
+      input.value = parts ? parts.join(' ') : v;
+    }
+
+    function formatExpInput() {
+      const input = document.getElementById('pCardExp');
+      if (!input) return;
+      let v = input.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+      input.value = v;
+    }
+
     function clearPaymentErrors() {
-      ['errNombre','errTelefono','errEmail','errComprobante','errConfirma'].forEach(id => {
+      ['errNombre','errTelefono','errEmail','errComprobante','errConfirma',
+       'errCardNumber','errCardName','errCardExp','errCardCvv','errConfirmaTarjeta'].forEach(id => {
         const el = document.getElementById(id);
         if (el) { el.style.display = 'none'; el.textContent = ''; }
       });
-      ['pNombre','pTelefono','pEmail'].forEach(id => {
+      ['pNombre','pTelefono','pEmail','pCardNumber','pCardName','pCardExp','pCardCvv'].forEach(id => {
         document.getElementById(id)?.classList.remove('invalid');
       });
       document.getElementById('fileUploadArea')?.classList.remove('invalid');
@@ -1719,35 +2011,37 @@
         ok = false;
       }
 
-      // Comprobante
-      if (!file) {
-        showErr('errComprobante', 'Adjunta el comprobante de transferencia (imagen o PDF).');
-        document.getElementById('fileUploadArea')?.classList.add('invalid');
-        ok = false;
-      } else {
-        const allowed = ['image/jpeg','image/png','image/webp','image/jpg','application/pdf'];
-        const typeOk = allowed.includes(file.type) || /\.(jpe?g|png|webp|pdf)$/i.test(file.name);
-        if (!typeOk) {
-          showErr('errComprobante', 'Formato no permitido. Solo JPG, PNG, WEBP o PDF.');
+      const metodo = getMetodoPago();
+
+      if (metodo === 'transferencia') {
+        // Comprobante
+        if (!file) {
+          showErr('errComprobante', 'Adjunta el comprobante de transferencia (imagen o PDF).');
+          document.getElementById('fileUploadArea')?.classList.add('invalid');
+          ok = false;
+        } else {
+          const allowed = ['image/jpeg','image/png','image/webp','image/jpg','application/pdf'];
+          const typeOk = allowed.includes(file.type) || /\.(jpe?g|png|webp|pdf)$/i.test(file.name);
+          if (!typeOk) {
+            showErr('errComprobante', 'Formato no permitido. Solo JPG, PNG, WEBP o PDF.');
+            ok = false;
+          }
+          if (file.size > 2.5 * 1024 * 1024) {
+            showErr('errComprobante', 'El archivo supera 2.5 MB. Reduce el tamaño e inténtalo de nuevo.');
+            ok = false;
+          }
+        }
+
+        if (!confirma) {
+          showErr('errConfirma', 'Marca la casilla confirmando que realizaste la transferencia.');
           ok = false;
         }
-        if (file.size > 2.5 * 1024 * 1024) {
-          showErr('errComprobante', 'El archivo supera 2.5 MB. Reduce el tamaño e inténtalo de nuevo.');
+
+        const concepto = document.getElementById('conceptoPago')?.textContent || '';
+        if (!concepto.startsWith('BOL-') || concepto.length < 6) {
+          alert('El concepto de pago no es válido. Escribe tu nombre para generarlo.');
           ok = false;
         }
-      }
-
-      // Confirmación de transferencia
-      if (!confirma) {
-        showErr('errConfirma', 'Marca la casilla confirmando que realizaste la transferencia.');
-        ok = false;
-      }
-
-      // Concepto de pago
-      const concepto = document.getElementById('conceptoPago')?.textContent || '';
-      if (!concepto.startsWith('BOL-') || concepto.length < 6) {
-        alert('El concepto de pago no es válido. Escribe tu nombre para generarlo.');
-        ok = false;
       }
 
       if (!ok) {
@@ -1789,6 +2083,7 @@
         telefono,
         email,
         concepto,
+        metodoPago: getMetodoPago(),
         estado: 'en_proceso', // en_proceso | autorizado | rechazado | entregado | usado
         fechaCompra: new Date().toISOString(),
         comprobante: fileInput.files[0]?.name || '',
@@ -1841,7 +2136,34 @@
         }
       } catch (e) {}
 
-      // Enviar a Google Sheets
+      order.metodoPago = getMetodoPago();
+
+      // Pago en línea Mercado Pago (orden y stock ya se guardaron arriba)
+      if (order.metodoPago === 'mercadopago') {
+        const sheetsUrl = getSheetsUrl();
+        if (!sheetsUrl || sheetsUrl.includes('XXXX')) {
+          alert('El pago en línea no está configurado (falta URL de Apps Script). Usa transferencia o contacta al administrador.');
+          return;
+        }
+        const basePage = window.location.href.split('?')[0].split('#')[0];
+        const q = new URLSearchParams({
+          action: 'crearPagoRedirect',
+          folio: order.folio,
+          nombre: order.nombre,
+          email: order.email,
+          telefono: order.telefono || '',
+          evento: order.evento || '',
+          cantidad: String(order.cantidad || 1),
+          total: String(order.total || 0),
+          successUrl: basePage + '?pago=success&folio=' + order.folio,
+          failureUrl: basePage + '?pago=failure&folio=' + order.folio,
+          pendingUrl: basePage + '?pago=pending&folio=' + order.folio
+        });
+        window.location.href = sheetsUrl.split('?')[0] + '?' + q.toString();
+        return;
+      }
+
+      // Enviar a Google Sheets (transferencia)
       const sent = await postToSheets('nuevaVenta', order);
       const sheetsOk = !!getSheetsUrl() && !getSheetsUrl().includes('XXXX');
 
@@ -1913,7 +2235,69 @@
     renderEvents();
 
     // Expose for onclick
+
+    // Retorno desde Mercado Pago
+    (function handlePagoReturn() {
+      const params = new URLSearchParams(window.location.search);
+      const pago = params.get('pago');
+      if (!pago) return;
+      const folio = params.get('folio') || params.get('external_reference') || '';
+      const paymentId = params.get('payment_id') || params.get('collection_id') || '';
+      let msg = '';
+      if (pago === 'success') {
+        msg = '✅ Pago recibido. Folio: ' + (folio || '—') + '. En breve recibirás tu boleto por correo con código QR.';
+      } else if (pago === 'pending') {
+        msg = '⏳ Pago pendiente. Folio: ' + (folio || '—') + '. Te avisaremos cuando se acredite.';
+      } else {
+        msg = '❌ El pago no se completó. Puedes intentar de nuevo o usar transferencia.';
+      }
+      setTimeout(() => alert(msg), 400);
+      // Limpiar query de la barra
+      if (window.history && history.replaceState) {
+        history.replaceState(null, '', window.location.pathname + window.location.hash);
+      }
+      // Confirmar pago en script si hay payment_id
+      const sheetsUrl = getSheetsUrl();
+      if (sheetsUrl && paymentId) {
+        const u = sheetsUrl.split('?')[0] + '?action=mpPayment&payment_id=' + encodeURIComponent(paymentId) + '&folio=' + encodeURIComponent(folio);
+        fetch(u, { mode: 'no-cors' }).catch(() => {});
+      }
+    })();
+
     window.openPurchase = openPurchase;
+    window.toggleMetodoPago = toggleMetodoPago;
   </script>
+
+  <script>
+    // Service Worker – caché offline (requiere HTTPS o localhost)
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var isFile = location.protocol === 'file:';
+      if (isFile) {
+        console.info('[Planet Boletos] Service Worker no se registra en file://. Usa un servidor local o HTTPS.');
+        return;
+      }
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function (reg) {
+            console.info('[Planet Boletos] SW registrado', reg.scope);
+            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            reg.addEventListener('updatefound', function () {
+              var nw = reg.installing;
+              if (!nw) return;
+              nw.addEventListener('statechange', function () {
+                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.info('[Planet Boletos] Nueva versión en caché. Recarga para aplicar.');
+                }
+              });
+            });
+          })
+          .catch(function (err) {
+            console.warn('[Planet Boletos] SW no registrado:', err);
+          });
+      });
+    })();
+  </script>
+
 </body>
 </html>

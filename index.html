@@ -4,24 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Planet Boletos | Compra de Boletos Online</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="theme-color" content="#0B1E3D" />
-  <meta name="color-scheme" content="light" />
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-  <link rel="dns-prefetch" href="https://images.unsplash.com" />
-  <link rel="dns-prefetch" href="https://api.qrserver.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-  <!-- Fuentes: display=swap evita texto invisible (FOIT) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" /></noscript>
-  <!-- Font Awesome no bloqueante -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --navy: #0B1E3D;
@@ -1093,24 +1079,6 @@
       .logo-text { display: none; }
     }
 
-
-    /* Rendimiento y compatibilidad */
-    img, video { max-width: 100%; height: auto; }
-    img[loading="lazy"] { content-visibility: auto; }
-    .event-card, .panel, .scanner-card {
-      content-visibility: auto;
-      contain-intrinsic-size: 1px 320px;
-    }
-    .modal-overlay, .sidebar {
-      -webkit-backdrop-filter: blur(6px);
-      backdrop-filter: blur(6px);
-    }
-    @supports not (backdrop-filter: blur(6px)) {
-      .modal-overlay { background: rgba(7, 20, 40, 0.92); }
-    }
-    /* Reduce layout shift */
-    .logo img { width: auto; height: 42px; object-fit: contain; }
-
     .hidden { display: none !important; }
   </style>
 </head>
@@ -1120,7 +1088,7 @@
   <header class="header" id="header">
     <div class="nav-container">
       <a href="#inicio" class="logo">
-        <img src="planet-boletos.png" alt="Planet Boletos" width="160" height="48" decoding="async" fetchpriority="high" />
+        <img src="planet-boletos.png" alt="Planet Boletos" />
         <span class="logo-text">Planet <span>Boletos</span></span>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Menú">
@@ -1376,7 +1344,7 @@
                 <input type="radio" name="metodoPago" id="metodoTransfer" value="transferencia" checked style="margin-top:3px;" />
                 <span>
                   <strong><i class="fas fa-university"></i> Transferencia bancaria</strong><br>
-                  <small style="color:var(--gray-600);">Sube tu comprobante · validación manual en Admin</small>
+                  <small style="color:var(--gray-600);">Sube tu comprobante para la validación.</small>
                 </span>
               </label>
             </div>
@@ -1738,8 +1706,7 @@
         return `
           <article class="event-card" data-id="${ev.id}">
             <div class="event-card-image ${isTeam ? 'team-logo' : ''}">
-              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy" decoding="async"
-                   width="600" height="400"
+              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy"
                    onerror="this.src='planet-boletos.png'" />
               <span class="event-badge ${badgeClass}">${badgeLabel}</span>
             </div>
@@ -2267,37 +2234,5 @@
     window.openPurchase = openPurchase;
     window.toggleMetodoPago = toggleMetodoPago;
   </script>
-
-  <script>
-    // Service Worker – caché offline (requiere HTTPS o localhost)
-    (function () {
-      if (!('serviceWorker' in navigator)) return;
-      var isFile = location.protocol === 'file:';
-      if (isFile) {
-        console.info('[Planet Boletos] Service Worker no se registra en file://. Usa un servidor local o HTTPS.');
-        return;
-      }
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js', { scope: './' })
-          .then(function (reg) {
-            console.info('[Planet Boletos] SW registrado', reg.scope);
-            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-            reg.addEventListener('updatefound', function () {
-              var nw = reg.installing;
-              if (!nw) return;
-              nw.addEventListener('statechange', function () {
-                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.info('[Planet Boletos] Nueva versión en caché. Recarga para aplicar.');
-                }
-              });
-            });
-          })
-          .catch(function (err) {
-            console.warn('[Planet Boletos] SW no registrado:', err);
-          });
-      });
-    })();
-  </script>
-
 </body>
 </html>

@@ -2,13 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>Admin | Planet Boletos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#0B1E3D" />
+  <meta name="color-scheme" content="light" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://api.qrserver.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <!-- Fuentes: display=swap evita texto invisible (FOIT) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" /></noscript>
+  <!-- Font Awesome no bloqueante -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   <style>
     :root {
       --navy: #0B1E3D;
@@ -461,6 +475,12 @@
     }
 
     .mobile-menu-btn { display: none; }
+    img { max-width: 100%; height: auto; }
+    .event-admin-card, .panel { content-visibility: auto; contain-intrinsic-size: 1px 200px; }
+    @supports not (backdrop-filter: blur(6px)) {
+      .modal-overlay { background: rgba(7, 20, 40, 0.92) !important; }
+    }
+
 
     /* Modal QR / Email */
     .modal-overlay {
@@ -535,6 +555,58 @@
     .email-status.ok { display: block; background: #D1FAE5; color: #065F46; }
     .email-status.err { display: block; background: #FEE2E2; color: #991B1B; }
     .email-status.info { display: block; background: #DBEAFE; color: #1E40AF; }
+  
+
+    /* Admin móvil reforzado */
+    html { -webkit-text-size-adjust: 100%; }
+    body { overflow-x: hidden; }
+    input, select, textarea { font-size: 16px !important; max-width: 100%; }
+    .btn, button.btn { min-height: 42px; touch-action: manipulation; }
+
+    @media (max-width: 900px) {
+      .admin-layout { display: block !important; }
+      .main-content { margin-left: 0 !important; min-height: 100vh; }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      }
+      .mobile-menu-btn {
+        display: inline-flex !important;
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+      }
+      .sidebar {
+        z-index: 200;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      .stat-card { padding: 14px !important; }
+      .stat-card h3 { font-size: 1.25rem !important; }
+      /* acciones de tabla apiladas */
+      table .btn { min-height: 36px; }
+      table select {
+        max-width: 100%;
+        min-height: 36px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid, .dashboard-grid { grid-template-columns: 1fr !important; }
+      .topbar-actions .btn { flex: 1 1 45%; font-size: 0.78rem; padding: 10px 8px; }
+      .panel-body { padding: 12px !important; }
+      .event-admin-card .form-grid { gap: 10px; }
+      #qrPreview { display: flex; justify-content: center; }
+      .folio-big { font-size: 1.1rem !important; word-break: break-all; }
+      .login-screen { padding: 16px; }
+      .login-box { width: 100%; max-width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -542,7 +614,7 @@
   <!-- LOGIN -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
-      <img src="planet-boletos.png" alt="Planet Boletos" />
+      <img src="planet-boletos.png" alt="Planet Boletos" width="40" height="40" decoding="async" fetchpriority="high" />
       <h1>Panel de Administración</h1>
       <p>Ingresa tus credenciales para continuar</p>
       <div class="login-error" id="loginError">Usuario o contraseña incorrectos</div>
@@ -689,9 +761,22 @@
                 <option value="entregado">Entregado</option>
                 <option value="usado">Usado</option>
               </select>
-              <button class="btn btn-outline btn-sm" onclick="syncPendingToSheets()" title="Reenviar estados a Google Sheets">
-                <i class="fas fa-cloud-upload-alt"></i> Sincronizar Sheets
+              <button type="button" class="btn btn-primary btn-sm" onclick="pullFromSheets(true)" title="Traer ventas desde Google Sheets">
+                <i class="fas fa-cloud-download-alt"></i> Actualizar ventas
               </button>
+              <button type="button" class="btn btn-navy btn-sm" onclick="pullEventosFromSheets(true)" title="Traer stock de eventos">
+                <i class="fas fa-ticket-alt"></i> Actualizar stock
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" onclick="pushEventosToSheets().then(()=>alert('Eventos publicados a Sheets'))" title="Subir eventos a Sheets">
+                <i class="fas fa-upload"></i> Publicar eventos
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="syncPendingToSheets()" title="Reenviar estados a Google Sheets">
+                <i class="fas fa-cloud-upload-alt"></i> Subir a Sheets
+              </button>
+              <label style="display:inline-flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--gray-600);cursor:pointer;">
+                <input type="checkbox" id="autoRefreshSheets" checked /> Auto (15s)
+              </label>
+              <span id="sheetsSyncStatus" style="font-size:0.78rem;color:var(--gray-600);"></span>
               <button class="btn btn-danger btn-sm" onclick="clearAllOrders()">
                 <i class="fas fa-trash"></i> Vaciar tabla local
               </button>
@@ -983,6 +1068,13 @@
     </div>
   </div>
 
+  <script id="planetSheetsConfig">
+  /* =========================================================
+     CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
+     Pega tu URL /exec de Google Apps Script:
+     ========================================================= */
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec';
+</script>
   <script>
     // Credenciales demo (cámbialas en producción)
     const ADMIN_USER = 'admin';
@@ -1050,6 +1142,55 @@
 
     function saveEvents() {
       localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+      // Publicar stock/precios a Google Sheets (global)
+      pushEventosToSheets();
+    }
+
+    async function pushEventosToSheets() {
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX')) return;
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'guardarEventos', data: { eventos: events } })
+        });
+      } catch (e) {
+        console.warn('pushEventosToSheets', e);
+      }
+    }
+
+    async function pullEventosFromSheets(showAlert) {
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX')) {
+        if (showAlert) alert('Configura la URL de Sheets primero.');
+        return;
+      }
+      try {
+        const u = url.split('?')[0] + '?action=listarEventos&_=' + Date.now();
+        const res = await fetch(u, { method: 'GET', cache: 'no-store' });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'Error');
+        if (data.empty) {
+          // Primera vez: subir eventos locales a Sheets
+          await pushEventosToSheets();
+          if (showAlert) alert('Hoja Eventos vacía: se publicaron los eventos locales a Sheets.');
+          return;
+        }
+        if (data.eventos) {
+          if (data.eventos.musica?.length) events.musica = data.eventos.musica;
+          if (data.eventos.deportes?.length) events.deportes = data.eventos.deportes;
+          localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+          try { renderMusica(); } catch(e){}
+          try { renderDeportes(); } catch(e){}
+          try { renderDashboard(); } catch(e){}
+          if (showAlert) alert('Eventos/stock actualizados desde Sheets.');
+        }
+      } catch (err) {
+        console.error(err);
+        if (showAlert) alert('No se pudieron cargar eventos: ' + err.message);
+      }
     }
 
     function saveOrders() {
@@ -1087,7 +1228,7 @@
         if (btn.dataset.section === 'ventas') renderOrders();
         if (btn.dataset.section === 'contactos') renderContacts();
         if (btn.dataset.section === 'config') {
-          document.getElementById('sheetsUrl').value = localStorage.getItem('planetBoletos_sheetsUrl') || '';
+          document.getElementById('sheetsUrl').value = getSheetsUrl() || localStorage.getItem('planetBoletos_sheetsUrl') || window.PLANET_SHEETS_URL || '';
         }
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebarBackdrop')?.classList.remove('show');
@@ -1415,7 +1556,107 @@
     let currentQrDataUrl = null;
 
     function getSheetsUrl() {
+      // Prioridad: URL fija (Render) → input Configuración / localStorage
+      const fixed = (window.PLANET_SHEETS_URL || '').trim();
+      if (fixed && !fixed.includes('PEGA_AQUI')) return fixed;
+      const fromInput = (document.getElementById('sheetsUrl')?.value || '').trim();
+      if (fromInput) return fromInput;
       return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+    }
+
+    let sheetsPollTimer = null;
+
+    /**
+     * Trae ventas (y contactos) desde Google Sheets = fuente de verdad multi-dispositivo.
+     * Combina con localStorage: Sheets gana en estado; local conserva comprobanteData si existe.
+     */
+    async function pullFromSheets(showAlert) {
+      const url = getSheetsUrl();
+      const statusEl = document.getElementById('sheetsSyncStatus');
+      if (!url || url.includes('XXXX')) {
+        if (statusEl) statusEl.textContent = 'Sin URL de Sheets';
+        if (showAlert) alert('Configura la URL del Web App en Configuración.');
+        return false;
+      }
+      if (statusEl) statusEl.textContent = 'Actualizando…';
+
+      try {
+        const listUrl = url.split('?')[0] + '?action=listarVentas&_=' + Date.now();
+        const res = await fetch(listUrl, { method: 'GET', cache: 'no-store' });
+        const data = await res.json();
+        if (!data || !data.ok) {
+          throw new Error((data && data.error) || 'Respuesta inválida');
+        }
+
+        const remote = Array.isArray(data.ventas) ? data.ventas : [];
+        const localByFolio = {};
+        orders.forEach(o => { if (o.folio) localByFolio[o.folio] = o; });
+
+        const merged = remote.map(r => {
+          const local = localByFolio[r.folio] || {};
+          return {
+            ...local,
+            ...r,
+            // conservar archivos locales si aún no hay solo link de Drive
+            comprobanteData: local.comprobanteData || null,
+            comprobanteTipo: local.comprobanteTipo || r.comprobanteTipo || '',
+            qrDataUrl: local.qrDataUrl || null
+          };
+        });
+
+        // Órdenes solo locales (aún no en Sheets) se conservan
+        const remoteFolios = new Set(remote.map(r => r.folio));
+        orders.forEach(o => {
+          if (o.folio && !remoteFolios.has(o.folio)) merged.push(o);
+        });
+
+        orders = merged;
+        localStorage.setItem('planetBoletos_orders', JSON.stringify(orders.map(o => {
+          // no guardar dataURLs enormes en cada poll si no hace falta — conservar
+          return o;
+        })));
+
+        // Contactos
+        try {
+          const cUrl = url.split('?')[0] + '?action=listarContactos&_=' + Date.now();
+          const cRes = await fetch(cUrl, { method: 'GET', cache: 'no-store' });
+          const cData = await cRes.json();
+          if (cData && cData.ok && Array.isArray(cData.contactos)) {
+            contacts = cData.contactos;
+            localStorage.setItem('planetBoletos_contacts', JSON.stringify(contacts));
+          }
+        } catch (e2) { console.warn('contactos', e2); }
+
+        renderOrders();
+        renderContacts();
+        renderDashboard();
+        if (statusEl) {
+          statusEl.textContent = 'OK · ' + orders.length + ' ventas · ' + new Date().toLocaleTimeString();
+        }
+        if (showAlert) alert('Sincronizado desde Google Sheets: ' + remote.length + ' ventas.');
+        return true;
+      } catch (err) {
+        console.error(err);
+        if (statusEl) statusEl.textContent = 'Error al leer Sheets';
+        if (showAlert) alert('No se pudo leer Google Sheets. ¿Nueva implementación /exec y acceso "Cualquier persona"?\n' + err.message);
+        return false;
+      }
+    }
+
+    function startSheetsAutoRefresh() {
+      stopSheetsAutoRefresh();
+      sheetsPollTimer = setInterval(() => {
+        const cb = document.getElementById('autoRefreshSheets');
+        if (cb && !cb.checked) return;
+        // solo si admin visible
+        if (document.getElementById('adminApp')?.style.display === 'none') return;
+        pullFromSheets(false);
+      }, 15000);
+    }
+
+    function stopSheetsAutoRefresh() {
+      if (sheetsPollTimer) clearInterval(sheetsPollTimer);
+      sheetsPollTimer = null;
     }
 
     async function postToSheets(action, data) {
@@ -2060,11 +2301,15 @@ Presenta este folio o el código QR en la entrada del evento.
     }
 
     // ========== INIT ==========
-    function initAdmin() {
+        function initAdmin() {
       loadData();
       renderDashboard();
-      document.getElementById('sheetsUrl').value = localStorage.getItem('planetBoletos_sheetsUrl') || '';
+      document.getElementById('sheetsUrl').value = getSheetsUrl() || localStorage.getItem('planetBoletos_sheetsUrl') || window.PLANET_SHEETS_URL || '';
       loadEmailConfigToForm();
+      // Cargar ventas y eventos/stock desde Sheets (multi-dispositivo)
+      pullFromSheets(false);
+      pullEventosFromSheets(false);
+      startSheetsAutoRefresh();
     }
 
     checkAuth();
@@ -2076,6 +2321,9 @@ Presenta este folio o el código QR en la entrada del evento.
     window.updateSport = updateSport;
     window.changeOrderStatus = changeOrderStatus;
     window.enviarWhatsAppManual = enviarWhatsAppManual;
+    window.pullFromSheets = pullFromSheets;
+    window.pullEventosFromSheets = pullEventosFromSheets;
+    window.pushEventosToSheets = pushEventosToSheets;
     window.saveConfig = saveConfig;
     window.testSheetsConnection = testSheetsConnection;
     window.testEmailSend = testEmailSend;
@@ -2094,5 +2342,37 @@ Presenta este folio o el código QR en la entrada del evento.
     window.closeComprobanteModal = closeComprobanteModal;
     window.closeQrModal = closeQrModal;
   </script>
+
+  <script>
+    // Service Worker – caché offline (requiere HTTPS o localhost)
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var isFile = location.protocol === 'file:';
+      if (isFile) {
+        console.info('[Planet Boletos] Service Worker no se registra en file://. Usa un servidor local o HTTPS.');
+        return;
+      }
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function (reg) {
+            console.info('[Planet Boletos] SW registrado', reg.scope);
+            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            reg.addEventListener('updatefound', function () {
+              var nw = reg.installing;
+              if (!nw) return;
+              nw.addEventListener('statechange', function () {
+                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.info('[Planet Boletos] Nueva versión en caché. Recarga para aplicar.');
+                }
+              });
+            });
+          })
+          .catch(function (err) {
+            console.warn('[Planet Boletos] SW no registrado:', err);
+          });
+      });
+    })();
+  </script>
+
 </body>
 </html>

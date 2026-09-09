@@ -4,11 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | Planet Boletos</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#0B1E3D" />
+  <meta name="color-scheme" content="light" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://api.qrserver.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <!-- Fuentes: display=swap evita texto invisible (FOIT) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" /></noscript>
+  <!-- Font Awesome no bloqueante -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
   <style>
     :root {
       --navy: #0B1E3D;
@@ -386,20 +400,87 @@
       display: none;
     }
 
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 99;
+    }
+    .sidebar-backdrop.show { display: block; }
+
     @media (max-width: 900px) {
       .admin-layout { grid-template-columns: 1fr; }
       .sidebar {
         position: fixed;
         left: -280px;
+        top: 0;
+        bottom: 0;
         z-index: 100;
         transition: left 0.3s ease;
         width: 260px;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.2);
       }
       .sidebar.open { left: 0; }
       .mobile-menu-btn { display: inline-flex !important; }
+
+      .main-content { padding: 12px !important; width: 100%; max-width: 100%; }
+      .topbar {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px !important;
+      }
+      .topbar h1 { font-size: 1.15rem; }
+      .topbar-actions {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .topbar-actions .btn { flex: 1 1 auto; min-height: 40px; font-size: 0.8rem; }
+
+      .stats-grid, .dashboard-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+      }
+      .panel { border-radius: 12px; }
+      .panel-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+      }
+      .panel-header .btn { width: 100%; justify-content: center; }
+
+      .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 720px; font-size: 0.82rem; }
+      table th, table td { padding: 8px 10px !important; }
+
+      .form-grid { grid-template-columns: 1fr !important; }
+      .event-admin-card { padding: 14px !important; }
+
+      .modal-overlay { padding: 8px; align-items: flex-end; }
+      .modal-box {
+        max-width: 100% !important;
+        max-height: 92vh;
+        overflow-y: auto;
+        border-radius: 16px 16px 0 0 !important;
+      }
+      .modal-actions { flex-direction: column; }
+      .modal-actions .btn { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 520px) {
+      .stats-grid, .dashboard-grid { grid-template-columns: 1fr !important; }
+      .login-box { margin: 16px; padding: 24px 18px !important; }
     }
 
     .mobile-menu-btn { display: none; }
+    img { max-width: 100%; height: auto; }
+    .event-admin-card, .panel { content-visibility: auto; contain-intrinsic-size: 1px 200px; }
+    @supports not (backdrop-filter: blur(6px)) {
+      .modal-overlay { background: rgba(7, 20, 40, 0.92) !important; }
+    }
+
 
     /* Modal QR / Email */
     .modal-overlay {
@@ -481,7 +562,7 @@
   <!-- LOGIN -->
   <div class="login-screen" id="loginScreen">
     <div class="login-box">
-      <img src="planet-boletos.png" alt="Planet Boletos" />
+      <img src="planet-boletos.png" alt="Planet Boletos" width="40" height="40" decoding="async" fetchpriority="high" />
       <h1>Panel de Administración</h1>
       <p>Ingresa tus credenciales para continuar</p>
       <div class="login-error" id="loginError">Usuario o contraseña incorrectos</div>
@@ -506,6 +587,7 @@
 
   <!-- ADMIN -->
   <div class="admin-layout" id="adminApp" style="display:none;">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
         <img src="planet-boletos.png" alt="" />
@@ -1028,11 +1110,19 @@
           document.getElementById('sheetsUrl').value = localStorage.getItem('planetBoletos_sheetsUrl') || '';
         }
         document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarBackdrop')?.classList.remove('show');
       });
     });
 
     document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('open');
+      const sb = document.getElementById('sidebar');
+      const bd = document.getElementById('sidebarBackdrop');
+      sb.classList.toggle('open');
+      bd?.classList.toggle('show', sb.classList.contains('open'));
+    });
+    document.getElementById('sidebarBackdrop')?.addEventListener('click', () => {
+      document.getElementById('sidebar')?.classList.remove('open');
+      document.getElementById('sidebarBackdrop')?.classList.remove('show');
     });
 
     // ========== DASHBOARD ==========
@@ -2024,5 +2114,37 @@ Presenta este folio o el código QR en la entrada del evento.
     window.closeComprobanteModal = closeComprobanteModal;
     window.closeQrModal = closeQrModal;
   </script>
+
+  <script>
+    // Service Worker – caché offline (requiere HTTPS o localhost)
+    (function () {
+      if (!('serviceWorker' in navigator)) return;
+      var isFile = location.protocol === 'file:';
+      if (isFile) {
+        console.info('[Planet Boletos] Service Worker no se registra en file://. Usa un servidor local o HTTPS.');
+        return;
+      }
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(function (reg) {
+            console.info('[Planet Boletos] SW registrado', reg.scope);
+            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            reg.addEventListener('updatefound', function () {
+              var nw = reg.installing;
+              if (!nw) return;
+              nw.addEventListener('statechange', function () {
+                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.info('[Planet Boletos] Nueva versión en caché. Recarga para aplicar.');
+                }
+              });
+            });
+          })
+          .catch(function (err) {
+            console.warn('[Planet Boletos] SW no registrado:', err);
+          });
+      });
+    })();
+  </script>
+
 </body>
 </html>

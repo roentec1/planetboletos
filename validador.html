@@ -4,25 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Validador QR | Planet Boletos</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="theme-color" content="#0B1E3D" />
-  <meta name="color-scheme" content="light" />
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-  <link rel="dns-prefetch" href="https://images.unsplash.com" />
-  <link rel="dns-prefetch" href="https://api.qrserver.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-  <!-- Fuentes: display=swap evita texto invisible (FOIT) -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet" /></noscript>
-  <!-- Font Awesome no bloqueante -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <style>
     :root {
       --navy: #0B1E3D;
@@ -519,7 +505,7 @@
         document.getElementById('startScanBtn').style.display = 'none';
         document.getElementById('stopScanBtn').style.display = 'inline-flex';
         document.getElementById('scanStatus').textContent = 'Escaneando...';
-        (window.requestAnimationFrame||function(cb){return setTimeout(cb,33);})(tick);
+        requestAnimationFrame(tick);
       } catch (err) {
         alert('No se pudo acceder a la cámara. Verifica permisos o usa validación manual.\n\n' + err.message);
       }
@@ -538,8 +524,6 @@
     }
 
     function tick() {
-      // compat: requestAnimationFrame con fallback
-      const raf = window.requestAnimationFrame || function (cb) { return setTimeout(cb, 33); };
       if (!scanning) return;
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvas.width = video.videoWidth;
@@ -733,37 +717,5 @@
     // Cleanup
     window.addEventListener('beforeunload', stopCamera);
   </script>
-
-  <script>
-    // Service Worker – caché offline (requiere HTTPS o localhost)
-    (function () {
-      if (!('serviceWorker' in navigator)) return;
-      var isFile = location.protocol === 'file:';
-      if (isFile) {
-        console.info('[Planet Boletos] Service Worker no se registra en file://. Usa un servidor local o HTTPS.');
-        return;
-      }
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('./sw.js', { scope: './' })
-          .then(function (reg) {
-            console.info('[Planet Boletos] SW registrado', reg.scope);
-            if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-            reg.addEventListener('updatefound', function () {
-              var nw = reg.installing;
-              if (!nw) return;
-              nw.addEventListener('statechange', function () {
-                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-                  console.info('[Planet Boletos] Nueva versión en caché. Recarga para aplicar.');
-                }
-              });
-            });
-          })
-          .catch(function (err) {
-            console.warn('[Planet Boletos] SW no registrado:', err);
-          });
-      });
-    })();
-  </script>
-
 </body>
 </html>

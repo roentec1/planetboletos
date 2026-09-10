@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0B1E3D" />
   <title>Admin | Planet Boletos</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="theme-color" content="#0B1E3D" />
@@ -684,6 +685,43 @@
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr !important; }
       .login-box { margin: 12px; padding: 20px 16px !important; }
+    }
+
+  
+    /* Admin en Motorola G77 / Android estrecho */
+    @media (max-width: 430px) {
+      .login-box {
+        margin: 12px !important;
+        padding: 22px 16px !important;
+        border-radius: 16px !important;
+      }
+      .topbar {
+        padding: 8px !important;
+        gap: 6px !important;
+      }
+      .topbar h1 { font-size: 1rem !important; }
+      .topbar-actions .btn {
+        font-size: 0.7rem !important;
+        padding: 8px 6px !important;
+        min-height: 42px;
+      }
+      .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+      .stat-card { padding: 12px !important; }
+      .stat-card h3 { font-size: 1.15rem !important; }
+      .main-content { padding: 8px !important; }
+      .panel { border-radius: 12px !important; }
+      .panel-body { padding: 10px !important; }
+      table { font-size: 0.75rem !important; }
+      .nav-item { min-height: 48px; font-size: 0.95rem; }
+      .modal-box {
+        border-radius: 18px 18px 0 0 !important;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .folio-big { font-size: 0.95rem !important; word-break: break-all; }
+      #qrPreview canvas, #qrPreview img {
+        max-width: 200px !important;
+        height: auto !important;
+      }
     }
 
   </style>

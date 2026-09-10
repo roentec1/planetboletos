@@ -664,7 +664,7 @@
         <i class="fas fa-cog"></i> Configuración
       </button>
       <div style="margin-top:30px; padding:0 24px;">
-        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:white; border-color:rgba(255,255,255,0.3);">
+        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:black; border-color:rgba(255,255,255,0.3);">
           <i class="fas fa-external-link-alt"></i> Ver sitio
         </a>
       </div>
@@ -841,7 +841,8 @@
             </p>
             <div class="form-group" style="margin-bottom:16px;">
               <label>URL del Web App (termina en /exec)</label>
-              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec" />
+              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
+" />
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
               <button type="button" class="btn btn-primary" onclick="saveConfig()">
@@ -885,7 +886,11 @@
             <button type="button" class="btn btn-primary" onclick="saveDriveNotifyConfig()">
               <i class="fas fa-save"></i> Guardar notificaciones Drive
             </button>
+            <button type="button" class="btn btn-navy" onclick="verificarDrivePermisos()" style="margin-left:8px;">
+              <i class="fas fa-shield-alt"></i> Verificar permisos de carpeta
+            </button>
             <p id="driveNotifyStatus" style="margin-top:12px;font-size:0.88rem;color:var(--gray-600);"></p>
+            <p id="drivePermStatus" style="margin-top:8px;font-size:0.88rem;display:none;"></p>
             <div style="margin-top:16px;padding:14px;background:var(--gray-100);border-radius:10px;font-size:0.85rem;color:var(--gray-600);">
               <strong>Carpeta en Drive:</strong> <code>Planet Boletos → Comprobantes</code><br>
               El correo incluye folio, cliente, total y botón <em>Ver comprobante en Drive</em>.
@@ -1099,7 +1104,8 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
+';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -2217,6 +2223,45 @@ Presenta este folio o el código QR en la entrada del evento.
     }
 
 
+
+    async function verificarDrivePermisos() {
+      const url = getSheetsUrl();
+      const el = document.getElementById('drivePermStatus');
+      if (el) { el.style.display = 'block'; el.style.color = '#1E40AF'; el.textContent = 'Verificando Drive…'; }
+      if (!url || url.includes('PEGA_AQUI') || url.includes('XXXX')) {
+        if (el) { el.style.color = '#991B1B'; el.textContent = 'Configura primero la URL /exec de Apps Script.'; }
+        return;
+      }
+      const testUrl = url.split('?')[0] + '?action=verificarDrive&_=' + Date.now();
+      // Abrir resultado legible
+      window.open(testUrl, '_blank');
+      try {
+        const res = await fetch(testUrl, { method: 'GET', cache: 'no-store' });
+        // Puede ser HTML; intentamos JSON si aplica
+        const text = await res.text();
+        let data = null;
+        try { data = JSON.parse(text); } catch (e) {}
+        if (data && data.ok) {
+          if (el) {
+            el.style.color = '#065F46';
+            el.innerHTML = '✓ ' + (data.message || 'Permisos OK') +
+              (data.folderUrl ? ' · <a href="' + data.folderUrl + '" target="_blank" rel="noopener">Abrir carpeta</a>' : '');
+          }
+        } else if (data && !data.ok) {
+          if (el) { el.style.color = '#991B1B'; el.textContent = data.message || data.error || 'Error de permisos'; }
+        } else if (el) {
+          el.style.color = '#1E40AF';
+          el.innerHTML = 'Se abrió la pestaña de verificación. Si dice <strong>Drive OK</strong>, los permisos están bien. ' +
+            '<a href="' + testUrl + '" target="_blank" rel="noopener">Abrir de nuevo</a>';
+        }
+      } catch (err) {
+        if (el) {
+          el.style.color = '#1E40AF';
+          el.innerHTML = 'Revisa la pestaña abierta. <a href="' + testUrl + '" target="_blank">Verificar Drive</a>';
+        }
+      }
+    }
+
     function saveDriveNotifyConfig() {
       const email = document.getElementById('adminNotifyEmail')?.value.trim() || '';
       const enabled = document.getElementById('adminNotifyDrive')?.checked !== false;
@@ -2476,6 +2521,7 @@ Presenta este folio o el código QR en la entrada del evento.
     window.enviarWhatsAppManual = enviarWhatsAppManual;
     window.pullFromSheets = pullFromSheets;
     window.saveDriveNotifyConfig = saveDriveNotifyConfig;
+    window.verificarDrivePermisos = verificarDrivePermisos;
     window.pullEventosFromSheets = pullEventosFromSheets;
     window.pushEventosToSheets = pushEventosToSheets;
     window.saveConfig = saveConfig;

@@ -1937,7 +1937,7 @@
 
     async function postSheetsAction(action, data) {
       const url = getSheetsUrl();
-      if (!url || url.includes('XXXX') || url.includes('PEGA_AQUI')) {
+      if (!url || url.includes('XXXX') || url.includes('https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec')) {
         return { ok: false, error: 'Sin URL de Sheets' };
       }
       try {

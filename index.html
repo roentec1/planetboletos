@@ -1274,26 +1274,26 @@
             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
             <div>
               <strong>Correo</strong>
-              <span>contacto@planetboletos.com</span>
+              <span>planetboletosmva@gmail.com</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
             <div>
               <strong>WhatsApp</strong>
-              <span>+52 55 1234 5678</span>
+              <span>+52 866 163 3223</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <strong>Oficina</strong>
-              <span>Ciudad de México, México</span>
+              <span>Monclova coahuila, México</span>
             </div>
           </div>
 
           <div class="social-links">
-            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=100041638765131" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
             <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
@@ -1313,7 +1313,7 @@
             </div>
             <div class="form-group">
               <label for="cTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="cTelefono" name="telefono" placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="cTelefono" name="telefono" placeholder="866 1234 567" inputmode="numeric" autocomplete="tel" />
               <p id="cerrTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -1531,7 +1531,7 @@
      2. Pégala abajo entre las comillas
      3. Sube este archivo a Render
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyQYJpmr1vq8Fr3rF7lrOLgo0go1zHsuXqnzc3jsVO3xYdPJHnk2F28FlJHWdN0ulNH/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbykMyDdRzq9WOzQLES__z96khhAjy6aDCciY-1_aUCMoXHlqbIaywgOm9mRQghgJpkC/exec';
 </script>
   <script>
     // ========== CONFIGURACIÓN GOOGLE SHEETS ==========
@@ -2432,7 +2432,7 @@
         reader.onload = () => {
           const img = new Image();
           img.onload = () => {
-            const maxW = 1280;
+            const maxW = 1000;
             let w = img.width;
             let h = img.height;
             if (w > maxW) {
@@ -2444,10 +2444,19 @@
             canvas.height = h;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, w, h);
-            // Calidad 0.72 → suele quedar < 400KB
-            let dataUrl = canvas.toDataURL('image/jpeg', 0.72);
-            if (dataUrl.length > 900000) {
-              dataUrl = canvas.toDataURL('image/jpeg', 0.55);
+            let quality = 0.65;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            while (dataUrl.length > 480000 && quality > 0.35) {
+              quality -= 0.1;
+              dataUrl = canvas.toDataURL('image/jpeg', quality);
+            }
+            if (dataUrl.length > 600000) {
+              const maxW2 = 720;
+              const h2 = Math.round(img.height * (maxW2 / Math.max(img.width, 1)));
+              canvas.width = maxW2;
+              canvas.height = h2;
+              ctx.drawImage(img, 0, 0, maxW2, h2);
+              dataUrl = canvas.toDataURL('image/jpeg', 0.5);
             }
             resolve(dataUrl);
           };
@@ -2615,7 +2624,35 @@
       }
 
       // Enviar a Google Sheets (transferencia)
-      const sent = await postToSheets('nuevaVenta', order);
+      const comprobanteDataUrl = order.comprobanteData || null;
+      const orderMeta = Object.assign({}, order);
+      if (comprobanteDataUrl && comprobanteDataUrl.length > 450000) {
+        delete orderMeta.comprobanteData;
+      }
+
+      const sent = await postToSheets('nuevaVenta', orderMeta);
+
+      // Subida dedicada a Drive (funciona desde cualquier dispositivo)
+      if (comprobanteDataUrl) {
+        try {
+          await postToSheets('subirComprobante', {
+            folio: order.folio,
+            nombre: order.nombre,
+            email: order.email,
+            telefono: order.telefono,
+            evento: order.evento,
+            total: order.total,
+            comprobanteData: comprobanteDataUrl,
+            comprobanteNombre: order.comprobanteNombre || order.comprobante || 'comprobante.jpg',
+            comprobanteTipo: order.comprobanteTipo || 'image/jpeg',
+            adminNotifyEmail: order.adminNotifyEmail || '',
+            adminNotifyDrive: order.adminNotifyDrive,
+            fromName: order.fromName || 'Planet Boletos'
+          });
+        } catch (upErr) {
+          console.warn('subirComprobante', upErr);
+        }
+      }
       const sheetsOk = !!getSheetsUrl() && !getSheetsUrl().includes('XXXX');
 
       // UI success

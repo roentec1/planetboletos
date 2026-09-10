@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#0B1E3D" />
   <title>Planet Boletos | Compra de Boletos Online</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="theme-color" content="#0B1E3D" />
@@ -1372,6 +1374,173 @@
       .logo-text { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     }
 
+  
+    /* ========== Motorola G77 / Android 360-430px ==========
+       Pantalla ~6.78" AMOLED 1272x2772 · viewport típico ~384-412px
+    */
+    @media (max-width: 430px) {
+      html {
+        font-size: 15px;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        overflow-x: hidden !important;
+        overscroll-behavior-y: contain;
+      }
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 1300;
+        /* punch-hole / status bar Android */
+        padding-top: max(4px, env(safe-area-inset-top));
+      }
+      .nav-container {
+        padding: 8px 12px !important;
+        gap: 8px;
+      }
+      .logo img { height: 32px !important; }
+      .logo-text {
+        font-size: 0.88rem !important;
+        max-width: 42vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .menu-toggle {
+        width: 46px !important;
+        height: 46px !important;
+        border-radius: 12px !important;
+        background: rgba(255,255,255,0.12) !important;
+      }
+      .nav-links {
+        top: 56px !important;
+        padding: 12px !important;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom));
+      }
+      .nav-links a {
+        min-height: 48px;
+        display: flex !important;
+        align-items: center;
+        font-size: 1rem !important;
+      }
+
+      .hero {
+        padding: 72px 14px 32px !important;
+        min-height: auto !important;
+      }
+      .hero h1 {
+        font-size: 1.4rem !important;
+        letter-spacing: -0.02em;
+      }
+      .hero p {
+        font-size: 0.9rem !important;
+        line-height: 1.45;
+      }
+      .hero-actions .btn {
+        min-height: 50px !important;
+        border-radius: 12px !important;
+        font-size: 0.95rem !important;
+      }
+      .hero-logo-card {
+        padding: 16px !important;
+        margin: 0 auto;
+      }
+      .hero-logo-card img { max-width: 160px !important; }
+
+      .section { padding: 32px 14px !important; }
+      .section-title { font-size: 1.3rem !important; }
+      .section-sub { font-size: 0.9rem !important; }
+
+      .events-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      .event-card {
+        box-shadow: 0 4px 16px rgba(11, 30, 61, 0.1);
+      }
+      .event-card img, .event-img {
+        height: 168px !important;
+      }
+      .event-body { padding: 12px 14px !important; }
+      .event-price { font-size: 1.05rem !important; }
+      .btn-buy {
+        min-height: 48px !important;
+        border-radius: 12px !important;
+        font-weight: 600;
+      }
+
+      /* Compra: bottom sheet Android */
+      .modal-overlay {
+        background: rgba(7, 20, 40, 0.82) !important;
+      }
+      .modal {
+        max-height: 92vh !important;
+        border-radius: 20px 20px 0 0 !important;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      .modal-header img { height: 30px !important; }
+      .modal-close {
+        width: 44px !important;
+        height: 44px !important;
+      }
+      .qty-controls {
+        gap: 16px;
+        justify-content: center;
+      }
+      .qty-btn {
+        width: 52px !important;
+        height: 52px !important;
+        border-radius: 14px !important;
+      }
+      .qty-value {
+        font-size: 1.35rem !important;
+        min-width: 40px;
+        text-align: center;
+      }
+      .transfer-box {
+        padding: 12px !important;
+        font-size: 0.85rem;
+      }
+      .file-upload {
+        padding: 18px 12px !important;
+        min-height: 100px;
+      }
+      #reservaTimerText {
+        font-size: 1.5rem !important;
+        font-variant-numeric: tabular-nums;
+      }
+      .total-box strong {
+        font-size: 1.25rem !important;
+      }
+      .form-group label {
+        font-size: 0.88rem;
+        margin-bottom: 6px;
+      }
+      input, select, textarea {
+        font-size: 16px !important; /* evita zoom Chrome Android */
+        padding: 12px 14px !important;
+        border-radius: 12px !important;
+      }
+
+      .contact-section { padding: 32px 14px !important; }
+      .footer {
+        padding: 28px 14px calc(28px + env(safe-area-inset-bottom)) !important;
+      }
+    }
+
+    /* Altura alta tipo G77 (19.5:9) en portrait */
+    @media (max-width: 430px) and (min-height: 700px) {
+      .hero { padding-top: 80px !important; }
+      .event-card img, .event-img { height: 190px !important; }
+    }
+
+    /* Chrome Android: input file más usable */
+    @media (max-width: 430px) {
+      input[type="file"] {
+        font-size: 14px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1484,7 +1653,7 @@
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <strong>Oficina</strong>
-              <span>Monclova Coahuila, México</span>
+              <span>Monclova Coauila, México</span>
             </div>
           </div>
 
@@ -1509,7 +1678,7 @@
             </div>
             <div class="form-group">
               <label for="cTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="cTelefono" name="telefono" placeholder="861 1234 567" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="cTelefono" name="telefono" placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
               <p id="cerrTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -1627,7 +1796,7 @@
             </div>
             <div class="form-group">
               <label for="pTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="pTelefono" name="telefono" required placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="pTelefono" name="telefono" required placeholder="861 1234 567" inputmode="numeric" autocomplete="tel" />
               <p id="errTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -1683,7 +1852,7 @@
             <div class="file-upload" id="fileUploadArea">
               <i class="fas fa-cloud-upload-alt"></i>
               <p>Arrastra o haz clic para subir tu comprobante<br><small>JPG, PNG o PDF (máx. 2.5 MB)</small></p>
-              <input type="file" id="pComprobante" name="comprobante" accept="image/jpeg,image/png,image/webp,application/pdf" />
+              <input type="file" id="pComprobante" name="comprobante" accept="image/*,.pdf" />
               <div class="file-name" id="fileName"></div>
             </div>
             <p id="errComprobante" class="field-error" style="display:none;"></p>

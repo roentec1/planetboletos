@@ -1274,26 +1274,26 @@
             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
             <div>
               <strong>Correo</strong>
-              <span>plaetboletosmva@gmail.com</span>
+              <span>contacto@planetboletos.com</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
             <div>
               <strong>WhatsApp</strong>
-              <span>+52 855 163 3223</span>
+              <span>+52 55 1234 5678</span>
             </div>
           </div>
           <div class="contact-item">
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <strong>Oficina</strong>
-              <span>Monclova Coahuila, México</span>
+              <span>Ciudad de México, México</span>
             </div>
           </div>
 
           <div class="social-links">
-            <a href="https://www.facebook.com/profile.php?id=100041638765131" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
             <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
@@ -1393,6 +1393,17 @@
 
         <div class="modal-event-info" id="modalEventInfo">
           <!-- llenado por JS -->
+        </div>
+
+        <div id="reservaTimerBox" style="display:none; margin-bottom:16px; padding:12px 14px; border-radius:12px; background:#FEF3C7; border:1px solid #F59E0B; color:#92400E;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span style="font-weight:600; font-size:0.9rem;"><i class="fas fa-clock"></i> Tiempo para completar tu compra</span>
+            <strong id="reservaTimerText" style="font-size:1.25rem; font-variant-numeric:tabular-nums;">10:00</strong>
+          </div>
+          <div style="margin-top:8px; height:6px; background:#FDE68A; border-radius:99px; overflow:hidden;">
+            <div id="reservaTimerBar" style="height:100%; width:100%; background:#F59E0B; transition:width 1s linear;"></div>
+          </div>
+          <p style="margin:8px 0 0; font-size:0.8rem;">Los boletos quedan reservados. Si el tiempo termina sin comprar, se liberan automáticamente.</p>
         </div>
 
         <form id="purchaseForm">
@@ -1912,7 +1923,151 @@
     });
 
     // ========== PURCHASE MODAL ==========
+    // ===== RESERVA 10 MINUTOS =====
+    const RESERVA_MINUTOS = 10;
+    let activeReserva = null; // { reservaId, eventId, cantidad, expira }
+    let reservaTimerId = null;
+    let reservaEndsAt = 0;
+    let purchaseCompleted = false;
+
+    async function postSheetsAction(action, data) {
+      const url = getSheetsUrl();
+      if (!url || url.includes('XXXX') || url.includes('PEGA_AQUI')) {
+        return { ok: false, error: 'Sin URL de Sheets' };
+      }
+      try {
+        // POST no-cors: no podemos leer respuesta; para reservar usamos GET cuando sea posible
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action, data })
+        });
+        return { ok: true, opaque: true };
+      } catch (e) {
+        return { ok: false, error: String(e.message || e) };
+      }
+    }
+
+    function stopReservaTimer() {
+      if (reservaTimerId) {
+        clearInterval(reservaTimerId);
+        reservaTimerId = null;
+      }
+      const box = document.getElementById('reservaTimerBox');
+      if (box) box.style.display = 'none';
+    }
+
+    function startReservaTimer(endsAtIso) {
+      stopReservaTimer();
+      const box = document.getElementById('reservaTimerBox');
+      const textEl = document.getElementById('reservaTimerText');
+      const bar = document.getElementById('reservaTimerBar');
+      if (box) box.style.display = 'block';
+      reservaEndsAt = endsAtIso ? new Date(endsAtIso).getTime() : (Date.now() + RESERVA_MINUTOS * 60 * 1000);
+      const totalMs = RESERVA_MINUTOS * 60 * 1000;
+
+      const tick = () => {
+        const left = Math.max(0, reservaEndsAt - Date.now());
+        const m = Math.floor(left / 60000);
+        const s = Math.floor((left % 60000) / 1000);
+        if (textEl) textEl.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        if (bar) bar.style.width = Math.max(0, (left / totalMs) * 100) + '%';
+        if (left <= 0) {
+          stopReservaTimer();
+          onReservaExpirada();
+        }
+      };
+      tick();
+      reservaTimerId = setInterval(tick, 1000);
+    }
+
+    async function onReservaExpirada() {
+      if (purchaseCompleted) return;
+      await liberarReservaActiva();
+      alert('Se agotó el tiempo de 10 minutos. Los boletos se liberaron. Puedes intentar de nuevo.');
+      closePurchase(true);
+      syncStockFromSheets();
+    }
+
+    async function liberarReservaActiva() {
+      if (!activeReserva || !activeReserva.reservaId) {
+        activeReserva = null;
+        return;
+      }
+      const rid = activeReserva.reservaId;
+      const eventId = activeReserva.eventId;
+      const cantidad = activeReserva.cantidad || 1;
+      activeReserva = null;
+      stopReservaTimer();
+      // Devolver stock local de inmediato
+      const ev = getAllEvents().find(e => e.id === eventId);
+      if (ev) {
+        ev.disponibles = (Number(ev.disponibles) || 0) + cantidad;
+        saveEvents();
+        try { renderEvents(); } catch (e) {}
+      }
+      await postSheetsAction('liberarReserva', { reservaId: rid });
+    }
+
+    /**
+     * Reserva en Sheets (descuenta stock global) + timer local.
+     * Si no hay Sheets, reserva solo local (sigue el contador).
+     */
+    async function crearReserva(eventId, cantidad) {
+      // Liberar reserva previa si cambia cantidad/evento
+      if (activeReserva) await liberarReservaActiva();
+
+      const ev = getAllEvents().find(e => e.id === eventId);
+      if (!ev || (ev.disponibles || 0) < cantidad) {
+        alert('No hay suficientes boletos disponibles.');
+        return false;
+      }
+
+      const localId = 'L-' + Date.now().toString(36).toUpperCase();
+      const expira = new Date(Date.now() + RESERVA_MINUTOS * 60 * 1000).toISOString();
+
+      // Stock local inmediato
+      ev.disponibles = Math.max(0, (Number(ev.disponibles) || 0) - cantidad);
+      saveEvents();
+      renderEvents();
+
+      activeReserva = {
+        reservaId: localId,
+        eventId,
+        cantidad,
+        expira,
+        localOnly: true
+      };
+
+      // Intentar reserva global en Sheets
+      const url = getSheetsUrl();
+      if (url && !url.includes('PEGA_AQUI') && !url.includes('XXXX')) {
+        try {
+          // Usamos POST; no leemos respuesta. Generamos id local que el servidor puede no conocer
+          // Enviamos reservaId para que el script lo use si lo soporta — actualizar script para aceptar reservaId opcional
+          const payload = {
+            action: 'reservarBoletos',
+            data: { eventId, cantidad, minutos: RESERVA_MINUTOS, reservaId: localId }
+          };
+          await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          activeReserva.localOnly = false;
+        } catch (e) {
+          console.warn('reserva sheets', e);
+        }
+      }
+
+      startReservaTimer(expira);
+      return true;
+    }
+
     function openPurchase(eventId) {
+
       selectedEvent = getAllEvents().find(e => e.id === eventId);
       if (!selectedEvent || selectedEvent.disponibles <= 0) return;
 
@@ -1944,12 +2099,24 @@
       updateConcepto();
       document.getElementById('purchaseModal').classList.add('active');
       document.body.style.overflow = 'hidden';
+      purchaseCompleted = false;
+      // Reservar boletos 10 min (cantidad actual)
+      crearReserva(eventId, qty);
     }
 
-    function closePurchase() {
+    async function closePurchase(fromExpire) {
+      if (!fromExpire && !purchaseCompleted && activeReserva) {
+        const ok = confirm('¿Cancelar la compra? Se liberarán los boletos reservados.');
+        if (!ok) return;
+        await liberarReservaActiva();
+      } else if (!purchaseCompleted && activeReserva && fromExpire) {
+        // ya liberado en onReservaExpirada
+      }
+      stopReservaTimer();
       document.getElementById('purchaseModal').classList.remove('active');
       document.body.style.overflow = '';
       selectedEvent = null;
+      purchaseCompleted = false;
     }
 
     document.getElementById('closeModal').addEventListener('click', closePurchase);
@@ -1957,12 +2124,24 @@
       if (e.target === e.currentTarget) closePurchase();
     });
 
-    document.getElementById('qtyMinus').addEventListener('click', () => {
-      if (qty > 1) { qty--; document.getElementById('qtyValue').textContent = qty; updateTotal(); }
+    document.getElementById('qtyMinus').addEventListener('click', async () => {
+      if (qty > 1) {
+        qty--;
+        document.getElementById('qtyValue').textContent = qty;
+        updateTotal();
+        if (selectedEvent) await crearReserva(selectedEvent.id, qty);
+      }
     });
-    document.getElementById('qtyPlus').addEventListener('click', () => {
-      const max = Math.min(4, selectedEvent?.disponibles || 4);
-      if (qty < max) { qty++; document.getElementById('qtyValue').textContent = qty; updateTotal(); }
+    document.getElementById('qtyPlus').addEventListener('click', async () => {
+      // disponibles local ya descontó la reserva actual: stock visible + reserved qty
+      const reserved = (activeReserva && activeReserva.eventId === selectedEvent?.id) ? activeReserva.cantidad : 0;
+      const max = Math.min(4, (selectedEvent?.disponibles || 0) + reserved);
+      if (qty < max) {
+        qty++;
+        document.getElementById('qtyValue').textContent = qty;
+        updateTotal();
+        if (selectedEvent) await crearReserva(selectedEvent.id, qty);
+      }
     });
 
     function updateTotal() {
@@ -2242,13 +2421,20 @@
         });
       }
 
+      // Vincular reserva (stock ya descontado al reservar)
+      if (activeReserva && activeReserva.reservaId) {
+        order.reservaId = activeReserva.reservaId;
+      }
+
       // Guardar localmente
       const orders = JSON.parse(localStorage.getItem('planetBoletos_orders') || '[]');
       orders.push(order);
       localStorage.setItem('planetBoletos_orders', JSON.stringify(orders));
 
-      // Reducir stock
-      selectedEvent.disponibles -= qty;
+      // Stock ya se descontó en la reserva; no volver a restar
+      purchaseCompleted = true;
+      activeReserva = null;
+      stopReservaTimer();
       saveEvents();
       renderEvents();
 

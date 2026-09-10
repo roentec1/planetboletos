@@ -664,7 +664,7 @@
         <i class="fas fa-cog"></i> Configuración
       </button>
       <div style="margin-top:30px; padding:0 24px;">
-        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:black; border-color:rgba(255,255,255,0.3);">
+        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:white; border-color:rgba(255,255,255,0.3);">
           <i class="fas fa-external-link-alt"></i> Ver sitio
         </a>
       </div>
@@ -841,7 +841,8 @@
             </p>
             <div class="form-group" style="margin-bottom:16px;">
               <label>URL del Web App (termina en /exec)</label>
-              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
+" />
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
               <button type="button" class="btn btn-primary" onclick="saveConfig()">
@@ -1073,7 +1074,8 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
+';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -1622,7 +1624,15 @@
           const cRes = await fetch(cUrl, { method: 'GET', cache: 'no-store' });
           const cData = await cRes.json();
           if (cData && cData.ok && Array.isArray(cData.contactos)) {
-            contacts = cData.contactos;
+            const deleted = new Set(getDeletedContactKeys());
+            const seen = new Set();
+            contacts = cData.contactos.filter(c => {
+              const key = contactKey(c);
+              if (deleted.has(key)) return false; // no reaparecer tras borrar
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
             localStorage.setItem('planetBoletos_contacts', JSON.stringify(contacts));
           }
         } catch (e2) { console.warn('contactos', e2); }
@@ -2042,27 +2052,105 @@ Presenta este folio o el código QR en la entrada del evento.
       `).join('') : '<tr><td colspan="7" class="empty-state">Sin mensajes</td></tr>';
     }
 
+    function contactKey(c) {
+      return [String(c.email || '').toLowerCase(), String(c.mensaje || ''), String(c.nombre || '')].join('|');
+    }
+
+    function getDeletedContactKeys() {
+      try { return JSON.parse(localStorage.getItem('planetBoletos_contacts_deleted') || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function markContactDeleted(c) {
+      const keys = getDeletedContactKeys();
+      const k = contactKey(c);
+      if (!keys.includes(k)) keys.push(k);
+      // límite
+      while (keys.length > 500) keys.shift();
+      localStorage.setItem('planetBoletos_contacts_deleted', JSON.stringify(keys));
+    }
+
     function saveContacts() {
       localStorage.setItem('planetBoletos_contacts', JSON.stringify(contacts));
     }
 
-    function deleteContact(idx) {
+    async function deleteContact(idx) {
       if (!confirm('¿Eliminar este mensaje de contacto?')) return;
       if (idx < 0 || idx >= contacts.length) return;
+      const item = { ...contacts[idx] };
+
+      // 1) Quitar de la lista local y marcar como borrado (anti reaparición)
+      markContactDeleted(item);
       contacts.splice(idx, 1);
       saveContacts();
       renderContacts();
+
+      // 2) Borrar en Google Sheets vía GET (más fiable que POST no-cors)
+      const url = getSheetsUrl();
+      if (url && !url.includes('PEGA_AQUI') && !url.includes('XXXX')) {
+        const base = url.split('?')[0];
+        const q = new URLSearchParams({
+          action: 'eliminarContacto',
+          email: item.email || '',
+          mensaje: item.mensaje || '',
+          nombre: item.nombre || '',
+          fecha: String(item.fecha || ''),
+          sheetRow: String(item.sheetRow || '')
+        });
+        try {
+          // POST de respaldo
+          fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'eliminarContacto',
+              data: {
+                sheetRow: item.sheetRow || null,
+                fecha: item.fecha,
+                email: item.email,
+                mensaje: item.mensaje,
+                nombre: item.nombre
+              }
+            })
+          }).catch(() => {});
+          // GET para ejecutar el borrado con certeza
+          await fetch(base + '?' + q.toString(), { method: 'GET', cache: 'no-store', mode: 'no-cors' });
+        } catch (e) {
+          console.warn('eliminarContacto sheets', e);
+        }
+      }
     }
 
-    function clearAllContacts() {
+    async function clearAllContacts() {
       if (!contacts.length) {
         alert('No hay mensajes para eliminar.');
         return;
       }
-      if (!confirm('¿Eliminar TODOS los mensajes de contacto? Esta acción no se puede deshacer.')) return;
+      if (!confirm('¿Eliminar TODOS los mensajes de contacto? Se borrarán también de Google Sheets.')) return;
+
+      contacts.forEach(c => markContactDeleted(c));
       contacts = [];
       saveContacts();
       renderContacts();
+
+      const url = getSheetsUrl();
+      if (url && !url.includes('PEGA_AQUI') && !url.includes('XXXX')) {
+        const base = url.split('?')[0];
+        try {
+          fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'eliminarTodosContactos', data: {} })
+          }).catch(() => {});
+          await fetch(base + '?action=eliminarTodosContactos', { method: 'GET', cache: 'no-store', mode: 'no-cors' });
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+      // limpiar lista de borrados tras vaciar sheet
+      localStorage.setItem('planetBoletos_contacts_deleted', '[]');
     }
 
     // ========== CONFIG ==========

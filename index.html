@@ -1176,6 +1176,202 @@
       .hero { padding-top: 80px; padding-bottom: 32px; }
     }
 
+  
+    /* ========== MÓVIL REFORZADO 2026 ========== */
+    @media (max-width: 768px) {
+      :root { --header-h: 60px; }
+      body {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+        -webkit-tap-highlight-color: rgba(196, 30, 58, 0.15);
+      }
+      .header {
+        padding-top: env(safe-area-inset-top, 0);
+        position: sticky;
+        top: 0;
+        z-index: 1200;
+      }
+      .nav-container {
+        padding: 10px 14px;
+        min-height: var(--header-h);
+      }
+      .logo img { height: 34px !important; }
+      .logo-text { font-size: 0.95rem !important; }
+      .menu-toggle {
+        display: inline-flex !important;
+        width: 44px; height: 44px;
+        align-items: center; justify-content: center;
+        font-size: 1.4rem;
+        color: #fff;
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        border: none;
+      }
+      .nav-links {
+        position: fixed;
+        top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+        left: 0; right: 0;
+        background: #0B1E3D;
+        flex-direction: column !important;
+        padding: 12px 16px 24px;
+        gap: 4px;
+        transform: translateY(-120%);
+        transition: transform 0.25s ease;
+        z-index: 1190;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      }
+      .nav-links.open { transform: translateY(0); }
+      .nav-links a {
+        display: block !important;
+        padding: 14px 16px !important;
+        font-size: 1.05rem !important;
+        border-radius: 10px;
+        width: 100%;
+      }
+      .nav-links .btn-nav {
+        width: 100%;
+        text-align: center;
+        margin-top: 8px;
+        justify-content: center;
+      }
+
+      .hero {
+        padding: 88px 16px 40px !important;
+        text-align: center;
+      }
+      .hero-content {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+      .hero h1 {
+        font-size: clamp(1.45rem, 6vw, 1.85rem) !important;
+        line-height: 1.25 !important;
+      }
+      .hero p { font-size: 0.95rem !important; margin-left: auto; margin-right: auto; }
+      .hero-actions {
+        flex-direction: column !important;
+        width: 100%;
+      }
+      .hero-actions .btn {
+        width: 100% !important;
+        min-height: 48px;
+        justify-content: center;
+      }
+      .hero-logo-card img { max-width: 180px !important; }
+
+      .section { padding: 40px 16px !important; }
+      .section-title { font-size: 1.4rem !important; }
+      .events-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+      .event-card {
+        border-radius: 14px !important;
+        max-width: 100%;
+      }
+      .event-card img, .event-img {
+        height: 180px !important;
+        width: 100%;
+        object-fit: cover;
+      }
+      .btn-buy, .event-card .btn {
+        width: 100%;
+        min-height: 46px;
+        justify-content: center;
+      }
+
+      .tabs {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn {
+        flex: 0 0 auto;
+        min-height: 44px;
+        padding: 10px 16px;
+        white-space: nowrap;
+      }
+
+      .contact-grid, .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+      .form-row { grid-template-columns: 1fr !important; }
+      input, select, textarea {
+        font-size: 16px !important;
+        min-height: 46px;
+        border-radius: 10px;
+      }
+      textarea { min-height: 110px; }
+      .btn-primary, .btn {
+        min-height: 48px;
+        font-size: 0.95rem;
+      }
+
+      /* Modal compra tipo bottom sheet */
+      .modal-overlay {
+        padding: 0 !important;
+        align-items: flex-end !important;
+      }
+      .modal {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: 94vh !important;
+        border-radius: 18px 18px 0 0 !important;
+        margin: 0 !important;
+      }
+      .modal-header {
+        padding: 14px 16px !important;
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 2;
+      }
+      .modal-body { padding: 16px !important; }
+      .modal-event-info {
+        flex-direction: column;
+        text-align: center;
+      }
+      .modal-event-info img {
+        width: 100%;
+        max-height: 140px;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+      .qty-btn {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.4rem !important;
+      }
+      .transfer-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      #reservaTimerBox { font-size: 0.9rem; }
+      #reservaTimerText { font-size: 1.35rem !important; }
+
+      .footer { padding: 32px 16px !important; text-align: center; }
+      .footer-social { justify-content: center; }
+      .footer-social a {
+        width: 44px; height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .hero h1 { font-size: 1.35rem !important; }
+      .section-title { font-size: 1.25rem !important; }
+      .logo-text { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    }
+
   </style>
 </head>
 <body>
@@ -1288,12 +1484,12 @@
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <strong>Oficina</strong>
-              <span>Monclova coahuila, México</span>
+              <span>Monclova Coahuila, México</span>
             </div>
           </div>
 
           <div class="social-links">
-            <a href="https://www.facebook.com/people/Planet-Publicidad/100041638765131/" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
             <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
             <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
@@ -1313,7 +1509,7 @@
             </div>
             <div class="form-group">
               <label for="cTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="cTelefono" name="telefono" placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="cTelefono" name="telefono" placeholder="861 1234 567" inputmode="numeric" autocomplete="tel" />
               <p id="cerrTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -2793,7 +2989,9 @@
 
     // ========== NAV ==========
     document.getElementById('menuToggle').addEventListener('click', () => {
-      document.getElementById('navLinks').classList.toggle('open');
+      const nl = document.getElementById('navLinks');
+      nl.classList.toggle('open');
+      document.body.style.overflow = nl.classList.contains('open') ? 'hidden' : '';
     });
 
     document.querySelectorAll('.nav-links a').forEach(a => {

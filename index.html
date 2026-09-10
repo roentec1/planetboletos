@@ -1755,7 +1755,12 @@
           // Asegura que cada evento tenga comisión numérica
           ['musica', 'deportes'].forEach(tipo => {
             if (!Array.isArray(data[tipo])) data[tipo] = defaults[tipo] || [];
-            data[tipo] = data[tipo].map(ev => ({
+            const seen = new Set();
+            data[tipo] = data[tipo].filter(ev => {
+              if (!ev || !ev.id || seen.has(ev.id)) return false;
+              seen.add(ev.id);
+              return true;
+            }).map(ev => ({
               ...ev,
               precio: Number(ev.precio) || 0,
               comision: Number(ev.comision) || 0,
@@ -1778,58 +1783,48 @@
       localStorage.setItem('planetBoletos_events', JSON.stringify(events));
     }
 
-    /** Une stock/precio desde Sheets (fuente global) con eventos locales */
-    function mergeEventosFromRemote(remote) {
-      if (!remote) return;
-      const map = {};
-      (remote.musica || []).concat(remote.deportes || []).forEach(ev => {
-        if (ev && ev.id) map[ev.id] = ev;
-      });
-      let changed = false;
-      ['musica', 'deportes'].forEach(tipo => {
-        (events[tipo] || []).forEach((ev, i) => {
-          const r = map[ev.id];
-          if (!r) return;
-          if (typeof r.disponibles === 'number' && r.disponibles !== ev.disponibles) {
-            events[tipo][i].disponibles = r.disponibles;
-            changed = true;
-          }
-          if (typeof r.precio === 'number') events[tipo][i].precio = r.precio;
-          if (typeof r.comision === 'number') events[tipo][i].comision = r.comision;
-          // campos de texto útiles si Admin los cambió
-          if (r.titulo) events[tipo][i].titulo = r.titulo;
-          if (r.equipoLocal) events[tipo][i].equipoLocal = r.equipoLocal;
-          if (r.equipoVisitante) events[tipo][i].equipoVisitante = r.equipoVisitante;
-          if (r.fecha) events[tipo][i].fecha = r.fecha;
-          if (r.ciudad) events[tipo][i].ciudad = r.ciudad;
-        });
-        // eventos nuevos solo en Sheets
-        (remote[tipo] || []).forEach(r => {
-          if (!r.id) return;
-          if (!(events[tipo] || []).some(e => e.id === r.id)) {
-            events[tipo] = events[tipo] || [];
-            events[tipo].push(r);
-            changed = true;
-          }
+        function dedupeEventsById(list) {
+      const seen = new Set();
+      const out = [];
+      (list || []).forEach(ev => {
+        if (!ev || !ev.id) return;
+        if (seen.has(ev.id)) return;
+        seen.add(ev.id);
+        out.push({
+          ...ev,
+          precio: Number(ev.precio) || 0,
+          comision: Number(ev.comision) || 0,
+          disponibles: Number(ev.disponibles) || 0
         });
       });
-      if (changed) {
-        saveEvents();
-        try { renderEvents(); } catch (e) {}
-      }
+      return out;
+    }
+
+    /**
+     * Sheets es la ÚNICA fuente de verdad.
+     * Si hay eventos en la hoja, REEMPLAZA lo local (no mezcla → evita duplicados).
+     */
+    function applyEventosFromRemote(remote) {
+      if (!remote) return false;
+      const musica = dedupeEventsById(remote.musica);
+      const deportes = dedupeEventsById(remote.deportes);
+      if (musica.length === 0 && deportes.length === 0) return false;
+      events = { musica, deportes };
+      saveEvents();
+      try { renderEvents(); } catch (e) {}
+      return true;
     }
 
     async function syncStockFromSheets() {
       const url = getSheetsUrl();
-      if (!url || url.includes('XXXX')) return false;
+      if (!url || url.includes('XXXX') || url.includes('PEGA_AQUI')) return false;
       try {
         const u = url.split('?')[0] + '?action=listarEventos&_=' + Date.now();
         const res = await fetch(u, { method: 'GET', cache: 'no-store' });
         const data = await res.json();
         if (data && data.ok && data.eventos) {
-          if (data.empty) return false; // hoja vacía: no pisa local
-          mergeEventosFromRemote(data.eventos);
-          // Liberar reservas vencidas en servidor (recupera stock global)
+          if (data.empty) return false;
+          applyEventosFromRemote(data.eventos);
           try {
             fetch(url.split('?')[0] + '?action=liberarVencidas&_=' + Date.now(), {
               method: 'GET', cache: 'no-store', mode: 'no-cors'
@@ -1943,7 +1938,7 @@
 
     async function postSheetsAction(action, data) {
       const url = getSheetsUrl();
-      if (!url || url.includes('XXXX') || url.includes('https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec')) {
+      if (!url || url.includes('XXXX') || url.includes('PEGA_AQUI')) {
         return { ok: false, error: 'Sin URL de Sheets' };
       }
       try {
@@ -2584,8 +2579,13 @@
             apiKey: c.waApiKey || '',
             webhookUrl: c.waWebhookUrl || ''
           };
+          order.adminNotifyEmail = c.adminNotifyEmail || localStorage.getItem('planetBoletos_adminNotifyEmail') || '';
+          order.adminNotifyDrive = c.adminNotifyDrive !== false && localStorage.getItem('planetBoletos_adminNotifyDrive') !== '0';
         }
-      } catch (e) {}
+      } catch (e) {
+        order.adminNotifyEmail = localStorage.getItem('planetBoletos_adminNotifyEmail') || '';
+        order.adminNotifyDrive = localStorage.getItem('planetBoletos_adminNotifyDrive') !== '0';
+      }
 
       order.metodoPago = getMetodoPago();
 

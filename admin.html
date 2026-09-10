@@ -607,6 +607,85 @@
       .login-box { width: 100%; max-width: 100%; }
     }
 
+  
+    /* Admin móvil reforzado 2026 */
+    @media (max-width: 900px) {
+      .sidebar {
+        position: fixed !important;
+        left: -280px;
+        top: 0; bottom: 0;
+        width: 260px !important;
+        z-index: 300;
+        transition: left 0.25s ease;
+        overflow-y: auto;
+      }
+      .sidebar.open { left: 0 !important; }
+      .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 10px !important;
+      }
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #fff;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px !important;
+      }
+      .topbar h1 { font-size: 1.1rem !important; }
+      .topbar-actions {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .topbar-actions .btn {
+        flex: 1 1 auto;
+        min-height: 40px;
+        font-size: 0.75rem !important;
+        padding: 8px 10px !important;
+      }
+      .mobile-menu-btn {
+        display: inline-flex !important;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+      }
+      .table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -4px;
+      }
+      table { min-width: 700px; font-size: 0.8rem; }
+      .panel-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px;
+      }
+      .panel-header .btn { width: 100%; justify-content: center; }
+      .form-grid { grid-template-columns: 1fr !important; }
+      .modal-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 92vh;
+        border-radius: 16px 16px 0 0 !important;
+      }
+      .modal-actions {
+        flex-direction: column;
+      }
+      .modal-actions .btn { width: 100%; }
+      input, select, textarea { font-size: 16px !important; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr !important; }
+      .login-box { margin: 12px; padding: 20px 16px !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -891,6 +970,9 @@
             <button type="button" class="btn btn-navy" onclick="verificarDrivePermisos()" style="margin-left:8px;">
               <i class="fas fa-shield-alt"></i> Verificar permisos de carpeta
             </button>
+            <button type="button" class="btn btn-outline" onclick="compartirCarpetaDriveAdmin()" style="margin-left:8px;">
+              <i class="fas fa-user-plus"></i> Compartir carpeta con mi email
+            </button>
             <p id="driveNotifyStatus" style="margin-top:12px;font-size:0.88rem;color:var(--gray-600);"></p>
             <p id="drivePermStatus" style="margin-top:8px;font-size:0.88rem;display:none;"></p>
             <div style="margin-top:16px;padding:14px;background:var(--gray-100);border-radius:10px;font-size:0.85rem;color:var(--gray-600);">
@@ -1106,7 +1188,7 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyrsCXA7wvSt8ANsp_xsNA6wr6CMls5IfL94s1xHLCiHCpg8ZPKhMs-pWV2Ug-4hA9e/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwJrT-2-pHf1_LKEntfynFvDCZQ5Q0dg5t0hMY0SUZ4kAZA8EsMy2Ew9x1qbnE7TiQh/exec';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -2255,6 +2337,38 @@ Presenta este folio o el código QR en la entrada del evento.
 
 
 
+
+    async function compartirCarpetaDriveAdmin() {
+      const email = (document.getElementById('adminNotifyEmail')?.value || '').trim();
+      if (!email) {
+        alert('Escribe primero tu email en "Email del administrador" y guarda.');
+        return;
+      }
+      const url = getSheetsUrl();
+      if (!url || url.includes('PEGA_AQUI')) {
+        alert('Configura la URL /exec de Apps Script.');
+        return;
+      }
+      const base = url.split('?')[0];
+      const openUrl = base + '?action=compartirCarpetaDrive&email=' + encodeURIComponent(email);
+      window.open(openUrl, '_blank');
+      // También POST
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'compartirCarpetaDrive', data: { email } })
+        });
+      } catch (e) {}
+      const el = document.getElementById('drivePermStatus');
+      if (el) {
+        el.style.display = 'block';
+        el.style.color = '#1E40AF';
+        el.innerHTML = 'Se solicitó compartir la carpeta con <strong>' + email + '</strong>. Revisa la pestaña abierta y tu correo de Drive.';
+      }
+    }
+
     async function verificarDrivePermisos() {
       const url = getSheetsUrl();
       const el = document.getElementById('drivePermStatus');
@@ -2553,6 +2667,7 @@ Presenta este folio o el código QR en la entrada del evento.
     window.pullFromSheets = pullFromSheets;
     window.saveDriveNotifyConfig = saveDriveNotifyConfig;
     window.verificarDrivePermisos = verificarDrivePermisos;
+    window.compartirCarpetaDriveAdmin = compartirCarpetaDriveAdmin;
     window.pullEventosFromSheets = pullEventosFromSheets;
     window.pushEventosToSheets = pushEventosToSheets;
     window.limpiarYPublicarEventos = limpiarYPublicarEventos;

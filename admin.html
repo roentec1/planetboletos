@@ -868,6 +868,32 @@
         </div>
 
         <div class="panel">
+          <div class="panel-header"><h2><i class="fab fa-google-drive"></i> Notificaciones Google Drive</h2></div>
+          <div class="panel-body">
+            <p style="margin-bottom:16px;color:var(--gray-600);font-size:0.95rem;">
+              Cuando un cliente sube su <strong>comprobante de pago</strong>, se guarda en Drive
+              (<em>Planet Boletos / Comprobantes</em>) y puedes recibir un correo con el enlace.
+            </p>
+            <label style="display:flex;align-items:center;gap:10px;font-weight:500;margin-bottom:14px;cursor:pointer;">
+              <input type="checkbox" id="adminNotifyDrive" checked />
+              Avisarme por correo al recibir un comprobante en Drive
+            </label>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label>Email del administrador (notificaciones)</label>
+              <input type="email" id="adminNotifyEmail" placeholder="tu-correo@gmail.com" />
+            </div>
+            <button type="button" class="btn btn-primary" onclick="saveDriveNotifyConfig()">
+              <i class="fas fa-save"></i> Guardar notificaciones Drive
+            </button>
+            <p id="driveNotifyStatus" style="margin-top:12px;font-size:0.88rem;color:var(--gray-600);"></p>
+            <div style="margin-top:16px;padding:14px;background:var(--gray-100);border-radius:10px;font-size:0.85rem;color:var(--gray-600);">
+              <strong>Carpeta en Drive:</strong> <code>Planet Boletos → Comprobantes</code><br>
+              El correo incluye folio, cliente, total y botón <em>Ver comprobante en Drive</em>.
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
           <div class="panel-header"><h2><i class="fas fa-envelope"></i> Plantillas de correo</h2></div>
           <div class="panel-body">
             <p style="margin-bottom:20px; color:var(--gray-600); font-size:0.95rem;">
@@ -2190,6 +2216,47 @@ Presenta este folio o el código QR en la entrada del evento.
       }
     }
 
+
+    function saveDriveNotifyConfig() {
+      const email = document.getElementById('adminNotifyEmail')?.value.trim() || '';
+      const enabled = document.getElementById('adminNotifyDrive')?.checked !== false;
+      const cfg = getEmailConfig();
+      cfg.adminNotifyEmail = email;
+      cfg.adminNotifyDrive = enabled;
+      localStorage.setItem('planetBoletos_emailConfig', JSON.stringify(cfg));
+      localStorage.setItem('planetBoletos_adminNotifyEmail', email);
+      localStorage.setItem('planetBoletos_adminNotifyDrive', enabled ? '1' : '0');
+
+      const url = getSheetsUrl();
+      const status = document.getElementById('driveNotifyStatus');
+      if (url && !url.includes('PEGA_AQUI')) {
+        fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'setNotifyConfig',
+            data: { adminNotifyEmail: email, adminNotifyDrive: enabled }
+          })
+        }).catch(() => {});
+        if (status) status.textContent = 'Guardado local + enviado a Apps Script. Las nuevas compras avisarán a ' + (email || '(sin email)');
+      } else if (status) {
+        status.textContent = 'Guardado en este navegador. Configura también la URL de Sheets.';
+      }
+      alert('Notificaciones de Drive guardadas.');
+    }
+
+    function loadDriveNotifyForm() {
+      const cfg = getEmailConfig();
+      const email = cfg.adminNotifyEmail || localStorage.getItem('planetBoletos_adminNotifyEmail') || '';
+      const enabled = cfg.adminNotifyDrive !== false && localStorage.getItem('planetBoletos_adminNotifyDrive') !== '0';
+      const em = document.getElementById('adminNotifyEmail');
+      const ck = document.getElementById('adminNotifyDrive');
+      if (em) em.value = email;
+      if (ck) ck.checked = enabled;
+    }
+
+
     function testEmailSend() {
       const url = (document.getElementById('sheetsUrl')?.value || getSheetsUrl() || '').trim();
       const el = document.getElementById('testEmailResult');
@@ -2408,6 +2475,7 @@ Presenta este folio o el código QR en la entrada del evento.
     window.changeOrderStatus = changeOrderStatus;
     window.enviarWhatsAppManual = enviarWhatsAppManual;
     window.pullFromSheets = pullFromSheets;
+    window.saveDriveNotifyConfig = saveDriveNotifyConfig;
     window.pullEventosFromSheets = pullEventosFromSheets;
     window.pushEventosToSheets = pushEventosToSheets;
     window.saveConfig = saveConfig;

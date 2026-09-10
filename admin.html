@@ -664,7 +664,7 @@
         <i class="fas fa-cog"></i> Configuración
       </button>
       <div style="margin-top:30px; padding:0 24px;">
-        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:black; border-color:rgba(255,255,255,0.3);">
+        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:white; border-color:rgba(255,255,255,0.3);">
           <i class="fas fa-external-link-alt"></i> Ver sitio
         </a>
       </div>
@@ -770,6 +770,9 @@
               <button type="button" class="btn btn-outline btn-sm" onclick="pushEventosToSheets().then(()=>alert('Eventos publicados a Sheets'))" title="Subir eventos a Sheets">
                 <i class="fas fa-upload"></i> Publicar eventos
               </button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="limpiarYPublicarEventos()" title="Quitar duplicados y republicar a Sheets">
+                <i class="fas fa-broom"></i> Limpiar duplicados
+              </button>
               <button class="btn btn-outline btn-sm" onclick="syncPendingToSheets()" title="Reenviar estados a Google Sheets">
                 <i class="fas fa-cloud-upload-alt"></i> Subir a Sheets
               </button>
@@ -841,8 +844,7 @@
             </p>
             <div class="form-group" style="margin-bottom:16px;">
               <label>URL del Web App (termina en /exec)</label>
-              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
-" />
+              <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/XXXX/exec" />
             </div>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
               <button type="button" class="btn btn-primary" onclick="saveConfig()">
@@ -1104,8 +1106,7 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec
-';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzT6Ed00pli8udCKRyBwPL7l9Ne6hrp-lSYD53gCl08PJjCGMpeqXYXInWWIRX05xF5/exec';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -1178,6 +1179,25 @@
       pushEventosToSheets();
     }
 
+
+    async function limpiarYPublicarEventos() {
+      const dedupe = (list) => {
+        const seen = new Set();
+        return (list || []).filter(ev => {
+          if (!ev || !ev.id || seen.has(ev.id)) return false;
+          seen.add(ev.id);
+          return true;
+        });
+      };
+      events.musica = dedupe(events.musica);
+      events.deportes = dedupe(events.deportes);
+      localStorage.setItem('planetBoletos_events', JSON.stringify(events));
+      try { renderMusica(); } catch(e){}
+      try { renderDeportes(); } catch(e){}
+      await pushEventosToSheets();
+      alert('Duplicados eliminados y publicados a Sheets.\\nMúsica: ' + events.musica.length + ' · Deportes: ' + events.deportes.length + '\\n\\nEn otros dispositivos: recarga la página (Ctrl+F5).');
+    }
+
     async function pushEventosToSheets() {
       const url = getSheetsUrl();
       if (!url || url.includes('XXXX')) return;
@@ -1211,13 +1231,24 @@
           return;
         }
         if (data.eventos) {
-          if (data.eventos.musica?.length) events.musica = data.eventos.musica;
-          if (data.eventos.deportes?.length) events.deportes = data.eventos.deportes;
+          const dedupe = (list) => {
+            const seen = new Set();
+            return (list || []).filter(ev => {
+              if (!ev || !ev.id || seen.has(ev.id)) return false;
+              seen.add(ev.id);
+              return true;
+            });
+          };
+          // Reemplazo total (fuente de verdad = Sheets)
+          events.musica = dedupe(data.eventos.musica);
+          events.deportes = dedupe(data.eventos.deportes);
           localStorage.setItem('planetBoletos_events', JSON.stringify(events));
           try { renderMusica(); } catch(e){}
           try { renderDeportes(); } catch(e){}
           try { renderDashboard(); } catch(e){}
-          if (showAlert) alert('Eventos/stock actualizados desde Sheets.');
+          if (showAlert) {
+            alert('Eventos desde Sheets: ' + events.musica.length + ' música, ' + events.deportes.length + ' deportes.');
+          }
         }
       } catch (err) {
         console.error(err);
@@ -2524,6 +2555,7 @@ Presenta este folio o el código QR en la entrada del evento.
     window.verificarDrivePermisos = verificarDrivePermisos;
     window.pullEventosFromSheets = pullEventosFromSheets;
     window.pushEventosToSheets = pushEventosToSheets;
+    window.limpiarYPublicarEventos = limpiarYPublicarEventos;
     window.saveConfig = saveConfig;
     window.testSheetsConnection = testSheetsConnection;
     window.testEmailSend = testEmailSend;

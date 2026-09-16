@@ -142,41 +142,85 @@
       cursor: pointer;
     }
 
-    /* ========== HERO ========== */
+        /* ========== HERO ESPECTACULAR ========== */
     .hero {
       position: relative;
-      min-height: 92vh;
+      min-height: 100vh;
       display: flex;
-      align-items: center;
-      background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, #132B4A 100%);
+      flex-direction: column;
+      justify-content: center;
       overflow: hidden;
       padding-top: 72px;
+      background: #050d1a;
     }
 
-    .hero::before {
-      content: '';
+    .hero-bg {
       position: absolute;
       inset: 0;
-      background: 
-        radial-gradient(circle at 20% 50%, rgba(196, 30, 58, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(168, 176, 188, 0.1) 0%, transparent 40%);
+      z-index: 0;
     }
-
-    .hero-pattern {
+    .hero-bg-slide {
       position: absolute;
       inset: 0;
-      opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.08);
+      transition: opacity 1.2s ease, transform 8s ease;
+    }
+    .hero-bg-slide.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, rgba(5, 13, 26, 0.92) 0%, rgba(11, 30, 61, 0.75) 45%, rgba(5, 13, 26, 0.55) 100%),
+        radial-gradient(ellipse at 70% 40%, rgba(196, 30, 58, 0.25), transparent 55%);
+      z-index: 1;
+    }
+    .hero-orbs {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .hero-orbs span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.45;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+    .hero-orbs span:nth-child(1) {
+      width: 320px; height: 320px; background: #C41E3A;
+      top: 10%; left: -5%; animation-delay: 0s;
+    }
+    .hero-orbs span:nth-child(2) {
+      width: 280px; height: 280px; background: #1e5a9e;
+      bottom: 15%; right: 5%; animation-delay: -4s;
+    }
+    .hero-orbs span:nth-child(3) {
+      width: 180px; height: 180px; background: #7c3aed;
+      top: 40%; right: 30%; animation-delay: -7s;
+    }
+    @keyframes orbFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -24px) scale(1.08); }
     }
 
     .hero-content {
       position: relative;
+      z-index: 2;
       max-width: 1280px;
+      width: 100%;
       margin: 0 auto;
-      padding: 60px 24px;
+      padding: 48px 24px 32px;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 60px;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 40px;
       align-items: center;
     }
 
@@ -184,103 +228,455 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(196, 30, 58, 0.2);
-      border: 1px solid rgba(196, 30, 58, 0.4);
-      color: #FF6B81;
-      padding: 6px 14px;
+      background: rgba(196, 30, 58, 0.25);
+      border: 1px solid rgba(255, 107, 129, 0.45);
+      color: #FF8A9B;
+      padding: 8px 16px;
       border-radius: 50px;
       font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(8px);
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-badge .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
+      animation: pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
     .hero h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
       font-weight: 800;
       color: white;
-      line-height: 1.15;
-      margin-bottom: 20px;
-      letter-spacing: -1px;
+      line-height: 1.12;
+      margin-bottom: 18px;
+      letter-spacing: -1.2px;
+      animation: fadeUp 0.9s ease 0.1s both;
     }
-
-    .hero h1 span { color: var(--red); }
-
+    .hero h1 span {
+      background: linear-gradient(90deg, #C41E3A, #ff6b81, #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
     .hero p {
-      font-size: 1.15rem;
-      color: rgba(255,255,255,0.75);
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.78);
       max-width: 520px;
-      margin-bottom: 36px;
+      margin-bottom: 28px;
+      line-height: 1.55;
+      animation: fadeUp 0.9s ease 0.2s both;
     }
-
     .hero-actions {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
+      animation: fadeUp 0.9s ease 0.3s both;
     }
 
+    /* ========== BOTONES (base + hero) ========== */
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       padding: 14px 28px;
-      border-radius: 12px;
-      font-weight: 600;
+      border-radius: 14px;
+      font-weight: 700;
       font-size: 1rem;
+      font-family: inherit;
       text-decoration: none;
-      border: none;
+      border: 2px solid transparent;
       cursor: pointer;
-      transition: var(--transition);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+      line-height: 1.2;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
+    .btn:active { transform: scale(0.98); }
 
     .btn-primary {
-      background: var(--red);
-      color: white;
-      box-shadow: 0 8px 24px rgba(196, 30, 58, 0.35);
+      background: linear-gradient(135deg, #C41E3A 0%, #e11d48 50%, #be123c 100%);
+      color: #fff !important;
+      border-color: transparent;
+      box-shadow: 0 8px 24px rgba(196, 30, 58, 0.4);
     }
-
     .btn-primary:hover {
-      background: var(--red-dark);
+      background: linear-gradient(135deg, #e11d48 0%, #C41E3A 100%);
+      box-shadow: 0 12px 32px rgba(196, 30, 58, 0.55);
       transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(196, 30, 58, 0.45);
+      color: #fff !important;
     }
 
     .btn-outline {
       background: transparent;
-      color: white;
-      border: 2px solid rgba(255,255,255,0.3);
+      color: var(--navy);
+      border: 2px solid var(--navy);
     }
-
     .btn-outline:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.5);
+      background: var(--navy);
+      color: #fff;
     }
 
-    .hero-visual {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .btn-navy {
+      background: var(--navy);
+      color: #fff !important;
+      border-color: var(--navy);
+    }
+    .btn-navy:hover {
+      background: var(--navy-dark, #061428);
+      color: #fff !important;
     }
 
-    .hero-logo-card {
-      background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.15);
+    /* Botones del hero sobre fondo oscuro */
+    .hero-actions .btn {
+      min-height: 52px;
+      padding: 15px 30px;
+      font-size: 1.02rem;
+      border-radius: 14px;
+    }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-glow {
+      background: linear-gradient(135deg, #C41E3A 0%, #ff4d6d 45%, #C41E3A 100%);
+      background-size: 200% 200%;
+      color: #fff !important;
+      border: none;
+      box-shadow: 0 8px 28px rgba(196, 30, 58, 0.5);
+    }
+    .hero-actions .btn-primary:hover,
+    .hero-actions .btn-glow:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 36px rgba(196, 30, 58, 0.65);
+      color: #fff !important;
+    }
+    .hero-actions .btn-outline {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .hero-actions .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #fff;
+      color: #fff !important;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-glow {
+      animation: btnGlow 2.4s ease-in-out infinite;
+    }
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 8px 24px rgba(196, 30, 58, 0.4); }
+      50% { box-shadow: 0 10px 36px rgba(196, 30, 58, 0.75), 0 0 0 4px rgba(196, 30, 58, 0.15); }
+    }
+
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Featured event card */
+    .hero-featured {
+      position: relative;
       border-radius: 24px;
-      padding: 40px;
-      backdrop-filter: blur(20px);
-      box-shadow: var(--shadow-lg);
-      animation: float 6s ease-in-out infinite;
+      overflow: hidden;
+      min-height: 380px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+      animation: fadeUp 1s ease 0.25s both;
     }
-
-    .hero-logo-card img {
-      max-width: 320px;
+    .hero-featured-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .hero-featured-slide.active { opacity: 1; z-index: 1; }
+    .hero-featured-slide img {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-featured-slide .feat-shade {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5,13,26,0.95) 0%, rgba(5,13,26,0.35) 45%, transparent 70%);
+    }
+    .hero-featured-body {
+      position: relative;
+      z-index: 2;
+      padding: 24px;
+    }
+    .feat-type {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--red);
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .hero-featured-body h3 {
+      color: #fff;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0 0 12px;
+      line-height: 1.25;
+    }
+    .feat-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+    }
+    .feat-meta i { color: #FF8A9B; width: 18px; }
+    .hero-featured-dots {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 3;
+      display: flex;
+      gap: 6px;
+    }
+    .hero-featured-dots button {
+      width: 8px; height: 8px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.35);
+      cursor: pointer; padding: 0;
+      transition: all 0.25s;
+    }
+    .hero-featured-dots button.active {
+      background: #fff;
+      width: 22px;
+      border-radius: 99px;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-16px); }
+    /* ========== BANNER DE EVENTOS (estilos) ========== */
+    .hero-event-banner {
+      position: relative;
+      z-index: 2;
+      margin-top: auto;
+      padding: 8px 0 32px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.35) 100%);
     }
+
+    .hero-banner-label {
+      max-width: 1280px;
+      margin: 0 auto 14px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .hero-banner-label i {
+      color: #C41E3A;
+      font-size: 1rem;
+      filter: drop-shadow(0 0 8px rgba(196, 30, 58, 0.6));
+    }
+    .hero-banner-label::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #C41E3A, transparent);
+    }
+    .hero-banner-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.28), rgba(196,30,58,0.15), transparent);
+    }
+
+    .hero-banner-track-wrap {
+      overflow: hidden;
+      padding: 6px 0 4px;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+    }
+
+    .hero-banner-track {
+      display: flex;
+      gap: 18px;
+      width: max-content;
+      animation: bannerScroll 40s linear infinite;
+      padding: 8px 28px 12px;
+      will-change: transform;
+    }
+    .hero-banner-track:hover {
+      animation-play-state: paused;
+    }
+    @keyframes bannerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Tarjeta del banner */
+    .hero-banner-card {
+      position: relative;
+      flex: 0 0 300px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 14px 12px 12px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.05) 100%);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow:
+        0 10px 28px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      cursor: pointer;
+      transition:
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+    }
+    .hero-banner-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #C41E3A, #fbbf24);
+      opacity: 0.85;
+    }
+    .hero-banner-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(196,30,58,0.18), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .hero-banner-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%);
+      border-color: rgba(196, 30, 58, 0.55);
+      box-shadow:
+        0 16px 40px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(196, 30, 58, 0.25),
+        0 0 24px rgba(196, 30, 58, 0.2);
+    }
+    .hero-banner-card:hover::after { opacity: 1; }
+    .hero-banner-card:active {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .hero-banner-card img {
+      width: 78px;
+      height: 78px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+      border: 2px solid rgba(255,255,255,0.15);
+      transition: transform 0.35s ease, border-color 0.3s ease;
+    }
+    .hero-banner-card:hover img {
+      transform: scale(1.05);
+      border-color: rgba(196, 30, 58, 0.45);
+    }
+
+    .hero-banner-card .hb-info {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .hero-banner-card .hb-info h4 {
+      margin: 0;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.35);
+    }
+    .hero-banner-card .hb-info p {
+      margin: 0;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.72);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .hero-banner-card .hb-info p i {
+      color: #FF8A9B;
+      margin-right: 5px;
+      width: 14px;
+      text-align: center;
+      font-size: 0.75rem;
+    }
+
+    /* Chip de disponibilidad en banner (opcional via JS) */
+    .hero-banner-card .hb-chip {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      width: fit-content;
+    }
+    .hero-banner-card .hb-chip.low {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fcd34d;
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+    .hero-banner-card .hb-chip.out {
+      background: rgba(196, 30, 58, 0.25);
+      color: #fda4af;
+      border-color: rgba(196, 30, 58, 0.4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-banner-track { animation: none !important; }
+    }
+
 
     /* ========== SECTIONS ========== */
     section {
@@ -325,322 +721,1015 @@
       margin: 0 auto;
     }
 
-    /* ========== CATEGORY TABS ========== */
+    /* ========== CATEGORY TABS + EVENTOS ESPECTACULARES ========== */
+    #eventos {
+      position: relative;
+      background:
+        radial-gradient(ellipse at 10% 0%, rgba(196, 30, 58, 0.06), transparent 45%),
+        radial-gradient(ellipse at 90% 20%, rgba(11, 30, 61, 0.06), transparent 40%),
+        linear-gradient(180deg, #f8fafc 0%, #fff 40%, #f1f5f9 100%);
+      overflow: hidden;
+    }
+    #eventos::before {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(196,30,58,0.07), transparent 70%);
+      pointer-events: none;
+    }
+
     .tabs {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 48px;
+      gap: 10px;
+      margin-bottom: 40px;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
 
     .tab-btn {
-      padding: 12px 28px;
+      padding: 12px 24px;
       border-radius: 50px;
-      border: 2px solid var(--gray-200);
-      background: white;
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--gray-600);
+      border: 2px solid #e2e8f0;
+      background: rgba(255,255,255,0.9);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #64748b;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.25s ease;
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      backdrop-filter: blur(6px);
     }
-
-    .tab-btn:hover { border-color: var(--navy); color: var(--navy); }
-
-    .tab-btn.active {
-      background: var(--navy);
+    .tab-btn:hover {
       border-color: var(--navy);
-      color: white;
-      box-shadow: 0 6px 20px rgba(11, 30, 61, 0.25);
+      color: var(--navy);
+      transform: translateY(-2px);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0B1E3D, #1e3a5f);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(11, 30, 61, 0.3);
     }
 
-    /* ========== EVENT CARDS ========== */
     .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 28px;
+      position: relative;
+      z-index: 1;
     }
 
     .event-card {
-      background: white;
-      border-radius: var(--radius);
+      position: relative;
+      background: #fff;
+      border-radius: 22px;
       overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border: 1px solid var(--gray-200);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow:
+        0 4px 6px rgba(15, 23, 42, 0.03),
+        0 12px 32px rgba(15, 23, 42, 0.08);
+      transition:
+        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.35s ease,
+        border-color 0.3s ease;
       display: flex;
       flex-direction: column;
+      animation: cardIn 0.55s ease both;
+    }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .event-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-lg);
+      transform: translateY(-10px);
+      box-shadow:
+        0 20px 50px rgba(11, 30, 61, 0.15),
+        0 0 0 1px rgba(196, 30, 58, 0.12);
+      border-color: rgba(196, 30, 58, 0.2);
     }
 
     .event-card-image {
       position: relative;
-      height: 180px;
-      background: var(--navy);
+      height: 200px;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(135deg, #0B1E3D, #1e3a5f);
     }
-
     .event-card-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: var(--transition);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
-
-    .event-card:hover .event-card-image img { transform: scale(1.05); }
+    .event-card:hover .event-card-image img { transform: scale(1.1); }
 
     .event-card-image.team-logo {
-      background: linear-gradient(135deg, #0B1E3D, #1a365d);
-      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 50%),
+        linear-gradient(145deg, #0B1E3D 0%, #132B4A 50%, #1a2744 100%);
     }
-
     .event-card-image.team-logo img {
+      width: 55%;
+      height: auto;
+      max-height: 70%;
       object-fit: contain;
-      max-height: 140px;
-      width: auto;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.35));
     }
 
-    .event-badge {
+    .event-card-image .ev-type-badge {
       position: absolute;
       top: 14px;
       left: 14px;
-      background: var(--red);
-      color: white;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 5px 12px;
-      border-radius: 6px;
+      z-index: 2;
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 0.7rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.04em;
+      color: #fff;
+      background: rgba(196, 30, 58, 0.92);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.35);
+    }
+    .event-card-image .ev-type-badge.deportes {
+      background: rgba(11, 30, 61, 0.92);
+      box-shadow: 0 4px 12px rgba(11, 30, 61, 0.4);
+    }
+    .event-card-image .ev-type-badge.culturales {
+      background: rgba(124, 58, 237, 0.92);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
     }
 
-    .event-badge.music { background: #7C3AED; }
-    .event-badge.sports { background: var(--red); }
-    .event-badge.cultural { background: #059669; }
+    .event-card-image .ev-shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.7s ease;
+      pointer-events: none;
+    }
+    .event-card:hover .event-card-image .ev-shine {
+      transform: translateX(100%);
+    }
 
     .event-card-body {
-      padding: 24px;
-      flex: 1;
+      padding: 20px 20px 22px;
       display: flex;
       flex-direction: column;
+      flex: 1;
+      gap: 6px;
     }
-
     .event-card-body h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
       color: var(--navy);
-      margin-bottom: 8px;
       line-height: 1.3;
+      letter-spacing: -0.02em;
     }
 
     .event-meta {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-      color: var(--gray-600);
-      font-size: 0.9rem;
+      gap: 6px;
+      margin: 8px 0 4px;
     }
-
     .event-meta span {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 0.88rem;
+      color: #64748b;
     }
-
-    .event-meta i {
+.event-meta span i {
       width: 18px;
-      color: var(--red);
       text-align: center;
+      color: #C41E3A;
+      font-size: 0.85rem;
     }
 
     .event-stock {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      padding: 12px 14px;
-      background: var(--gray-100);
-      border-radius: 10px;
-      font-size: 0.9rem;
+      margin: 10px 0 4px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
     }
-
-    .stock-label { color: var(--gray-600); font-weight: 500; }
-
+    .stock-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
     .stock-value {
-      font-weight: 700;
-      color: var(--navy);
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #16a34a;
     }
-
-    .stock-value.low { color: var(--warning); }
-    .stock-value.out { color: var(--red); }
+    .stock-value.low { color: #d97706; }
+    .stock-value.out { color: #C41E3A; }
 
     .event-price {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
       color: var(--navy);
-      margin-bottom: 16px;
+      margin: 6px 0 4px;
+      letter-spacing: -0.03em;
     }
-
     .event-price small {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--gray-600);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .event-comision {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 4px;
     }
 
     .btn-buy {
-      width: 100%;
-      justify-content: center;
-      background: var(--navy);
-      color: white;
       margin-top: auto;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 20px;
+      min-height: 50px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #C41E3A 0%, #e11d48 50%, #be123c 100%);
+      box-shadow: 0 8px 20px rgba(196, 30, 58, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s;
     }
-
-    .btn-buy:hover {
-      background: var(--navy-dark);
+    .btn-buy:hover:not(:disabled) {
       transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(196, 30, 58, 0.45);
+      filter: brightness(1.05);
     }
-
     .btn-buy:disabled {
-      background: var(--gray-200);
-      color: var(--gray-600);
+      background: #cbd5e1;
+      box-shadow: none;
       cursor: not-allowed;
-      transform: none;
+      color: #64748b;
     }
 
-    /* ========== CONTACT ========== */
+    .section-header .tag {
+      background: linear-gradient(135deg, rgba(196,30,58,0.12), rgba(196,30,58,0.06));
+      border: 1px solid rgba(196,30,58,0.15);
+    }
+
+    /* ========== VISTA CALENDARIO + ANIMACIONES ESCALONADAS ========== */
+    .view-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .view-toggle button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .view-toggle button:hover {
+      border-color: var(--navy);
+      color: var(--navy);
+    }
+    .view-toggle button.active {
+      background: linear-gradient(135deg, #C41E3A, #e11d48);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(196, 30, 58, 0.3);
+    }
+
+    .events-calendar {
+      display: none;
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      border-radius: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+      padding: 20px 18px 24px;
+      margin-bottom: 8px;
+      animation: calIn 0.45s ease both;
+    }
+    .events-calendar.visible { display: block; }
+    .events-grid.hidden-view { display: none !important; }
+
+    @keyframes calIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .cal-header h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      text-transform: capitalize;
+    }
+    .cal-nav {
+      display: flex;
+      gap: 8px;
+    }
+    .cal-nav button {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      color: var(--navy);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-nav button:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .cal-weekdays span {
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #94a3b8;
+      padding: 6px 0;
+    }
+
+    .cal-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+    .cal-day {
+      min-height: 88px;
+      border-radius: 12px;
+      border: 1px solid #f1f5f9;
+      background: #f8fafc;
+      padding: 6px;
+      position: relative;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      animation: dayIn 0.4s ease both;
+    }
+    .cal-day.empty {
+      background: transparent;
+      border-color: transparent;
+      min-height: 0;
+    }
+    .cal-day.today {
+      border-color: rgba(196, 30, 58, 0.35);
+      background: rgba(196, 30, 58, 0.06);
+    }
+    .cal-day.has-events {
+      background: #fff;
+      border-color: #e2e8f0;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .cal-day.has-events:hover {
+      border-color: rgba(196, 30, 58, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(11, 30, 61, 0.1);
+    }
+    .cal-day-num {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .cal-day.today .cal-day-num {
+      color: #C41E3A;
+      background: rgba(196, 30, 58, 0.12);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-event-dot {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: linear-gradient(135deg, rgba(11,30,61,0.92), rgba(30,58,95,0.95));
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 4px 6px;
+      border-radius: 6px;
+      margin-bottom: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: filter 0.15s, transform 0.15s;
+      font-family: inherit;
+      line-height: 1.2;
+    }
+    .cal-event-dot:hover {
+      filter: brightness(1.1);
+      transform: scale(1.02);
+    }
+    .cal-event-dot.musica { background: linear-gradient(135deg, #C41E3A, #e11d48); }
+    .cal-event-dot.deportes { background: linear-gradient(135deg, #0B1E3D, #1e40af); }
+    .cal-event-dot.culturales { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+
+    .cal-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .cal-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cal-legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+    .cal-legend .lg-m { background: #C41E3A; }
+    .cal-legend .lg-d { background: #1e40af; }
+    .cal-legend .lg-c { background: #7c3aed; }
+
+    @keyframes dayIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Entrada escalonada de tarjetas */
+    .event-card {
+      opacity: 0;
+      animation: cardStagger 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes cardStagger {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .event-card, .cal-day, .events-calendar {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .cal-day { min-height: 64px; padding: 4px; }
+      .cal-event-dot { font-size: 0.58rem; padding: 3px 4px; }
+      .cal-weekdays span { font-size: 0.65rem; }
+      .cal-header h3 { font-size: 1.05rem; }
+    }
+    @media (max-width: 480px) {
+      .cal-days { gap: 3px; }
+      .cal-day { min-height: 56px; }
+      .cal-event-dot { font-size: 0; padding: 0; width: 8px; height: 8px; border-radius: 50%; margin: 2px auto; display: block; }
+      .cal-event-dot::after { content: none; }
+    }
+
+
+    /* ========== LISTA SEMANAL ========== */
+    .events-week {
+      display: none;
+      position: relative;
+      z-index: 1;
+      animation: calIn 0.45s ease both;
+    }
+    .events-week.visible { display: block; }
+
+    .week-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .week-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .week-nav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .week-nav button {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      color: var(--navy);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+    }
+    .week-nav button:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+    .week-nav .week-today-btn {
+      width: auto;
+      padding: 0 14px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      font-family: inherit;
+    }
+
+    .week-days {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .week-day-block {
+      background: #fff;
+      border-radius: 18px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      opacity: 0;
+      animation: cardStagger 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .week-day-block.is-today {
+      border-color: rgba(196, 30, 58, 0.35);
+      box-shadow: 0 8px 28px rgba(196, 30, 58, 0.1);
+    }
+    .week-day-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #0B1E3D 0%, #1e3a5f 100%);
+      color: #fff;
+    }
+    .week-day-block.is-today .week-day-head {
+      background: linear-gradient(135deg, #C41E3A 0%, #e11d48 100%);
+    }
+    .week-day-head .wd-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-transform: capitalize;
+    }
+    .week-day-head .wd-date {
+      font-size: 0.8rem;
+      opacity: 0.85;
+      font-weight: 600;
+    }
+    .week-day-head .wd-count {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .week-day-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .week-day-body.empty-msg {
+      padding: 16px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .week-event-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid #f1f5f9;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+      border: 1px solid #e2e8f0;
+    }
+    .week-event-row:hover {
+      background: #fff;
+      border-color: rgba(196, 30, 58, 0.35);
+      transform: translateX(4px);
+      box-shadow: 0 6px 18px rgba(11, 30, 61, 0.08);
+    }
+    .week-event-row img {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #0B1E3D;
+    }
+    .week-event-row .we-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .week-event-row .we-info h4 {
+      margin: 0 0 4px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--navy);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .week-event-row .we-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 0.78rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .week-event-row .we-meta i {
+      color: #C41E3A;
+      margin-right: 4px;
+    }
+    .week-event-row .we-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #fff;
+      background: #C41E3A;
+      flex-shrink: 0;
+    }
+    .week-event-row .we-badge.deportes { background: #0B1E3D; }
+    .week-event-row .we-badge.culturales { background: #7c3aed; }
+    .week-event-row .we-price {
+      font-weight: 800;
+      color: var(--navy);
+      font-size: 0.95rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .week-event-row .we-cta {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #C41E3A, #e11d48);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+    }
+
+    @media (max-width: 640px) {
+      .week-event-row {
+        flex-wrap: wrap;
+      }
+      .week-event-row .we-price {
+        width: 100%;
+        padding-left: 78px;
+        margin-top: -4px;
+      }
+      .week-event-row .we-cta {
+        position: absolute;
+        right: 16px;
+      }
+      .week-event-row { position: relative; padding-right: 52px; }
+    }
+
+
+    /* ========== CONTACTO PERSONALIZADO ========== */
     .contact-section {
-      background: white;
+      position: relative;
+      padding: 90px 24px;
+      background:
+        radial-gradient(ellipse at 0% 0%, rgba(196, 30, 58, 0.08), transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(11, 30, 61, 0.08), transparent 45%),
+        linear-gradient(165deg, #0B1E3D 0%, #132B4A 45%, #0a1628 100%);
+      overflow: hidden;
+    }
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .contact-section .section-header {
+      position: relative;
+      z-index: 1;
+    }
+    .contact-section .section-header .tag {
+      background: rgba(196, 30, 58, 0.25);
+      color: #FF8A9B;
+      border: 1px solid rgba(255, 107, 129, 0.35);
+    }
+    .contact-section .section-header h2 {
+      color: #fff;
+    }
+    .contact-section .section-header p {
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .contact-grid {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 48px;
-      align-items: start;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 28px;
+      align-items: stretch;
     }
 
-    .contact-info h3 {
-      font-size: 1.5rem;
-      color: var(--navy);
-      margin-bottom: 16px;
+    .contact-info-card {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 32px 28px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-
-    .contact-info p {
-      color: var(--gray-600);
-      margin-bottom: 28px;
+    .contact-info-card h3 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .contact-info-card > p {
+      margin: 0 0 18px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
 
     .contact-item {
       display: flex;
+      gap: 14px;
       align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 20px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 10px;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
     }
-
+    .contact-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(196, 30, 58, 0.4);
+      transform: translateX(4px);
+    }
     .contact-icon {
-      width: 48px;
-      height: 48px;
-      background: rgba(196, 30, 58, 0.1);
-      border-radius: 12px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--red);
-      font-size: 1.2rem;
       flex-shrink: 0;
+      background: linear-gradient(135deg, #C41E3A, #e11d48);
+      color: #fff;
+      font-size: 1.1rem;
+      box-shadow: 0 6px 16px rgba(196, 30, 58, 0.35);
     }
-
+    .contact-icon.wa {
+      background: linear-gradient(135deg, #128C7E, #25D366);
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+    }
+    .contact-icon.clock {
+      background: linear-gradient(135deg, #1e3a5f, #3b82f6);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+    }
     .contact-item strong {
       display: block;
-      color: var(--navy);
+      color: #fff;
+      font-size: 0.92rem;
+      font-weight: 700;
       margin-bottom: 2px;
     }
-
-    .contact-item span { color: var(--gray-600); font-size: 0.95rem; }
-
-    .social-links {
-      display: flex;
-      gap: 12px;
-      margin-top: 28px;
+    .contact-item span {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 0.88rem;
     }
 
-    .social-links a {
+    .contact-social {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .contact-social a {
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: var(--navy);
-      color: white;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.15rem;
-      transition: var(--transition);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 1.1rem;
+      transition: all 0.2s;
       text-decoration: none;
     }
-
-    .social-links a:hover {
-      background: var(--red);
+    .contact-social a:hover {
+      background: #C41E3A;
+      border-color: #C41E3A;
       transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(196, 30, 58, 0.4);
     }
 
-    .contact-form {
-      background: var(--gray-100);
-      padding: 36px;
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-200);
+    .contact-form-card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
+    .contact-form-card .form-card-title {
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+      font-weight: 800;
       color: var(--navy);
-      margin-bottom: 8px;
+    }
+    .contact-form-card .form-card-sub {
+      margin: 0 0 20px;
+      font-size: 0.9rem;
+      color: #64748b;
     }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+    .contact-form .form-group {
+      margin-bottom: 14px;
+    }
+    .contact-form label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
       width: 100%;
-      padding: 13px 16px;
-      border: 2px solid var(--gray-200);
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      font-size: 16px;
       font-family: inherit;
-      transition: var(--transition);
-      background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #f8fafc;
+      color: #0f172a;
+      box-sizing: border-box;
     }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
+    .contact-form input:focus,
+    .contact-form select:focus,
+    .contact-form textarea:focus {
       outline: none;
-      border-color: var(--navy);
-      box-shadow: 0 0 0 4px rgba(11, 30, 61, 0.1);
+      border-color: #C41E3A;
+      box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.12);
+      background: #fff;
     }
-
-    .form-group textarea { resize: vertical; min-height: 120px; }
-
-    .form-row {
+    .contact-form input.invalid,
+    .contact-form select.invalid,
+    .contact-form textarea.invalid {
+      border-color: #C41E3A;
+      background: #fff5f5;
+    }
+    .contact-form .field-error {
+      color: #C41E3A;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .contact-form .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 12px;
+    }
+    .contact-form .btn-primary {
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+      min-height: 52px;
+      border-radius: 14px;
+      font-size: 1rem;
+    }
+
+    .contact-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.78rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .contact-trust span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .contact-trust i { color: #16a34a; }
+
+    @media (max-width: 900px) {
+      .contact-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .contact-form .form-row {
+        grid-template-columns: 1fr !important;
+      }
     }
 
     /* ========== FOOTER ========== */
@@ -704,269 +1793,355 @@
     }
 
     /* ========== MODAL COMPRA ========== */
+    /* ========== MODAL DE COMPRA ESPECTACULAR ========== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(7, 20, 40, 0.75);
-      backdrop-filter: blur(8px);
       z-index: 2000;
-      display: none;
+      background: rgba(5, 13, 26, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      visibility: hidden;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
     }
-
     .modal-overlay.active {
-      display: flex;
       opacity: 1;
+      visibility: visible;
     }
 
     .modal {
-      background: white;
-      border-radius: 20px;
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
       max-height: 92vh;
       overflow-y: auto;
-      box-shadow: 0 25px 80px rgba(0,0,0,0.35);
-      transform: translateY(20px);
-      transition: transform 0.3s ease;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+    .modal-overlay.active .modal {
+      transform: translateY(0) scale(1);
     }
 
-    .modal-overlay.active .modal { transform: translateY(0); }
-
     .modal-header {
-      padding: 24px 28px 16px;
-      border-bottom: 1px solid var(--gray-200);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, #0B1E3D 0%, #1a3358 100%);
+      border-radius: 24px 24px 0 0;
       position: sticky;
       top: 0;
-      background: white;
-      z-index: 10;
+      z-index: 5;
     }
-
     .modal-header img {
       height: 36px;
+      width: auto;
+      filter: brightness(1.05);
     }
-
+    .modal-header-title {
+      flex: 1;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      margin: 0 8px;
+    }
     .modal-close {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: none;
-      background: var(--gray-100);
-      color: var(--gray-600);
-      font-size: 1.2rem;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1.1rem;
       cursor: pointer;
-      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .modal-close:hover {
+      background: #C41E3A;
+      border-color: #C41E3A;
+      transform: rotate(90deg);
     }
 
-    .modal-close:hover { background: var(--red); color: white; }
-
-    .modal-body { padding: 24px 28px 32px; }
+    .modal-body {
+      padding: 22px 22px 28px;
+    }
 
     .modal-event-info {
-      background: var(--gray-100);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 24px;
       display: flex;
-      gap: 16px;
+      gap: 14px;
       align-items: center;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 18px;
     }
-
     .modal-event-info img {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      border-radius: 10px;
-      background: white;
-      padding: 6px;
+      width: 88px;
+      height: 88px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+      background: #0B1E3D;
     }
-
     .modal-event-info h4 {
+      margin: 0 0 6px;
       font-size: 1.05rem;
+      font-weight: 800;
       color: var(--navy);
-      margin-bottom: 4px;
+      line-height: 1.25;
     }
-
     .modal-event-info p {
-      font-size: 0.85rem;
-      color: var(--gray-600);
-    }
-
-    .qty-selector {
+      margin: 0;
+      font-size: 0.82rem;
+      color: #64748b;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 6px;
+    }
+    .modal-event-info p i { color: #C41E3A; width: 14px; }
+
+    /* Timer reserva */
+    #reservaTimerBox {
+      margin-bottom: 16px !important;
+      padding: 14px 16px !important;
+      border-radius: 14px !important;
+      background: linear-gradient(135deg, #FFF7ED 0%, #FEF3C7 100%) !important;
+      border: 1px solid #F59E0B !important;
+      color: #92400E !important;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+    }
+    #reservaTimerText {
+      font-size: 1.35rem !important;
+      font-weight: 800 !important;
+      font-variant-numeric: tabular-nums;
+      color: #b45309;
     }
 
-    .qty-selector label {
-      font-weight: 600;
-      color: var(--navy);
-    }
-
+    /* Cantidad */
     .qty-controls {
       display: flex;
       align-items: center;
-      border: 2px solid var(--gray-200);
-      border-radius: 10px;
-      overflow: hidden;
+      justify-content: center;
+      gap: 18px;
+      margin: 8px 0 16px;
+      padding: 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
     }
-
     .qty-btn {
-      width: 42px;
-      height: 42px;
-      border: none;
-      background: var(--gray-100);
-      font-size: 1.2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      color: var(--navy);
+      font-size: 1.4rem;
       font-weight: 700;
       cursor: pointer;
-      color: var(--navy);
-      transition: var(--transition);
-    }
-
-    .qty-btn:hover { background: var(--navy); color: white; }
-
-    .qty-value {
-      width: 50px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--navy);
-    }
-
-    .pay-method-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .pay-method-tabs label {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 12px 14px;
-      border: 2px solid var(--gray-200);
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.92rem;
       transition: all 0.2s;
+      font-family: inherit;
+    }
+    .qty-btn:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+      transform: scale(1.05);
+    }
+    .qty-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy);
+      min-width: 36px;
+      text-align: center;
+    }
+
+    .modal-body .form-group {
+      margin-bottom: 14px;
+    }
+    .modal-body .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .modal-body .form-group input,
+    .modal-body .form-group select,
+    .modal-body .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      font-size: 16px;
+      font-family: inherit;
+      background: #f8fafc;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .modal-body .form-group input:focus,
+    .modal-body .form-group select:focus {
+      outline: none;
+      border-color: #C41E3A;
+      box-shadow: 0 0 0 4px rgba(196, 30, 58, 0.12);
       background: #fff;
     }
-    .pay-method-tabs input { display: none; }
-    .pay-method-tabs label:has(input:checked) {
-      border-color: var(--navy);
-      background: rgba(11, 30, 61, 0.06);
-      color: var(--navy);
-    }
-    .card-box {
-      background: #F8FAFC;
-      border: 1px solid var(--gray-200);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    .card-box .card-row {
+    .modal-body .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    @media (max-width: 520px) {
-      .card-box .card-row { grid-template-columns: 1fr; }
-    }
+
     .transfer-box {
-      background: linear-gradient(135deg, #0B1E3D, #1a365d);
-      color: white;
-      border-radius: 14px;
-      padding: 20px;
-      margin: 20px 0;
+      background: linear-gradient(135deg, #0B1E3D 0%, #1e3a5f 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin: 12px 0 16px;
+      box-shadow: 0 10px 28px rgba(11, 30, 61, 0.25);
     }
-
     .transfer-box h5 {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin: 0 0 12px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-
+    .transfer-box h5 i { color: #FF8A9B; }
     .transfer-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.88rem;
     }
-
-    .transfer-row strong { font-weight: 600; }
-
-    .file-upload {
-      border: 2px dashed var(--gray-200);
-      border-radius: 12px;
-      padding: 28px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      background: var(--gray-100);
-    }
-
-    .file-upload:hover, .file-upload.dragover {
-      border-color: var(--navy);
-      background: rgba(11, 30, 61, 0.05);
-    }
-
-    .file-upload i {
-      font-size: 2rem;
-      color: var(--navy);
-      margin-bottom: 10px;
-    }
-
-    .file-upload p {
-      font-size: 0.9rem;
-      color: var(--gray-600);
-    }
-
-    .file-upload input { display: none; }
-
-    .file-name {
-      margin-top: 10px;
-      font-weight: 600;
-      color: var(--success);
-      font-size: 0.9rem;
+    .transfer-row:last-child { border-bottom: none; }
+    .transfer-row span { color: rgba(255, 255, 255, 0.65); }
+    .transfer-row strong {
+      color: #fff;
+      font-weight: 700;
+      text-align: right;
+      word-break: break-all;
     }
 
     .total-box {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 0;
-      border-top: 2px solid var(--gray-200);
-      margin-top: 8px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.08), rgba(196, 30, 58, 0.02));
+      border: 2px solid rgba(196, 30, 58, 0.2);
+      margin: 14px 0 18px;
     }
-
-    .total-box span { font-size: 1rem; color: var(--gray-600); }
-    .field-error {
-      color: #C41E3A;
-      font-size: 0.82rem;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-    .form-group input.invalid,
-    .form-group textarea.invalid {
-      border-color: #C41E3A !important;
-      box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.15);
+    .total-box span {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 0.9rem;
     }
     .total-box strong {
-      font-size: 1.6rem;
-      color: var(--navy);
+      font-size: 1.45rem;
       font-weight: 800;
+      color: #C41E3A;
+      letter-spacing: -0.02em;
+    }
+
+    .file-upload {
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .file-upload:hover,
+    .file-upload.dragover {
+      border-color: #C41E3A;
+      background: rgba(196, 30, 58, 0.04);
+    }
+    .file-upload i {
+      font-size: 1.8rem;
+      color: #C41E3A;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .file-upload p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .file-upload input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .modal-body .btn-primary {
+      width: 100%;
+      justify-content: center;
+      min-height: 52px;
+      border-radius: 14px;
+      font-size: 1.02rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #C41E3A 0%, #e11d48 50%, #be123c 100%);
+      box-shadow: 0 10px 28px rgba(196, 30, 58, 0.35);
+    }
+    .modal-body .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(196, 30, 58, 0.45);
+    }
+
+    .modal-steps {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .modal-steps span {
+      flex: 1;
+      height: 4px;
+      border-radius: 4px;
+      background: #e2e8f0;
+    }
+    .modal-steps span.on {
+      background: linear-gradient(90deg, #C41E3A, #fbbf24);
+    }
+
+    #pagoMetodoBox label {
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    #pagoMetodoBox label:has(input:checked) {
+      border-color: #C41E3A !important;
+      box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.12);
+      background: rgba(196, 30, 58, 0.03);
     }
 
     .alert {
@@ -1541,6 +2716,259 @@
       }
     }
 
+  
+    @media (max-width: 900px) {
+      .hero-content {
+        grid-template-columns: 1fr !important;
+        text-align: center;
+        padding: 32px 16px 16px !important;
+        gap: 28px !important;
+      }
+      .hero h1, .hero p { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-featured { min-height: 320px; order: -1; }
+      .hero-banner-card { flex: 0 0 260px; }
+    }
+    @media (max-width: 480px) {
+      .hero { min-height: auto; padding-bottom: 8px; }
+      .hero-featured { min-height: 300px; }
+      .hero-banner-card { flex: 0 0 250px; padding: 10px !important; }
+      .hero-banner-card img { width: 64px; height: 64px; }
+      .hero-banner-card .hb-info h4 { font-size: 0.88rem; }
+    }
+
+  
+    /* =========================================================
+       DISEÑO RESPONSIVO UNIFICADO – Planet Boletos
+       Desktop → Tablet → Móvil (incl. Motorola G77)
+       ========================================================= */
+
+    /* Tablet / laptop pequeña */
+    @media (max-width: 1024px) {
+      .hero-content {
+        gap: 32px;
+        padding: 40px 20px 24px;
+      }
+      .hero-featured { min-height: 340px; }
+      .events-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px;
+      }
+      .contact-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 24px;
+      }
+    }
+
+    /* Tablet portrait / móvil grande */
+    @media (max-width: 900px) {
+      .nav-links {
+        position: fixed;
+        top: 64px;
+        left: 0; right: 0;
+        background: #0B1E3D;
+        flex-direction: column;
+        padding: 16px;
+        gap: 4px;
+        transform: translateY(-130%);
+        transition: transform 0.28s ease;
+        z-index: 1000;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+      }
+      .nav-links.open { transform: translateY(0); }
+      .nav-links a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 10px;
+        font-size: 1rem;
+      }
+      .menu-toggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 1.25rem;
+        cursor: pointer;
+      }
+
+      .hero {
+        min-height: auto;
+        padding-top: 64px;
+      }
+      .hero-content {
+        grid-template-columns: 1fr !important;
+        text-align: center;
+        padding: 28px 16px 12px !important;
+        gap: 24px !important;
+      }
+      .hero h1 {
+        font-size: clamp(1.6rem, 6vw, 2.2rem) !important;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero p {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.98rem !important;
+      }
+      .hero-actions {
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        max-width: 360px;
+        margin: 0 auto;
+      }
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 48px;
+      }
+      .hero-featured {
+        order: -1;
+        min-height: 300px !important;
+        max-width: 520px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .hero-featured-body h3 { font-size: 1.15rem !important; }
+      .hero-banner-label {
+        padding: 0 16px !important;
+        font-size: 0.72rem !important;
+      }
+      .hero-banner-track {
+        gap: 12px !important;
+        padding: 6px 16px 10px !important;
+      }
+      .hero-banner-card {
+        flex: 0 0 250px !important;
+      }
+
+      .section { padding: 48px 16px !important; }
+      .section-title, .section-header h2 {
+        font-size: 1.45rem !important;
+      }
+      .events-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 14px !important;
+      }
+      .form-row {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+        text-align: center;
+      }
+      .footer-social { justify-content: center; }
+
+      /* Modal compra */
+      .modal-overlay {
+        padding: 0 !important;
+        align-items: flex-end !important;
+      }
+      .modal {
+        max-width: 100% !important;
+        width: 100% !important;
+        max-height: 94vh !important;
+        border-radius: 18px 18px 0 0 !important;
+      }
+    }
+
+    /* Móvil estándar */
+    @media (max-width: 640px) {
+      html { -webkit-text-size-adjust: 100%; }
+      body { overflow-x: hidden; }
+      input, select, textarea {
+        font-size: 16px !important;
+        max-width: 100%;
+      }
+      .btn, button.btn {
+        min-height: 46px;
+        touch-action: manipulation;
+      }
+
+      .logo img { height: 34px !important; }
+      .logo-text { font-size: 0.92rem !important; }
+
+      .events-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+      }
+      .event-card img, .event-img {
+        height: 180px !important;
+        width: 100%;
+        object-fit: cover;
+      }
+      .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 4px;
+      }
+      .tab-btn {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        min-height: 44px;
+      }
+
+      .hero-featured { min-height: 280px !important; }
+      .hero-banner-card {
+        flex: 0 0 240px !important;
+        padding: 10px !important;
+      }
+      .hero-banner-card img {
+        width: 64px !important;
+        height: 64px !important;
+      }
+      .hero-orbs span { opacity: 0.3; filter: blur(50px); }
+
+      .contact-info, .contact-form, .contact-form-card {
+        padding: 18px 14px !important;
+      }
+    }
+
+    /* Móvil estrecho (G77 / 360–430px) */
+    @media (max-width: 430px) {
+      .hero-content { padding: 20px 12px 8px !important; }
+      .hero h1 { font-size: 1.4rem !important; }
+      .hero-badge { font-size: 0.75rem !important; }
+      .hero-featured { min-height: 260px !important; border-radius: 16px !important; }
+      .hero-featured-body { padding: 16px !important; }
+      .hero-banner-card { flex: 0 0 228px !important; }
+      .hero-banner-card .hb-info h4 { font-size: 0.85rem !important; }
+      .section-header h2 { font-size: 1.3rem !important; }
+      .qty-btn {
+        width: 48px !important;
+        height: 48px !important;
+      }
+    }
+
+    /* Landscape teléfono */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero { min-height: auto; }
+      .hero-featured { min-height: 220px !important; }
+      .hero-orbs { display: none; }
+      .modal { max-height: 96vh !important; }
+    }
+
+    /* Desktop grande: limitar anchos */
+    @media (min-width: 1280px) {
+      .hero-content {
+        max-width: 1280px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1564,28 +2992,45 @@
     </div>
   </header>
 
-  <!-- HERO -->
+  <!-- HERO ESPECTACULAR -->
   <section class="hero" id="inicio">
-    <div class="hero-pattern"></div>
+    <div class="hero-bg" id="heroBg" aria-hidden="true"></div>
+    <div class="hero-bg-overlay"></div>
+    <div class="hero-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
     <div class="hero-content">
       <div>
         <div class="hero-badge">
-          <i class="fas fa-ticket-alt"></i> Venta oficial de boletos
+          <span class="pulse-dot"></span>
+          En vivo · Venta oficial de boletos
         </div>
-        <h1>Tu entrada al <span>mejor</span> entretenimiento</h1>
-        <p>Compra boletos de forma segura para conciertos, partidos de béisbol y eventos culturales. Pago por transferencia y entrega digital con código QR.</p>
+        <h1>Tu acceso al <span>universo</span> del entretenimiento</h1>
+        <p>Conciertos, béisbol y cultura en un solo lugar. Compra segura, comprobante digital y código QR para entrar al evento.</p>
         <div class="hero-actions">
-          <a href="#eventos" class="btn btn-primary">
-            <i class="fas fa-calendar-alt"></i> Ver Eventos
+          <a href="#eventos" class="btn btn-primary btn-glow">
+            <i class="fas fa-bolt"></i> Explorar cartelera
           </a>
           <a href="#contacto" class="btn btn-outline">
-            <i class="fas fa-headset"></i> Contacto
+            <i class="fas fa-comments"></i> Hablar con nosotros
           </a>
         </div>
       </div>
-      <div class="hero-visual">
-        <div class="hero-logo-card">
-          <img src="planet-boletos.png" alt="Planet Boletos" />
+
+      <div class="hero-featured" id="heroFeatured">
+        <div class="hero-featured-dots" id="heroFeaturedDots"></div>
+        <div id="heroFeaturedSlides">
+          <!-- slides por JS -->
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-event-banner">
+      <div class="hero-banner-label">
+        <i class="fas fa-calendar-check"></i> Próximos eventos
+      </div>
+      <div class="hero-banner-track-wrap">
+        <div class="hero-banner-track" id="heroBannerTrack">
+          <!-- cards por JS -->
         </div>
       </div>
     </div>
@@ -1595,9 +3040,9 @@
   <section id="eventos">
     <div class="container">
       <div class="section-header">
-        <span class="tag">Cartelera</span>
+        <span class="tag"><i class="fas fa-star"></i> Cartelera en vivo</span>
         <h2>Próximos Eventos</h2>
-        <p>Selecciona la categoría y encuentra tu boleto ideal</p>
+        <p>Elige tu experiencia: música, béisbol o cultura. Boletos con entrega digital QR.</p>
       </div>
 
       <div class="tabs">
@@ -1615,98 +3060,158 @@
         </button>
       </div>
 
+      <div class="view-toggle" role="group" aria-label="Vista de eventos">
+        <button type="button" class="active" data-view="grid" id="viewGridBtn">
+          <i class="fas fa-th-large"></i> Tarjetas
+        </button>
+        <button type="button" data-view="week" id="viewWeekBtn">
+          <i class="fas fa-list"></i> Lista semanal
+        </button>
+        <button type="button" data-view="calendar" id="viewCalBtn">
+          <i class="fas fa-calendar-alt"></i> Calendario
+        </button>
+      </div>
+
       <div class="events-grid" id="eventsGrid">
         <!-- Cards generadas por JS -->
+      </div>
+
+      <div class="events-calendar" id="eventsCalendar" aria-label="Calendario de eventos">
+        <div class="cal-header">
+          <h3 id="calMonthTitle">—</h3>
+          <div class="cal-nav">
+            <button type="button" id="calPrev" aria-label="Mes anterior"><i class="fas fa-chevron-left"></i></button>
+            <button type="button" id="calNext" aria-label="Mes siguiente"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+        </div>
+        <div class="cal-days" id="calDays"></div>
+        <div class="cal-legend">
+          <span><i class="lg-m"></i> Música</span>
+          <span><i class="lg-d"></i> Deportes</span>
+          <span><i class="lg-c"></i> Cultural</span>
+        </div>
+      </div>
+
+      <div class="events-week" id="eventsWeek" aria-label="Lista semanal de eventos">
+        <div class="week-header">
+          <h3 id="weekRangeTitle">Esta semana</h3>
+          <div class="week-nav">
+            <button type="button" id="weekPrev" aria-label="Semana anterior"><i class="fas fa-chevron-left"></i></button>
+            <button type="button" class="week-today-btn" id="weekToday">Hoy</button>
+            <button type="button" id="weekNext" aria-label="Semana siguiente"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="week-days" id="weekDays"></div>
       </div>
     </div>
   </section>
 
-  <!-- CONTACTO -->
+<!-- CONTACTO -->
   <section class="contact-section" id="contacto">
     <div class="container">
       <div class="section-header">
-        <span class="tag">Contáctanos</span>
+        <span class="tag"><i class="fas fa-comments"></i> Contáctanos</span>
         <h2>Estamos para ayudarte</h2>
-        <p>¿Dudas sobre tu compra o un evento? Escríbenos</p>
+        <p>¿Dudas sobre tu compra, un evento o tu boleto QR? Escríbenos y te respondemos pronto.</p>
       </div>
 
       <div class="contact-grid">
-        <div class="contact-info">
-          <h3>Información de contacto</h3>
-          <p>Nuestro equipo responde en menos de 24 horas hábiles.</p>
+        <div class="contact-info-card">
+          <h3>Canales directos</h3>
+          <p>Atención personalizada para clientes Planet Boletos. Horario de respuesta en días hábiles.</p>
 
-          <div class="contact-item">
+          <a class="contact-item" href="mailto:contacto@planetboletos.com">
             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
             <div>
               <strong>Correo</strong>
-              <span>planetboletosmva@gmail.com</span>
+              <span>contacto@planetboletos.com</span>
             </div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+          </a>
+          <a class="contact-item" href="https://wa.me/525512345678" target="_blank" rel="noopener">
+            <div class="contact-icon wa"><i class="fab fa-whatsapp"></i></div>
             <div>
               <strong>WhatsApp</strong>
-              <span>+52 866 163 3223</span>
+              <span>+52 55 1234 5678</span>
+            </div>
+          </a>
+          <div class="contact-item">
+            <div class="contact-icon clock"><i class="fas fa-clock"></i></div>
+            <div>
+              <strong>Horario de atención</strong>
+              <span>Lun – Vie · 9:00 a 18:00 (hora centro)</span>
             </div>
           </div>
           <div class="contact-item">
-            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-icon"><i class="fas fa-ticket-alt"></i></div>
             <div>
-              <strong>Oficina</strong>
-              <span>Monclova Coauila, México</span>
+              <strong>Soporte de boletos</strong>
+              <span>Pagos, folios QR y acceso al evento</span>
             </div>
           </div>
 
-          <div class="social-links">
-            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://twitter.com" target="_blank" rel="noopener" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://tiktok.com" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+          <div class="contact-social">
+            <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener" title="X" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://wa.me/525512345678" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://tiktok.com" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
           </div>
         </div>
 
-        <form class="contact-form" id="contactForm" novalidate>
-          <div class="alert alert-success" id="contactSuccess">¡Mensaje enviado! Te responderemos pronto.</div>
-          <div class="alert alert-error" id="contactError">Hubo un error. Intenta de nuevo.</div>
+        <div class="contact-form-card">
+          <h3 class="form-card-title">Envíanos un mensaje</h3>
+          <p class="form-card-sub">Completa el formulario y te contactamos a la brevedad.</p>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="cNombre">Nombre completo *</label>
-              <input type="text" id="cNombre" name="nombre" placeholder="Nombre y apellidos" autocomplete="name" />
-              <p id="cerrNombre" class="field-error" style="display:none;"></p>
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="alert alert-success" id="contactSuccess">¡Mensaje enviado! Te responderemos pronto.</div>
+            <div class="alert alert-error" id="contactError">Hubo un error. Intenta de nuevo.</div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cNombre">Nombre completo *</label>
+                <input type="text" id="cNombre" name="nombre" placeholder="Nombre y apellidos" autocomplete="name" />
+                <p id="cerrNombre" class="field-error" style="display:none;"></p>
+              </div>
+              <div class="form-group">
+                <label for="cTelefono">Teléfono / WhatsApp *</label>
+                <input type="tel" id="cTelefono" name="telefono" placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
+                <p id="cerrTelefono" class="field-error" style="display:none;"></p>
+              </div>
             </div>
             <div class="form-group">
-              <label for="cTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="cTelefono" name="telefono" placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
-              <p id="cerrTelefono" class="field-error" style="display:none;"></p>
+              <label for="cEmail">Correo electrónico *</label>
+              <input type="email" id="cEmail" name="email" placeholder="correo@ejemplo.com" autocomplete="email" />
+              <p id="cerrEmail" class="field-error" style="display:none;"></p>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="cEmail">Correo electrónico *</label>
-            <input type="email" id="cEmail" name="email" placeholder="correo@ejemplo.com" autocomplete="email" />
-            <p id="cerrEmail" class="field-error" style="display:none;"></p>
-          </div>
-          <div class="form-group">
-            <label for="cAsunto">Asunto *</label>
-            <select id="cAsunto" name="asunto">
-              <option value="">Selecciona...</option>
-              <option value="Consulta boletos">Consulta sobre boletos</option>
-              <option value="Problema pago">Problema con el pago</option>
-              <option value="Evento">Información de evento</option>
-              <option value="Otro">Otro</option>
-            </select>
-            <p id="cerrAsunto" class="field-error" style="display:none;"></p>
-          </div>
-          <div class="form-group">
-            <label for="cMensaje">Mensaje *</label>
-            <textarea id="cMensaje" name="mensaje" placeholder="Escribe tu mensaje (mín. 10 caracteres)..." rows="4"></textarea>
-            <p id="cerrMensaje" class="field-error" style="display:none;"></p>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
-            <i class="fas fa-paper-plane"></i> Enviar mensaje
-          </button>
-        </form>
+            <div class="form-group">
+              <label for="cAsunto">Asunto *</label>
+              <select id="cAsunto" name="asunto">
+                <option value="">Selecciona...</option>
+                <option value="Consulta boletos">Consulta sobre boletos</option>
+                <option value="Problema pago">Problema con el pago</option>
+                <option value="Evento">Información de evento</option>
+                <option value="Otro">Otro</option>
+              </select>
+              <p id="cerrAsunto" class="field-error" style="display:none;"></p>
+            </div>
+            <div class="form-group">
+              <label for="cMensaje">Mensaje *</label>
+              <textarea id="cMensaje" name="mensaje" placeholder="Cuéntanos cómo podemos ayudarte (mín. 10 caracteres)..." rows="4"></textarea>
+              <p id="cerrMensaje" class="field-error" style="display:none;"></p>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-paper-plane"></i> Enviar mensaje
+            </button>
+            <div class="contact-trust">
+              <span><i class="fas fa-shield-alt"></i> Datos protegidos</span>
+              <span><i class="fas fa-bolt"></i> Respuesta en 24 h</span>
+              <span><i class="fas fa-check-circle"></i> Soporte oficial</span>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </section>
@@ -1753,11 +3258,15 @@
     <div class="modal">
       <div class="modal-header">
         <img src="planet-boletos.png" alt="Planet Boletos" />
+        <p class="modal-header-title">Compra de boletos</p>
         <button class="modal-close" id="closeModal" aria-label="Cerrar">
           <i class="fas fa-times"></i>
         </button>
       </div>
       <div class="modal-body">
+        <div class="modal-steps" aria-hidden="true">
+          <span class="on"></span><span class="on"></span><span></span>
+        </div>
         <div class="alert alert-success" id="purchaseSuccess">¡Solicitud enviada! Recibirás tu folio y QR por correo y WhatsApp una vez autorizado el pago.</div>
         <div class="alert alert-error" id="purchaseError">Error al procesar. Intenta de nuevo.</div>
 
@@ -1796,7 +3305,7 @@
             </div>
             <div class="form-group">
               <label for="pTelefono">Teléfono / WhatsApp *</label>
-              <input type="tel" id="pTelefono" name="telefono" required placeholder="861 1234 567" inputmode="numeric" autocomplete="tel" />
+              <input type="tel" id="pTelefono" name="telefono" required placeholder="55 1234 5678" inputmode="numeric" autocomplete="tel" />
               <p id="errTelefono" class="field-error" style="display:none;"></p>
             </div>
           </div>
@@ -1896,7 +3405,7 @@
      2. Pégala abajo entre las comillas
      3. Sube este archivo a Render
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwJrT-2-pHf1_LKEntfynFvDCZQ5Q0dg5t0hMY0SUZ4kAZA8EsMy2Ew9x1qbnE7TiQh/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID/exec';
 </script>
   <script>
     // ========== CONFIGURACIÓN GOOGLE SHEETS ==========
@@ -2225,7 +3734,131 @@
       ];
     }
 
-    function renderEvents() {
+    
+    let heroSlideIndex = 0;
+    let heroSlideTimer = null;
+
+    function eventTitle(ev) {
+      if (ev.tipo === 'deportes') {
+        return (ev.equipoLocal || ev.equipo || 'Local') + ' vs ' + (ev.equipoVisitante || 'Visitante');
+      }
+      return ev.titulo || 'Evento';
+    }
+
+    function eventImage(ev) {
+      return ev.imagen || ev.logo || 'planet-boletos.png';
+    }
+
+    function eventTypeLabel(ev) {
+      if (ev.tipo === 'deportes') return 'Deportes';
+      if (ev.tipo === 'culturales') return 'Cultural';
+      return 'Música';
+    }
+
+    function renderHeroShowcase() {
+      const list = getAllEvents().filter(ev => (Number(ev.disponibles) || 0) > 0);
+      const all = list.length ? list : getAllEvents();
+      const bg = document.getElementById('heroBg');
+      const slidesWrap = document.getElementById('heroFeaturedSlides');
+      const dotsWrap = document.getElementById('heroFeaturedDots');
+      const track = document.getElementById('heroBannerTrack');
+      if (!slidesWrap || !track) return;
+
+      if (!all.length) {
+        slidesWrap.innerHTML = '<div class="hero-featured-slide active" style="align-items:center;justify-content:center;padding:40px;"><p style="color:#fff;">Pronto publicaremos eventos</p></div>';
+        track.innerHTML = '';
+        if (bg) bg.innerHTML = '';
+        return;
+      }
+
+      // Background slides
+      if (bg) {
+        bg.innerHTML = all.map((ev, i) =>
+          '<div class="hero-bg-slide' + (i === 0 ? ' active' : '') + '" style="background-image:url(\'' + eventImage(ev).replace(/'/g, "\\'") + '\')"></div>'
+        ).join('');
+      }
+
+      // Featured card slides
+      slidesWrap.innerHTML = all.map((ev, i) => {
+        const title = eventTitle(ev);
+        return (
+          '<div class="hero-featured-slide' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' +
+            '<img src="' + eventImage(ev) + '" alt="' + title.replace(/"/g, '&quot;') + '" loading="lazy" />' +
+            '<div class="feat-shade"></div>' +
+            '<div class="hero-featured-body">' +
+              '<span class="feat-type">' + eventTypeLabel(ev) + '</span>' +
+              '<h3>' + title + '</h3>' +
+              '<div class="feat-meta">' +
+                '<span><i class="fas fa-calendar-alt"></i> ' + formatDate(ev.fecha) + '</span>' +
+                '<span><i class="fas fa-map-marker-alt"></i> ' + (ev.ciudad || 'Por confirmar') + '</span>' +
+              '</div>' +
+              '<button type="button" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openPurchase(\'' + ev.id + '\')">' +
+                '<i class="fas fa-ticket-alt"></i> Comprar boletos' +
+              '</button>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      if (dotsWrap) {
+        dotsWrap.innerHTML = all.map((_, i) =>
+          '<button type="button" class="' + (i === 0 ? 'active' : '') + '" data-dot="' + i + '" aria-label="Evento ' + (i + 1) + '"></button>'
+        ).join('');
+        dotsWrap.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            heroSlideIndex = Number(btn.dataset.dot) || 0;
+            showHeroSlide(heroSlideIndex);
+            restartHeroTimer();
+          });
+        });
+      }
+
+      // Banner strip (duplicated for infinite scroll)
+      const cardHtml = all.map(ev => {
+        const title = eventTitle(ev);
+        return (
+          '<a class="hero-banner-card" href="#eventos" onclick="openPurchase(\'' + ev.id + '\'); return false;">' +
+            '<img src="' + eventImage(ev) + '" alt="" loading="lazy" />' +
+            '<div class="hb-info">' +
+              '<h4>' + title + '</h4>' +
+              '<p><i class="fas fa-calendar-alt"></i>' + formatDate(ev.fecha) + '</p>' +
+              '<p><i class="fas fa-map-marker-alt"></i> ' + (ev.ciudad || 'Por confirmar') + '</p>' +
+              '<span class="hb-chip ' + ((Number(ev.disponibles)||0) <= 0 ? 'out' : ((Number(ev.disponibles)||0) <= 20 ? 'low' : '')) + '">' +
+                ((Number(ev.disponibles)||0) <= 0 ? 'Agotado' : ((Number(ev.disponibles)||0) + ' disponibles')) +
+              '</span>' +
+            '</div>' +
+          '</a>'
+        );
+      }).join('');
+      track.innerHTML = cardHtml + cardHtml;
+      // Adjust animation duration by count
+      const secs = Math.max(25, all.length * 8);
+      track.style.animationDuration = secs + 's';
+
+      heroSlideIndex = 0;
+      showHeroSlide(0);
+      restartHeroTimer();
+    }
+
+    function showHeroSlide(i) {
+      const slides = document.querySelectorAll('.hero-featured-slide');
+      const bgs = document.querySelectorAll('.hero-bg-slide');
+      const dots = document.querySelectorAll('#heroFeaturedDots button');
+      if (!slides.length) return;
+      const n = slides.length;
+      heroSlideIndex = ((i % n) + n) % n;
+      slides.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
+      bgs.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
+      dots.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
+    }
+
+    function restartHeroTimer() {
+      if (heroSlideTimer) clearInterval(heroSlideTimer);
+      heroSlideTimer = setInterval(() => showHeroSlide(heroSlideIndex + 1), 5500);
+    }
+
+
+function renderEvents() {
       const grid = document.getElementById('eventsGrid');
       let list = getAllEvents();
 
@@ -2239,40 +3872,41 @@
             <i class="fas fa-calendar-times" style="font-size:3rem; margin-bottom:16px; opacity:0.4;"></i>
             <p>No hay eventos en esta categoría por el momento.</p>
           </div>`;
+        try { renderEventsCalendar(); } catch (e) {}
         return;
       }
 
-      grid.innerHTML = list.map(ev => {
+      grid.innerHTML = list.map((ev, idx) => {
         const stockClass = ev.disponibles <= 0 ? 'out' : (ev.disponibles <= 20 ? 'low' : '');
         const stockText = ev.disponibles <= 0 ? 'Agotado' : `${ev.disponibles} disponibles`;
         const isTeam = ev.tipo === 'deportes';
         const title = isTeam
           ? `${ev.equipoLocal} vs ${ev.equipoVisitante}`
           : ev.titulo;
-        const badgeClass = ev.tipo === 'musica' ? 'music' : (ev.tipo === 'deportes' ? 'sports' : 'cultural');
-        const badgeLabel = ev.tipo === 'musica' ? 'Música' : (ev.tipo === 'deportes' ? 'Béisbol' : 'Cultural');
+        const tipoClass = ev.tipo === 'deportes' ? 'deportes' : (ev.tipo === 'culturales' ? 'culturales' : 'musica');
+        const tipoLabel = ev.tipo === 'deportes' ? 'Béisbol' : (ev.tipo === 'culturales' ? 'Cultural' : 'Música');
+        const img = ev.imagen || ev.logo || 'planet-boletos.png';
 
-        return `
-          <article class="event-card" data-id="${ev.id}">
+        return `<article class="event-card" style="animation-delay:${idx * 0.08}s">
             <div class="event-card-image ${isTeam ? 'team-logo' : ''}">
-              <img src="${ev.imagen || ev.logo}" alt="${title}" loading="lazy" decoding="async"
-                   width="600" height="400"
-                   onerror="this.src='planet-boletos.png'" />
-              <span class="event-badge ${badgeClass}">${badgeLabel}</span>
+              <img src="${img}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy" />
+              <div class="ev-shine"></div>
+              <span class="ev-type-badge ${tipoClass}">${tipoLabel}</span>
             </div>
             <div class="event-card-body">
               <h3>${title}</h3>
               <div class="event-meta">
-                <span><i class="fas fa-calendar"></i> ${formatDate(ev.fecha)}</span>
-                <span><i class="fas fa-map-marker-alt"></i> ${ev.ciudad || 'Por confirmar'}</span>
-                ${isTeam ? `<span><i class="fas fa-baseball-ball"></i> ${ev.equipo}</span>` : ''}
+                <span><i class="fas fa-calendar-alt"></i> ${formatDate(ev.fecha)}</span>
+                <span><i class="fas fa-map-marker-alt"></i> ${ev.ciudad || 'Por confirmar'}
+</span>
+                ${ev.equipo && ev.tipo === 'deportes' ? `<span><i class="fas fa-baseball-ball"></i> ${ev.equipo}</span>` : ''}
               </div>
               <div class="event-stock">
                 <span class="stock-label">Boletos en línea</span>
                 <span class="stock-value ${stockClass}">${stockText}</span>
               </div>
               <div class="event-price">${formatMoney(precioConComision(ev))} <small>/ boleto</small></div>
-              ${(Number(ev.comision)||0) > 0 ? `<div style="font-size:0.75rem;color:var(--gray-600);margin-top:2px;">Incluye comisión ${formatMoney(ev.comision)}</div>` : ''}
+              ${(Number(ev.comision)||0) > 0 ? `<div class="event-comision">Incluye comisión ${formatMoney(ev.comision)}</div>` : ''}
               <button class="btn btn-buy" ${ev.disponibles <= 0 ? 'disabled' : ''}
                       onclick="openPurchase('${ev.id}')">
                 <i class="fas fa-ticket-alt"></i>
@@ -2281,16 +3915,231 @@
             </div>
           </article>`;
       }).join('');
+      try { renderHeroShowcase(); } catch (e) { console.warn(e); }
+      try { renderEventsCalendar(); } catch (e) { console.warn(e); }
     }
 
-    // ========== TABS ==========
+    // ========== CALENDARIO DE EVENTOS ==========
+    let calCursor = new Date();
+    calCursor.setDate(1);
+    let eventsViewMode = 'grid';
+
+    function setEventsView(mode) {
+      eventsViewMode = mode;
+      const grid = document.getElementById('eventsGrid');
+      const cal = document.getElementById('eventsCalendar');
+      const week = document.getElementById('eventsWeek');
+      const btnG = document.getElementById('viewGridBtn');
+      const btnC = document.getElementById('viewCalBtn');
+      const btnW = document.getElementById('viewWeekBtn');
+      if (btnG) btnG.classList.toggle('active', mode === 'grid');
+      if (btnC) btnC.classList.toggle('active', mode === 'calendar');
+      if (btnW) btnW.classList.toggle('active', mode === 'week');
+      if (grid) grid.classList.toggle('hidden-view', mode !== 'grid');
+      if (cal) cal.classList.toggle('visible', mode === 'calendar');
+      if (week) week.classList.toggle('visible', mode === 'week');
+      if (mode === 'calendar') renderEventsCalendar();
+      else if (mode === 'week') renderEventsWeek();
+      else renderEvents();
+    }
+
+    function renderEventsCalendar() {
+      const daysEl = document.getElementById('calDays');
+      const titleEl = document.getElementById('calMonthTitle');
+      if (!daysEl) return;
+
+      let list = getAllEvents();
+      if (typeof currentTab !== 'undefined' && currentTab !== 'all') {
+        list = list.filter(e => e.tipo === currentTab);
+      }
+
+      const year = calCursor.getFullYear();
+      const month = calCursor.getMonth();
+      const monthName = calCursor.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+      if (titleEl) titleEl.textContent = monthName;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = new Date();
+      const isThisMonth = today.getFullYear() === year && today.getMonth() === month;
+
+      // Map date string YYYY-MM-DD -> events
+      const byDay = {};
+      list.forEach(ev => {
+        if (!ev.fecha) return;
+        const d = new Date(ev.fecha);
+        if (isNaN(d.getTime())) return;
+        if (d.getFullYear() !== year || d.getMonth() !== month) return;
+        const key = d.getDate();
+        if (!byDay[key]) byDay[key] = [];
+        byDay[key].push(ev);
+      });
+
+      let html = '';
+      for (let i = 0; i < firstDay; i++) {
+        html += '<div class="cal-day empty"></div>';
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const events = byDay[day] || [];
+        const isToday = isThisMonth && day === today.getDate();
+        const classes = ['cal-day'];
+        if (isToday) classes.push('today');
+        if (events.length) classes.push('has-events');
+        const delay = (firstDay + day) * 0.012;
+        html += '<div class="' + classes.join(' ') + '" style="animation-delay:' + delay + 's">';
+        html += '<div class="cal-day-num">' + day + '</div>';
+        events.slice(0, 3).forEach(ev => {
+          const isTeam = ev.tipo === 'deportes';
+          const title = isTeam
+            ? ((ev.equipoLocal || '') + ' vs ' + (ev.equipoVisitante || ''))
+            : (ev.titulo || 'Evento');
+          const t = (ev.tipo || 'musica');
+          html += '<button type="button" class="cal-event-dot ' + t + '" title="' +
+            title.replace(/"/g, '&quot;') + '" onclick="openPurchase(\'' + ev.id + '\')">' +
+            title.replace(/</g, '') + '</button>';
+        });
+        if (events.length > 3) {
+          html += '<div style="font-size:0.6rem;color:#94a3b8;font-weight:700;padding:0 4px;">+' + (events.length - 3) + ' más</div>';
+        }
+        html += '</div>';
+      }
+      daysEl.innerHTML = html;
+    }
+
+
+
+    let weekCursor = new Date();
+    // Lunes de la semana actual
+    function startOfWeek(d) {
+      const x = new Date(d);
+      x.setHours(0, 0, 0, 0);
+      const day = x.getDay();
+      const diff = day === 0 ? -6 : 1 - day; // lunes
+      x.setDate(x.getDate() + diff);
+      return x;
+    }
+
+    function renderEventsWeek() {
+      const wrap = document.getElementById('weekDays');
+      const titleEl = document.getElementById('weekRangeTitle');
+      if (!wrap) return;
+
+      let list = getAllEvents();
+      if (typeof currentTab !== 'undefined' && currentTab !== 'all') {
+        list = list.filter(e => e.tipo === currentTab);
+      }
+
+      const start = startOfWeek(weekCursor);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 6);
+
+      if (titleEl) {
+        const fmt = (d) => d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+        titleEl.textContent = fmt(start) + ' – ' + fmt(end) + ' ' + end.getFullYear();
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let html = '';
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(start);
+        day.setDate(start.getDate() + i);
+        const dayStart = new Date(day);
+        dayStart.setHours(0, 0, 0, 0);
+        const dayEnd = new Date(day);
+        dayEnd.setHours(23, 59, 59, 999);
+        const isToday = dayStart.getTime() === today.getTime();
+
+        const dayEvents = list.filter(ev => {
+          if (!ev.fecha) return false;
+          const d = new Date(ev.fecha);
+          if (isNaN(d.getTime())) return false;
+          return d >= dayStart && d <= dayEnd;
+        }).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+        const dayName = day.toLocaleDateString('es-MX', { weekday: 'long' });
+        const dayLabel = day.toLocaleDateString('es-MX', { day: 'numeric', month: 'long' });
+
+        html += '<div class="week-day-block' + (isToday ? ' is-today' : '') + '" style="animation-delay:' + (i * 0.07) + 's">';
+        html += '<div class="week-day-head">';
+        html += '<div><div class="wd-title">' + dayName + (isToday ? ' · Hoy' : '') + '</div>';
+        html += '<div class="wd-date">' + dayLabel + '</div></div>';
+        html += '<span class="wd-count">' + dayEvents.length + ' evento' + (dayEvents.length === 1 ? '' : 's') + '</span>';
+        html += '</div>';
+
+        if (!dayEvents.length) {
+          html += '<div class="week-day-body empty-msg">Sin eventos este día</div>';
+        } else {
+          html += '<div class="week-day-body">';
+          dayEvents.forEach(ev => {
+            const isTeam = ev.tipo === 'deportes';
+            const title = isTeam
+              ? ((ev.equipoLocal || 'Local') + ' vs ' + (ev.equipoVisitante || 'Visitante'))
+              : (ev.titulo || 'Evento');
+            const img = (ev.imagen || ev.logo || 'planet-boletos.png').replace(/"/g, '');
+            const tipo = ev.tipo || 'musica';
+            const tipoLabel = tipo === 'deportes' ? 'Béisbol' : (tipo === 'culturales' ? 'Cultural' : 'Música');
+            const hora = (() => {
+              try {
+                return new Date(ev.fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+              } catch (e) { return ''; }
+            })();
+            const price = typeof precioConComision === 'function' ? formatMoney(precioConComision(ev)) : '';
+            html += '<button type="button" class="week-event-row" onclick="openPurchase(\'' + ev.id + '\')">';
+            html += '<img src="' + img + '" alt="" loading="lazy" />';
+            html += '<div class="we-info"><h4>' + title.replace(/</g, '') + '</h4>';
+            html += '<div class="we-meta">';
+            if (hora) html += '<span><i class="fas fa-clock"></i>' + hora + '</span>';
+            html += '<span><i class="fas fa-map-marker-alt"></i>' + (ev.ciudad || 'Por confirmar') + '</span>';
+            html += '</div></div>';
+            html += '<span class="we-badge ' + tipo + '">' + tipoLabel + '</span>';
+            if (price) html += '<span class="we-price">' + price + '</span>';
+            html += '<span class="we-cta"><i class="fas fa-ticket-alt"></i></span>';
+            html += '</button>';
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+      wrap.innerHTML = html;
+    }
+
+
+    // ========== TABS + VISTA ==========
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentTab = btn.dataset.tab;
         renderEvents();
+if (eventsViewMode === 'calendar') renderEventsCalendar();
+        if (eventsViewMode === 'week') renderEventsWeek();
       });
+    });
+
+    document.getElementById('viewGridBtn')?.addEventListener('click', () => setEventsView('grid'));
+    document.getElementById('viewWeekBtn')?.addEventListener('click', () => setEventsView('week'));
+    document.getElementById('viewCalBtn')?.addEventListener('click', () => setEventsView('calendar'));
+    document.getElementById('calPrev')?.addEventListener('click', () => {
+      calCursor.setMonth(calCursor.getMonth() - 1);
+      renderEventsCalendar();
+    });
+    document.getElementById('calNext')?.addEventListener('click', () => {
+      calCursor.setMonth(calCursor.getMonth() + 1);
+      renderEventsCalendar();
+    });
+    document.getElementById('weekPrev')?.addEventListener('click', () => {
+      weekCursor.setDate(weekCursor.getDate() - 7);
+      renderEventsWeek();
+    });
+    document.getElementById('weekNext')?.addEventListener('click', () => {
+      weekCursor.setDate(weekCursor.getDate() + 7);
+      renderEventsWeek();
+    });
+    document.getElementById('weekToday')?.addEventListener('click', () => {
+      weekCursor = new Date();
+      renderEventsWeek();
     });
 
     // ========== PURCHASE MODAL ==========
@@ -2497,14 +4346,17 @@
       const title = isTeam
         ? `${selectedEvent.equipoLocal} vs ${selectedEvent.equipoVisitante}`
         : selectedEvent.titulo;
+      const img = selectedEvent.imagen || selectedEvent.logo || 'planet-boletos.png';
 
       document.getElementById('modalEventInfo').innerHTML = `
-        <img src="${selectedEvent.imagen || selectedEvent.logo}" alt="${title}" />
-        <div>
-          <h4>${title}</h4>
-          <p>${formatDate(selectedEvent.fecha)} · ${selectedEvent.ciudad}</p>
-          <p style="font-weight:700; color:var(--navy); margin-top:4px;">${formatMoney(selectedEvent.precio)} + ${formatMoney(selectedEvent.comision || 0)} comisión = ${formatMoney(precioConComision(selectedEvent))} c/u</p>
-        </div>`;
+          <img src="${img}" alt="" />
+          <div>
+            <h4>${title}</h4>
+            <p><i class="fas fa-calendar-alt"></i> ${formatDate(selectedEvent.fecha)}</p>
+            <p><i class="fas fa-map-marker-alt"></i> ${selectedEvent.ciudad || 'Por confirmar'}</p>
+            <p><i class="fas fa-ticket-alt"></i> ${selectedEvent.disponibles || 0} disponibles</p>
+          </div>
+        `;
 
       updateTotal();
       updateConcepto();
@@ -2832,10 +4684,27 @@
       });
     }
 
+
+    ['pNombre', 'pTelefono', 'pEmail', 'pComprobante'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', function() {
+        el.classList.remove('invalid');
+        const map = { pNombre: 'errNombre', pTelefono: 'errTelefono', pEmail: 'errEmail', pComprobante: 'errComprobante' };
+        const err = document.getElementById(map[id]);
+        if (err) { err.style.display = 'none'; err.textContent = ''; }
+      });
+      if (id !== 'pComprobante') {
+        el.addEventListener('blur', function() {
+          // revalida solo si ya intentó enviar
+          if (document.getElementById('purchaseForm')?.dataset.tried === '1') validarDatosPago();
+        });
+      }
+    });
     document.getElementById('purchaseForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!selectedEvent) return;
-
+      e.target.dataset.tried = '1';
       if (!validarDatosPago()) return;
 
       const nombre = document.getElementById('pNombre').value.trim();
@@ -3104,6 +4973,23 @@
       return ok;
     }
 
+
+    // Validación en vivo (blur / change)
+    ['cNombre', 'cTelefono', 'cEmail', 'cAsunto', 'cMensaje'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('blur', function() { validarFormularioContacto(); });
+      el.addEventListener('input', function() {
+        el.classList.remove('invalid');
+        const map = {
+          cNombre: 'cerrNombre', cTelefono: 'cerrTelefono', cEmail: 'cerrEmail',
+          cAsunto: 'cerrAsunto', cMensaje: 'cerrMensaje'
+        };
+        const err = document.getElementById(map[id]);
+        if (err) { err.style.display = 'none'; err.textContent = ''; }
+      });
+    });
+
     document.getElementById('contactForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -3215,8 +5101,7 @@
         fetch(u, { mode: 'no-cors' }).catch(() => {});
       }
     })();
-
-    window.openPurchase = openPurchase;
+window.openPurchase = openPurchase;
     window.toggleMetodoPago = toggleMetodoPago;
   </script>
 

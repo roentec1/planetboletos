@@ -102,6 +102,11 @@
     }
 
     .logo-text span { color: var(--red); }
+    .logo-text {
+      display: inline !important;
+      white-space: nowrap;
+    }
+    /* logo-text-always */
 
     .nav-links {
       display: flex;
@@ -675,6 +680,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .hero-banner-track { animation: none !important; }
+      .hero-banner-track-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     }
 
 
@@ -2165,7 +2171,8 @@
     }
 
     /* MOBILE BASE */
-    html { -webkit-text-size-adjust: 100%; }
+    html {
+      scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body { overflow-x: hidden; }
     img, video, iframe { max-width: 100%; height: auto; }
     button, .btn, a.btn, .tab-btn, .qty-btn {
@@ -2280,7 +2287,13 @@
 
     @media (max-width: 400px) {
       .hero h1 { font-size: 1.5rem; }
-      .logo-text { display: none; }
+      .logo-text {
+        display: inline !important;
+        font-size: 0.82rem !important;
+        white-space: nowrap;
+        max-width: none !important;
+        overflow: visible !important;
+      }
     }
 
 
@@ -2308,11 +2321,15 @@
     @media (max-width: 700px) {
       .header { position: sticky; top: 0; z-index: 1100; }
       .nav-container { min-height: 56px; }
-      .btn, .btn-primary, .btn-nav {
+      .hero-actions .btn, .event-card .btn-buy, .contact-form .btn {
         width: 100%;
         justify-content: center;
         padding: 14px 18px;
         font-size: 0.95rem;
+      }
+      .nav-links .btn-nav {
+        width: 100%;
+        justify-content: center;
       }
       .hero-actions { flex-direction: column; width: 100%; }
       .hero-actions .btn { width: 100%; }
@@ -2330,7 +2347,7 @@
       .file-upload { padding: 20px 14px; }
       .total-box { font-size: 0.95rem; }
       .contact-info-card, .contact-form-card { padding: 20px 16px; }
-      section { scroll-margin-top: 72px; }
+      section, #inicio, #eventos, #contacto { scroll-margin-top: 80px; }
     }
 
     @media (max-width: 480px) {
@@ -2340,7 +2357,7 @@
       .event-price { font-size: 1.1rem; }
       .modal-body { padding: 16px !important; }
       .modal-header { padding: 14px 16px !important; }
-      .logo-text span { display: none; } /* solo logo img en muy chico si aplica */
+      /* logo completo siempre visible */
     }
 
     @media (max-width: 380px) {
@@ -2546,7 +2563,13 @@
     @media (max-width: 400px) {
       .hero h1 { font-size: 1.35rem !important; }
       .section-title { font-size: 1.25rem !important; }
-      .logo-text { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .logo-text {
+        display: inline !important;
+        max-width: none !important;
+        overflow: visible !important;
+        font-size: 0.85rem !important;
+        white-space: nowrap;
+      }
     }
 
   
@@ -2575,10 +2598,10 @@
       }
       .logo img { height: 32px !important; }
       .logo-text {
-        font-size: 0.88rem !important;
-        max-width: 42vw;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        display: inline !important;
+        font-size: 0.85rem !important;
+        max-width: none !important;
+        overflow: visible !important;
         white-space: nowrap;
       }
       .menu-toggle {
@@ -2969,6 +2992,45 @@
       }
     }
 
+  
+    /* Banner móvil: scroll táctil + animación */
+    @media (max-width: 900px) {
+      .hero-banner-track-wrap {
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        padding-bottom: 8px;
+        touch-action: pan-x;
+      }
+      .hero-banner-track {
+        animation: bannerScrollMobile 35s linear infinite !important;
+        animation-play-state: running !important;
+        transform: translate3d(0,0,0);
+        will-change: transform;
+      }
+      .hero-banner-track:hover {
+        animation-play-state: running !important;
+      }
+      .hero-banner-card {
+        scroll-snap-align: start;
+        flex: 0 0 260px !important;
+        pointer-events: auto;
+      }
+    }
+    @keyframes bannerScrollMobile {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    /* Si el usuario prefiere menos movimiento: solo scroll manual */
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+      .hero-banner-track {
+        animation: none !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3239,14 +3301,14 @@
           <li><a href="#">Privacidad</a></li>
         </ul>
       </div>
-      <!--<div>
+      <div>
         <h4>Admin</h4>
         <ul>
           <li><a href="admin.html">Panel Admin</a></li>
           <li><a href="validador.html">Validador QR</a></li>
         </ul>
       </div>
-    </div>-->
+    </div>
     <div class="footer-bottom">
       <span>© 2026 Planet Boletos. Todos los derechos reservados.</span>
       <span>Pago seguro por transferencia electrónica</span>
@@ -3834,6 +3896,21 @@
       // Adjust animation duration by count
       const secs = Math.max(25, all.length * 8);
       track.style.animationDuration = secs + 's';
+      // Móvil: permitir deslizar con el dedo; pausar animación al tocar
+      const wrap = track.parentElement;
+      if (wrap) {
+        let touching = false;
+        wrap.addEventListener('touchstart', () => {
+          touching = true;
+          track.style.animationPlayState = 'paused';
+        }, { passive: true });
+        wrap.addEventListener('touchend', () => {
+          touching = false;
+          setTimeout(() => {
+            if (!touching) track.style.animationPlayState = 'running';
+          }, 1200);
+        }, { passive: true });
+      }
 
       heroSlideIndex = 0;
       showHeroSlide(0);
@@ -5043,16 +5120,45 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     });
 
     // ========== NAV ==========
+    function closeMobileMenu() {
+      const nl = document.getElementById('navLinks');
+      if (nl) nl.classList.remove('open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+
     document.getElementById('menuToggle').addEventListener('click', () => {
       const nl = document.getElementById('navLinks');
       nl.classList.toggle('open');
-      document.body.style.overflow = nl.classList.contains('open') ? 'hidden' : '';
+      const open = nl.classList.contains('open');
+      document.body.style.overflow = open ? 'hidden' : '';
     });
 
     document.querySelectorAll('.nav-links a').forEach(a => {
-      a.addEventListener('click', () => {
-        document.getElementById('navLinks').classList.remove('open');
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href') || '';
+        closeMobileMenu();
+        if (href.startsWith('#') && href.length > 1) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            setTimeout(() => {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              try { history.pushState(null, '', href); } catch (err) {}
+            }, 50);
+          }
+        }
       });
+    });
+
+    // Cerrar menú al tocar fuera
+    document.addEventListener('click', (e) => {
+      const nl = document.getElementById('navLinks');
+      const btn = document.getElementById('menuToggle');
+      if (!nl || !nl.classList.contains('open')) return;
+      if (nl.contains(e.target) || (btn && btn.contains(e.target))) return;
+      closeMobileMenu();
     });
 
     window.addEventListener('scroll', () => {

@@ -1303,7 +1303,7 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycby7V_Zi1mKmxO-p5rqRiW_r2679vTX76sMMmzG_0jEYUrrOzCKpFzV6WSMIC4yw1x3X/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID/exec';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -1392,6 +1392,13 @@
       const field = el.dataset.field;
       puntosVenta[i][field] = el.value;
       savePuntosLocal();
+      pushPuntosDebounced();
+    }
+
+    let _puntosPushTimer = null;
+    function pushPuntosDebounced() {
+      clearTimeout(_puntosPushTimer);
+      _puntosPushTimer = setTimeout(function() { publishPuntosSheets(true); }, 800);
     }
 
     function addPunto() {
@@ -1405,6 +1412,7 @@
       });
       savePuntosLocal();
       renderPuntosAdmin();
+      pushPuntosDebounced();
     }
 
     function deletePunto(i) {
@@ -1412,24 +1420,31 @@
       puntosVenta.splice(i, 1);
       savePuntosLocal();
       renderPuntosAdmin();
+      pushPuntosDebounced();
     }
 
-    async function publishPuntosSheets() {
+    async function publishPuntosSheets(silent) {
       const url = getSheetsUrl();
       if (!url || url.includes('PEGA_AQUI') || url.includes('XXXX')) {
-        alert('Configura la URL de Sheets primero.');
+        if (!silent) alert('Configura la URL de Sheets primero.');
         return;
       }
+      const payload = JSON.stringify({ action: 'guardarPuntosVenta', data: { puntos: puntosVenta } });
       try {
         await fetch(url, {
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'guardarPuntosVenta', data: { puntos: puntosVenta } })
+          body: payload
         });
-        alert('Puntos de venta enviados a Google Sheets. Verifica la hoja "PuntosVenta".');
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon(url, new Blob([payload], { type: 'text/plain;charset=utf-8' }));
+          }
+        } catch (_) {}
+        if (!silent) alert('Puntos de venta publicados a Google Sheets (hoja PuntosVenta).\nEn otros dispositivos recarga el sitio (Ctrl+F5).');
       } catch (e) {
-        alert('Error al publicar: ' + e.message);
+        if (!silent) alert('Error al publicar: ' + e.message);
       }
     }
 
@@ -1466,6 +1481,8 @@
     window.updatePunto = updatePunto;
     window.deletePunto = deletePunto;
     window.renderPuntosAdmin = renderPuntosAdmin;
+    window.toggleVentaMusica = toggleVentaMusica;
+    window.toggleVentaDeporte = toggleVentaDeporte;
 
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -1735,13 +1752,25 @@
               <input type="number" min="0" step="1" value="${ev.comision ?? 0}" data-field="comision" data-idx="${i}" onchange="updateMusic(this)" />
             </div>
           </div>
-          <div style="margin-top:12px;">
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;">
+            <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:700;font-size:0.9rem;">
+              <input type="checkbox" ${ev.ventaActiva !== false && ev.ventaActiva !== 'false' ? 'checked' : ''}
+                data-idx="${i}" onchange="toggleVentaMusica(this)" style="width:18px;height:18px;" />
+              <span>Venta de boletos activa</span>
+              <small style="font-weight:500;color:var(--gray-600);">(si se desactiva, solo se muestra información)</small>
+            </label>
             <button class="btn btn-danger btn-sm" onclick="deleteMusic(${i})">
               <i class="fas fa-trash"></i> Eliminar
             </button>
           </div>
         </div>
       `).join('');
+    }
+
+    function toggleVentaMusica(el) {
+      const i = +el.dataset.idx;
+      events.musica[i].ventaActiva = !!el.checked;
+      saveEvents();
     }
 
     function updateMusic(el) {
@@ -1867,6 +1896,7 @@
         id: 'm' + Date.now(),
         tipo: 'musica',
         titulo: 'Nuevo evento musical',
+        ventaActiva: true,
         fecha: new Date().toISOString().slice(0,16),
         ciudad: '',
         imagen: '',
@@ -1941,13 +1971,25 @@
               <input type="number" min="0" step="1" value="${ev.comision ?? 0}" data-field="comision" data-idx="${i}" onchange="updateSport(this)" />
             </div>
           </div>
-          <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;">
+            <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:700;font-size:0.9rem;">
+              <input type="checkbox" ${ev.ventaActiva !== false && ev.ventaActiva !== 'false' ? 'checked' : ''}
+                data-idx="${i}" onchange="toggleVentaDeporte(this)" style="width:18px;height:18px;" />
+              <span>Venta de boletos activa</span>
+              <small style="font-weight:500;color:var(--gray-600);">(solo información si está apagado)</small>
+            </label>
             <button type="button" class="btn btn-danger btn-sm" onclick="deleteSportEvent(${i})">
               <i class="fas fa-trash"></i> Eliminar evento
             </button>
           </div>
         </div>
       `).join('');
+    }
+
+    function toggleVentaDeporte(el) {
+      const i = +el.dataset.idx;
+      events.deportes[i].ventaActiva = !!el.checked;
+      saveEvents();
     }
 
     function updateSport(el) {
@@ -1975,7 +2017,8 @@
         logo: 'logob.jpg',
         disponibles: 100,
         precio: 150,
-        comision: 15
+        comision: 15,
+        ventaActiva: true
       });
       saveEvents();
       renderDeportes();

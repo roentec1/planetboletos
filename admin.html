@@ -724,6 +724,52 @@
       }
     }
 
+  
+    /* Subida de imagen en eventos */
+    .img-upload-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .img-upload-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .img-upload-row input[type="url"],
+    .img-upload-row input[type="text"] {
+      flex: 1;
+      min-width: 140px;
+    }
+    .img-preview {
+      width: 100%;
+      max-width: 220px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--gray-200, #e2e8f0);
+      background: #f1f5f9;
+      display: none;
+    }
+    .img-preview.show { display: block; }
+    .btn-file {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-file input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
   </style>
 </head>
 <body>
@@ -748,9 +794,9 @@
           <i class="fas fa-sign-in-alt"></i> Entrar
         </button>
       </form>
-      <p style="margin-top:16px; font-size:0.8rem; color:#999; text-align:center;">
+      <!--<p style="margin-top:16px; font-size:0.8rem; color:#999; text-align:center;">
         Demo: usuario <strong>admin</strong> / contraseña <strong>planet2026</strong>
-      </p>
+      </p>-->
     </div>
   </div>
 
@@ -781,7 +827,7 @@
         <i class="fas fa-cog"></i> Configuración
       </button>
       <div style="margin-top:30px; padding:0 24px;">
-        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:black; border-color:rgba(255,255,255,0.3);">
+        <a href="index.html" class="btn btn-outline" style="width:100%; justify-content:center; color:white; border-color:rgba(255,255,255,0.3);">
           <i class="fas fa-external-link-alt"></i> Ver sitio
         </a>
       </div>
@@ -1226,7 +1272,7 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwJrT-2-pHf1_LKEntfynFvDCZQ5Q0dg5t0hMY0SUZ4kAZA8EsMy2Ew9x1qbnE7TiQh/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID/exec';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -1495,9 +1541,22 @@
               <label>Ciudad</label>
               <input type="text" value="${ev.ciudad || ''}" data-field="ciudad" data-idx="${i}" onchange="updateMusic(this)" />
             </div>
-            <div class="form-group">
-              <label>URL de imagen</label>
-              <input type="url" value="${ev.imagen || ''}" data-field="imagen" data-idx="${i}" onchange="updateMusic(this)" />
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Imagen del evento</label>
+              <div class="img-upload-box">
+                <div class="img-upload-row">
+                  <input type="text" id="musicImgUrl_${i}" value="${(ev.imagen || '').startsWith('data:') ? '' : (ev.imagen || '')}"
+                    placeholder="https://… o sube un archivo"
+                    data-field="imagen" data-idx="${i}" onchange="updateMusic(this)" />
+                  <label class="btn btn-outline btn-sm btn-file">
+                    <i class="fas fa-upload"></i> Subir
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onchange="uploadEventImage(this, 'musica', ${i}, 'imagen')" />
+                  </label>
+                  ${(ev.imagen || '').startsWith('data:') ? `<button type="button" class="btn btn-danger btn-sm" onclick="clearEventImage('musica', ${i}, 'imagen')"><i class="fas fa-times"></i></button>` : ''}
+                </div>
+                <img class="img-preview ${(ev.imagen ? 'show' : '')}" id="musicPreview_${i}" src="${ev.imagen || ''}" alt="Vista previa" onerror="this.classList.remove('show')" />
+                <small style="color:var(--gray-600);font-size:0.75rem;">Puedes pegar una URL o subir una foto desde tu PC / celular (se comprime automáticamente).</small>
+              </div>
             </div>
             <div class="form-group">
               <label>Boletos disponibles</label>
@@ -1528,7 +1587,115 @@
       if (['disponibles','precio','comision'].includes(field)) val = Number(val) || 0;
       events.musica[i][field] = val;
       saveEvents();
+      if (field === 'imagen') {
+        const prev = document.getElementById('musicPreview_' + i);
+        if (prev) {
+          if (val) { prev.src = val; prev.classList.add('show'); }
+          else { prev.removeAttribute('src'); prev.classList.remove('show'); }
+        }
+      }
     }
+
+
+    /** Comprime imagen del admin a JPEG base64 (para guardar en evento / Sheets) */
+    function compressImageFile(file, maxW, quality) {
+      maxW = maxW || 900;
+      quality = quality || 0.72;
+      return new Promise(function(resolve, reject) {
+        if (!file || !file.type || !file.type.startsWith('image/')) {
+          reject(new Error('Selecciona una imagen (JPG, PNG, WEBP o GIF)'));
+          return;
+        }
+        if (file.size > 12 * 1024 * 1024) {
+          reject(new Error('La imagen supera 12 MB'));
+          return;
+        }
+        var reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = function() {
+          var img = new Image();
+          img.onload = function() {
+            var w = img.width, h = img.height;
+            if (w > maxW) {
+              h = Math.round(h * (maxW / w));
+              w = maxW;
+            }
+            var canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            var q = quality;
+            var dataUrl = canvas.toDataURL('image/jpeg', q);
+            while (dataUrl.length > 550000 && q > 0.4) {
+              q -= 0.08;
+              dataUrl = canvas.toDataURL('image/jpeg', q);
+            }
+            resolve(dataUrl);
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function uploadEventImage(input, tipo, idx, field) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      try {
+        input.disabled = true;
+        var dataUrl = await compressImageFile(file);
+        if (tipo === 'musica') {
+          events.musica[idx][field] = dataUrl;
+          saveEvents();
+          renderMusica();
+        } else {
+          events.deportes[idx].imagen = dataUrl;
+          events.deportes[idx].logo = dataUrl;
+          saveEvents();
+          renderDeportes();
+        }
+        alert('Imagen cargada. Recuerda publicar/subir eventos a Sheets para que se vea en el sitio.');
+      } catch (err) {
+        alert(err.message || 'No se pudo cargar la imagen');
+      } finally {
+        input.disabled = false;
+        input.value = '';
+      }
+    }
+
+    function clearEventImage(tipo, idx, field) {
+      if (!confirm('¿Quitar la imagen de este evento?')) return;
+      if (tipo === 'musica') {
+        events.musica[idx][field] = '';
+        saveEvents();
+        renderMusica();
+      } else {
+        events.deportes[idx].imagen = '';
+        events.deportes[idx].logo = '';
+        saveEvents();
+        renderDeportes();
+      }
+    }
+
+    function updateSportImageUrl(el) {
+      var i = +el.dataset.idx;
+      var val = el.value.trim();
+      events.deportes[i].imagen = val;
+      events.deportes[i].logo = val;
+      saveEvents();
+      var prev = document.getElementById('sportPreview_' + i);
+      if (prev) {
+        if (val) { prev.src = val; prev.classList.add('show'); }
+        else { prev.removeAttribute('src'); prev.classList.remove('show'); }
+      }
+    }
+
+    window.uploadEventImage = uploadEventImage;
+    window.clearEventImage = clearEventImage;
+    window.updateSportImageUrl = updateSportImageUrl;
+
 
     function addMusicEvent() {
       events.musica = events.musica || [];
@@ -1579,6 +1746,23 @@
             <div class="form-group">
               <label>Ciudad</label>
               <input type="text" value="${ev.ciudad || ''}" data-field="ciudad" data-idx="${i}" onchange="updateSport(this)" />
+            </div>
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label>Imagen / logo del equipo</label>
+              <div class="img-upload-box">
+                <div class="img-upload-row">
+                  <input type="text" id="sportImgUrl_${i}" value="${((ev.logo || ev.imagen || '').startsWith('data:') ? '' : (ev.logo || ev.imagen || ''))}"
+                    placeholder="URL o archivo local"
+                    data-field="imagen" data-idx="${i}" onchange="updateSportImageUrl(this)" />
+                  <label class="btn btn-outline btn-sm btn-file">
+                    <i class="fas fa-upload"></i> Subir
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onchange="uploadEventImage(this, 'deportes', ${i}, 'imagen')" />
+                  </label>
+                  ${((ev.logo || ev.imagen || '').startsWith('data:')) ? `<button type="button" class="btn btn-danger btn-sm" onclick="clearEventImage('deportes', ${i}, 'imagen')"><i class="fas fa-times"></i></button>` : ''}
+                </div>
+                <img class="img-preview ${((ev.logo || ev.imagen) ? 'show' : '')}" id="sportPreview_${i}" src="${ev.logo || ev.imagen || ''}" alt="Vista previa" onerror="this.classList.remove('show')" />
+                <small style="color:var(--gray-600);font-size:0.75rem;">URL o imagen desde tu dispositivo (se usa como logo e imagen del evento).</small>
+              </div>
             </div>
             <div class="form-group">
               <label>Boletos disponibles</label>

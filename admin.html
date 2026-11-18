@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <meta name="theme-color" content="#0B1E3D" />
@@ -1491,6 +1492,11 @@
     });
 
     // ========== DATA ==========
+    function normalizeVentaActiva(v) {
+      if (v === false || v === 0 || v === '0' || v === 'false' || v === 'FALSE' || v === 'no') return false;
+      return true;
+    }
+
     function loadData() {
       const saved = localStorage.getItem('planetBoletos_events');
       if (saved) {
@@ -1585,8 +1591,12 @@
             });
           };
           // Reemplazo total (fuente de verdad = Sheets)
-          events.musica = dedupe(data.eventos.musica);
-          events.deportes = dedupe(data.eventos.deportes);
+          events.musica = dedupe(data.eventos.musica).map(function(ev) {
+            return Object.assign({}, ev, { ventaActiva: normalizeVentaActiva(ev.ventaActiva) });
+          });
+          events.deportes = dedupe(data.eventos.deportes).map(function(ev) {
+            return Object.assign({}, ev, { ventaActiva: normalizeVentaActiva(ev.ventaActiva) });
+          });
           localStorage.setItem('planetBoletos_events', JSON.stringify(events));
           try { renderMusica(); } catch(e){}
           try { renderDeportes(); } catch(e){}
@@ -1769,8 +1779,12 @@
 
     function toggleVentaMusica(el) {
       const i = +el.dataset.idx;
-      events.musica[i].ventaActiva = !!el.checked;
+      events.musica[i].ventaActiva = el.checked ? true : false;
       saveEvents();
+      // Forzar publicación inmediata
+      pushEventosToSheets().then(function() {
+        console.log('ventaActiva musica', events.musica[i].id, events.musica[i].ventaActiva);
+      });
     }
 
     function updateMusic(el) {
@@ -1988,8 +2002,11 @@
 
     function toggleVentaDeporte(el) {
       const i = +el.dataset.idx;
-      events.deportes[i].ventaActiva = !!el.checked;
+      events.deportes[i].ventaActiva = el.checked ? true : false;
       saveEvents();
+      pushEventosToSheets().then(function() {
+        console.log('ventaActiva deporte', events.deportes[i].id, events.deportes[i].ventaActiva);
+      });
     }
 
     function updateSport(el) {

@@ -3100,10 +3100,16 @@
     }
     .img-lightbox-close {
       position: absolute; top: 16px; right: 16px;
-      width: 44px; height: 44px; border-radius: 12px;
-      border: none; background: rgba(255,255,255,0.15);
-      color: #fff; font-size: 1.3rem; cursor: pointer;
+      width: 48px; height: 48px; border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.35);
+      background: #C41E3A;
+      color: #fff; font-size: 1.35rem; cursor: pointer;
+      z-index: 10;
+      display: inline-flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
+    .img-lightbox-close:hover { background: #9f1239; }
+    .img-lightbox { z-index: 9999 !important; }
     .event-card-image { cursor: zoom-in; }
     .event-card-image .zoom-hint {
       position: absolute; bottom: 10px; right: 10px;
@@ -3160,6 +3166,21 @@
       font-size: 0.88rem;
     }
 
+  
+    .logo img#logoRotator {
+      height: 48px;
+      width: auto;
+      max-width: min(240px, 58vw);
+      object-fit: contain;
+      transition: opacity 0.45s ease;
+    }
+    @media (max-width: 480px) {
+      .logo img#logoRotator {
+        height: 40px;
+        max-width: min(200px, 70vw);
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3167,9 +3188,8 @@
   <!-- HEADER -->
   <header class="header" id="header">
     <div class="nav-container">
-      <a href="#inicio" class="logo">
-        <img src="planet-boletos.png" alt="Planet Boletos" width="160" height="48" decoding="async" fetchpriority="high" />
-        <span class="logo-text">Planet <span>Boletos</span></span>
+      <a href="#inicio" class="logo" id="siteLogo">
+        <img id="logoRotator" src="bg-deportes.png" alt="Planet Boletos" width="200" height="56" decoding="async" fetchpriority="high" />
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Menú">
         <i class="fas fa-bars"></i>
@@ -4141,11 +4161,22 @@ function renderEvents() {
               </div>
               <div class="event-price">${formatMoney(precioConComision(ev))} <small>/ boleto</small></div>
               ${(Number(ev.comision)||0) > 0 ? `<div class="event-comision">Incluye comisión ${formatMoney(ev.comision)}</div>` : ''}
-              <button class="btn btn-buy" ${ev.disponibles <= 0 ? 'disabled' : ''}
-                      onclick="openPurchase('${ev.id}')">
-                <i class="fas fa-ticket-alt"></i>
-                ${ev.disponibles <= 0 ? 'Agotado' : 'Comprar boletos'}
-              </button>
+              ${(() => {
+                const ventaOn = ev.ventaActiva !== false && ev.ventaActiva !== 'false' && ev.ventaActiva !== 0 && ev.ventaActiva !== '0';
+                if (!ventaOn) {
+                  return `<button class="btn btn-buy" disabled style="opacity:0.75;cursor:default;">
+                    <i class="fas fa-info-circle"></i> Solo información
+                  </button>`;
+                }
+                if (ev.disponibles <= 0) {
+                  return `<button class="btn btn-buy" disabled>
+                    <i class="fas fa-ticket-alt"></i> Agotado
+                  </button>`;
+                }
+                return `<button class="btn btn-buy" onclick="openPurchase('${ev.id}')">
+                    <i class="fas fa-ticket-alt"></i> Comprar boletos
+                  </button>`;
+              })()}
             </div>
           </article>`;
       }).join('');
@@ -4563,7 +4594,13 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     function openPurchase(eventId) {
 
       selectedEvent = getAllEvents().find(e => e.id === eventId);
-      if (!selectedEvent || selectedEvent.disponibles <= 0) return;
+      if (!selectedEvent) return;
+      const ventaOn = selectedEvent.ventaActiva !== false && selectedEvent.ventaActiva !== 'false' && selectedEvent.ventaActiva !== 0;
+      if (!ventaOn) {
+        alert('Este evento es solo informativo. La compra de boletos no está habilitada por el momento.');
+        return;
+      }
+      if (selectedEvent.disponibles <= 0) return;
 
       qty = 1;
       document.getElementById('qtyValue').textContent = '1';
@@ -5394,12 +5431,41 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
       if (box) box.classList.remove('active');
       document.body.style.overflow = '';
     }
-    document.getElementById('imgLightboxClose') && document.getElementById('imgLightboxClose').addEventListener('click', closeEventImage);
-    document.getElementById('imgLightbox') && document.getElementById('imgLightbox').addEventListener('click', function(e) {
-      if (e.target === e.currentTarget) closeEventImage();
+    // Delegación: funciona aunque el lightbox esté al final del HTML
+    document.addEventListener('click', function(e) {
+      var t = e.target;
+      if (!t) return;
+      if (t.id === 'imgLightboxClose' || (t.closest && t.closest('#imgLightboxClose'))) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeEventImage();
+        return;
+      }
+      if (t.id === 'imgLightbox') {
+        closeEventImage();
+      }
     });
-    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeEventImage(); });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeEventImage();
+    });
     window.openEventImage = openEventImage;
+    window.closeEventImage = closeEventImage;
+
+    // Logo rotativo: solo cambia el icono (3 artes oficiales)
+    (function() {
+      var logos = ['bg-conciertos.png', 'bg-deportes.png', 'bg-teatro.png'];
+      var i = 0;
+      var el = document.getElementById('logoRotator');
+      if (!el) return;
+      setInterval(function() {
+        i = (i + 1) % logos.length;
+        el.style.opacity = '0.4';
+        setTimeout(function() {
+          el.src = logos[i];
+          el.style.opacity = '1';
+        }, 280);
+      }, 4500);
+    })();
 
     function getPuntosVentaLocal() {
       try { return JSON.parse(localStorage.getItem('planetBoletos_puntosVenta') || '[]'); } catch (e) { return []; }
@@ -5441,7 +5507,11 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     }
     renderPuntosVenta();
     pullPuntosVenta();
-    setInterval(pullPuntosVenta, 60000);
+    setInterval(pullPuntosVenta, 25000);
+    // Reintentar al volver a la pestaña (otros dispositivos)
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) pullPuntosVenta();
+    });
 
 
 window.openPurchase = openPurchase;
@@ -5480,7 +5550,7 @@ window.openPurchase = openPurchase;
   </script>
 
   <div class="img-lightbox" id="imgLightbox" role="dialog" aria-modal="true">
-    <button type="button" class="img-lightbox-close" id="imgLightboxClose" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <button type="button" class="img-lightbox-close" id="imgLightboxClose" aria-label="Cerrar" onclick="closeEventImage()"><i class="fas fa-times"></i></button>
     <img id="imgLightboxImg" src="" alt="Imagen del evento" />
   </div>
 </body>

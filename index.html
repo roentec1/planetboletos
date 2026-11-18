@@ -3031,6 +3031,135 @@
       }
     }
 
+  
+    /* Banner marca categorías (3 variantes) */
+    .brand-banner {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto 8px;
+      padding: 0 24px 20px;
+    }
+    .brand-banner-frame {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      aspect-ratio: 16 / 7;
+      max-height: 220px;
+    }
+    .brand-banner-frame img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #000;
+      opacity: 0;
+      transition: opacity 0.7s ease;
+    }
+    .brand-banner-frame img.active { opacity: 1; }
+    .brand-banner-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .brand-banner-dots button {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.35);
+      cursor: pointer; padding: 0;
+    }
+    .brand-banner-dots button.active {
+      background: #C41E3A;
+      width: 24px; border-radius: 99px;
+    }
+    @media (max-width: 700px) {
+      .brand-banner { padding: 0 14px 16px; }
+      .brand-banner-frame { max-height: 140px; border-radius: 14px; }
+    }
+
+    /* Lightbox imagen evento */
+    .img-lightbox {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(5,13,26,0.92);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; visibility: hidden;
+      transition: opacity 0.25s, visibility 0.25s;
+    }
+    .img-lightbox.active { opacity: 1; visibility: visible; }
+    .img-lightbox img {
+      max-width: min(96vw, 1200px);
+      max-height: 88vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .img-lightbox-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 44px; height: 44px; border-radius: 12px;
+      border: none; background: rgba(255,255,255,0.15);
+      color: #fff; font-size: 1.3rem; cursor: pointer;
+    }
+    .event-card-image { cursor: zoom-in; }
+    .event-card-image .zoom-hint {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(0,0,0,0.55); color: #fff;
+      font-size: 0.7rem; padding: 4px 8px; border-radius: 8px;
+      z-index: 2; pointer-events: none;
+    }
+
+    /* Puntos de venta */
+    .pv-section {
+      padding: 80px 24px;
+      background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+    }
+    .pv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .pv-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pv-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 32px rgba(15,23,42,0.1);
+    }
+    .pv-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .pv-card p {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      color: #64748b;
+      line-height: 1.45;
+    }
+    .pv-card p i {
+      color: #C41E3A;
+      width: 18px;
+      margin-right: 6px;
+    }
+    .pv-card a {
+      color: #C41E3A;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.88rem;
+    }
+
   </style>
 </head>
 <body>
@@ -3048,8 +3177,8 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#inicio" class="active">Inicio</a></li>
         <li><a href="#eventos">Eventos</a></li>
+        <li><a href="#puntos-venta">Puntos de venta</a></li>
         <li><a href="#contacto">Contacto</a></li>
-        <li><a href="admin.html" class="btn-nav">Admin</a></li>
       </ul>
     </div>
   </header>
@@ -3086,6 +3215,19 @@
       </div>
     </div>
 
+    <div class="brand-banner" aria-label="Categorías Planet Boletos">
+      <div class="brand-banner-frame" id="brandBannerFrame">
+        <img src="bg-conciertos.png" alt="Planet Boletos · Conciertos" class="active" data-i="0" />
+        <img src="bg-deportes.png" alt="Planet Boletos · Deportes" data-i="1" />
+        <img src="bg-teatro.png" alt="Planet Boletos · Teatro" data-i="2" />
+      </div>
+      <div class="brand-banner-dots" id="brandBannerDots">
+        <button type="button" class="active" data-i="0" aria-label="Conciertos"></button>
+        <button type="button" data-i="1" aria-label="Deportes"></button>
+        <button type="button" data-i="2" aria-label="Teatro"></button>
+      </div>
+    </div>
+
     <div class="hero-event-banner">
       <div class="hero-banner-label">
         <i class="fas fa-calendar-check"></i> Próximos eventos
@@ -3117,9 +3259,9 @@
         <button class="tab-btn" data-tab="deportes">
           <i class="fas fa-baseball-ball"></i> Deportes
         </button>
-        <!--<button class="tab-btn" data-tab="culturales">
+        <button class="tab-btn" data-tab="culturales">
           <i class="fas fa-theater-masks"></i> Culturales
-        </button>-->
+        </button>
       </div>
 
       <div class="view-toggle" role="group" aria-label="Vista de eventos">
@@ -3153,7 +3295,7 @@
         <div class="cal-legend">
           <span><i class="lg-m"></i> Música</span>
           <span><i class="lg-d"></i> Deportes</span>
-          <!--<span><i class="lg-c"></i> Cultural</span>-->
+          <span><i class="lg-c"></i> Cultural</span>
         </div>
       </div>
 
@@ -3171,7 +3313,21 @@
     </div>
   </section>
 
-<!-- CONTACTO -->
+  <!-- PUNTOS DE VENTA -->
+  <section class="pv-section" id="puntos-venta">
+    <div class="container">
+      <div class="section-header">
+        <span class="tag"><i class="fas fa-store"></i> Presencial</span>
+        <h2>Puntos de venta físicos</h2>
+        <p>Compra también en nuestras sedes autorizadas</p>
+      </div>
+      <div class="pv-grid" id="pvGrid">
+        <p style="grid-column:1/-1;text-align:center;color:#94a3b8;">Cargando puntos de venta…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
   <section class="contact-section" id="contacto">
     <div class="container">
       <div class="section-header">
@@ -3189,14 +3345,14 @@
             <div class="contact-icon"><i class="fas fa-envelope"></i></div>
             <div>
               <strong>Correo</strong>
-              <span>planetboletosmva@gmail.com</span>
+              <span>contacto@planetboletos.com</span>
             </div>
           </a>
           <a class="contact-item" href="https://wa.me/525512345678" target="_blank" rel="noopener">
             <div class="contact-icon wa"><i class="fab fa-whatsapp"></i></div>
             <div>
               <strong>WhatsApp</strong>
-              <span>+52 866 163 3223</span>
+              <span>+52 55 1234 5678</span>
             </div>
           </a>
           <div class="contact-item">
@@ -3301,14 +3457,14 @@
           <li><a href="#">Privacidad</a></li>
         </ul>
       </div>
-      <!--<div>
+      <div>
         <h4>Admin</h4>
         <ul>
           <li><a href="admin.html">Panel Admin</a></li>
           <li><a href="validador.html">Validador QR</a></li>
         </ul>
       </div>
-    </div>-->
+    </div>
     <div class="footer-bottom">
       <span>© 2026 Planet Boletos. Todos los derechos reservados.</span>
       <span>Pago seguro por transferencia electrónica</span>
@@ -3467,7 +3623,7 @@
      2. Pégala abajo entre las comillas
      3. Sube este archivo a Render
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwJrT-2-pHf1_LKEntfynFvDCZQ5Q0dg5t0hMY0SUZ4kAZA8EsMy2Ew9x1qbnE7TiQh/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID/exec';
 </script>
   <script>
     // ========== CONFIGURACIÓN GOOGLE SHEETS ==========
@@ -3965,10 +4121,11 @@ function renderEvents() {
         const img = ev.imagen || ev.logo || 'planet-boletos.png';
 
         return `<article class="event-card" style="animation-delay:${idx * 0.08}s">
-            <div class="event-card-image ${isTeam ? 'team-logo' : ''}">
+            <div class="event-card-image ${isTeam ? 'team-logo' : ''}" onclick='event.stopPropagation(); openEventImage(${JSON.stringify(img)})'>
               <img src="${img}" alt="${title.replace(/"/g, '&quot;')}" loading="lazy" />
               <div class="ev-shine"></div>
               <span class="ev-type-badge ${tipoClass}">${tipoLabel}</span>
+              <span class="zoom-hint"><i class="fas fa-search-plus"></i> Ver</span>
             </div>
             <div class="event-card-body">
               <h3>${title}</h3>
@@ -5207,6 +5364,86 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
         fetch(u, { mode: 'no-cors' }).catch(() => {});
       }
     })();
+
+    (function() {
+      var bi = 0;
+      var imgs = document.querySelectorAll('#brandBannerFrame img');
+      var dots = document.querySelectorAll('#brandBannerDots button');
+      if (imgs.length) {
+        function show(i) {
+          bi = ((i % imgs.length) + imgs.length) % imgs.length;
+          imgs.forEach(function(el, n) { el.classList.toggle('active', n === bi); });
+          dots.forEach(function(el, n) { el.classList.toggle('active', n === bi); });
+        }
+        dots.forEach(function(d) { d.addEventListener('click', function() { show(+d.dataset.i); }); });
+        setInterval(function() { show(bi + 1); }, 4000);
+      }
+    })();
+
+    function openEventImage(src) {
+      if (!src) return;
+      var box = document.getElementById('imgLightbox');
+      var img = document.getElementById('imgLightboxImg');
+      if (!box || !img) return;
+      img.src = src;
+      box.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeEventImage() {
+      var box = document.getElementById('imgLightbox');
+      if (box) box.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('imgLightboxClose') && document.getElementById('imgLightboxClose').addEventListener('click', closeEventImage);
+    document.getElementById('imgLightbox') && document.getElementById('imgLightbox').addEventListener('click', function(e) {
+      if (e.target === e.currentTarget) closeEventImage();
+    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeEventImage(); });
+    window.openEventImage = openEventImage;
+
+    function getPuntosVentaLocal() {
+      try { return JSON.parse(localStorage.getItem('planetBoletos_puntosVenta') || '[]'); } catch (e) { return []; }
+    }
+    function renderPuntosVenta(list) {
+      var grid = document.getElementById('pvGrid');
+      if (!grid) return;
+      list = list || getPuntosVentaLocal();
+      if (!list.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#94a3b8;">Pronto publicaremos puntos de venta físicos.</p>';
+        return;
+      }
+      grid.innerHTML = list.map(function(p) {
+        var maps = p.direccion
+          ? ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent((p.direccion || '') + (p.ciudad ? ', ' + p.ciudad : '')))
+          : '';
+        return '<article class="pv-card"><h3>' + (p.nombre || 'Punto de venta').replace(/</g,'') + '</h3>' +
+          (p.direccion ? '<p><i class="fas fa-map-marker-alt"></i> ' + String(p.direccion).replace(/</g,'') + '</p>' : '') +
+          (p.ciudad ? '<p><i class="fas fa-city"></i> ' + String(p.ciudad).replace(/</g,'') + '</p>' : '') +
+          (p.horario ? '<p><i class="fas fa-clock"></i> ' + String(p.horario).replace(/</g,'') + '</p>' : '') +
+          (p.telefono ? '<p><i class="fas fa-phone"></i> ' + String(p.telefono).replace(/</g,'') + '</p>' : '') +
+          (maps ? '<p style="margin-top:10px;"><a href="' + maps + '" target="_blank" rel="noopener">Ver en Maps</a></p>' : '') +
+          '</article>';
+      }).join('');
+    }
+    async function pullPuntosVenta() {
+      var url = (typeof getSheetsUrl === 'function') ? getSheetsUrl() : '';
+      if (!url || url.indexOf('PEGA_AQUI') >= 0) { renderPuntosVenta(); return; }
+      try {
+        var res = await fetch(url.split('?')[0] + '?action=listarPuntosVenta&_=' + Date.now(), { cache: 'no-store' });
+        var data = await res.json();
+        if (data && data.ok && Array.isArray(data.puntos)) {
+          localStorage.setItem('planetBoletos_puntosVenta', JSON.stringify(data.puntos));
+          renderPuntosVenta(data.puntos);
+          return;
+        }
+      } catch (e) {}
+      renderPuntosVenta();
+    }
+    renderPuntosVenta();
+    pullPuntosVenta();
+    setInterval(pullPuntosVenta, 60000);
+
+
 window.openPurchase = openPurchase;
     window.toggleMetodoPago = toggleMetodoPago;
   </script>
@@ -5242,5 +5479,9 @@ window.openPurchase = openPurchase;
     })();
   </script>
 
+  <div class="img-lightbox" id="imgLightbox" role="dialog" aria-modal="true">
+    <button type="button" class="img-lightbox-close" id="imgLightboxClose" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    <img id="imgLightboxImg" src="" alt="Imagen del evento" />
+  </div>
 </body>
 </html>

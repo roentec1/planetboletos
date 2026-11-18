@@ -794,9 +794,9 @@
           <i class="fas fa-sign-in-alt"></i> Entrar
         </button>
       </form>
-      <!--<p style="margin-top:16px; font-size:0.8rem; color:#999; text-align:center;">
+      <p style="margin-top:16px; font-size:0.8rem; color:#999; text-align:center;">
         Demo: usuario <strong>admin</strong> / contraseña <strong>planet2026</strong>
-      </p>-->
+      </p>
     </div>
   </div>
 
@@ -822,6 +822,9 @@
       </button>
       <button class="nav-item" data-section="contactos">
         <i class="fas fa-envelope"></i> Contactos
+      </button>
+      <button class="nav-item" data-section="puntos">
+        <i class="fas fa-store"></i> Puntos de venta
       </button>
       <button class="nav-item" data-section="config">
         <i class="fas fa-cog"></i> Configuración
@@ -998,6 +1001,34 @@
       </div>
 
       <!-- CONFIG -->
+      <div class="section-view" id="sec-puntos">
+        <div class="panel">
+          <div class="panel-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <h2 style="margin:0;">Puntos de venta físicos</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="btnAddPunto">
+              <i class="fas fa-plus"></i> Nuevo punto
+            </button>
+          </div>
+          <div class="panel-body">
+            <p style="color:var(--gray-600);font-size:0.9rem;margin-bottom:14px;">
+              Direcciones que se muestran en el sitio público. Guarda y publica a Google Sheets.
+            </p>
+            <div id="puntosList"></div>
+            <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button type="button" class="btn btn-navy" id="btnSavePuntosLocal">
+                <i class="fas fa-save"></i> Guardar local
+              </button>
+              <button type="button" class="btn btn-primary" id="btnPublishPuntos">
+                <i class="fas fa-cloud-upload-alt"></i> Publicar a Sheets
+              </button>
+              <button type="button" class="btn btn-outline" id="btnPullPuntos">
+                <i class="fas fa-sync"></i> Traer desde Sheets
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-view" id="sec-config">
         <div class="panel">
           <div class="panel-header"><h2>Google Sheets / Conexión</h2></div>
@@ -1306,6 +1337,137 @@
       }
     });
 
+    
+    // ========== PUNTOS DE VENTA ==========
+    let puntosVenta = [];
+    try { puntosVenta = JSON.parse(localStorage.getItem('planetBoletos_puntosVenta') || '[]'); } catch (e) { puntosVenta = []; }
+
+    function savePuntosLocal() {
+      localStorage.setItem('planetBoletos_puntosVenta', JSON.stringify(puntosVenta));
+    }
+
+    function renderPuntosAdmin() {
+      const list = document.getElementById('puntosList');
+      if (!list) return;
+      if (!puntosVenta.length) {
+        list.innerHTML = '<div class="empty-state"><i class="fas fa-store"></i><p>No hay puntos de venta. Agrega el primero.</p></div>';
+        return;
+      }
+      list.innerHTML = puntosVenta.map((p, i) => `
+        <div class="event-edit-card">
+          <h3><i class="fas fa-store" style="color:var(--red);"></i> ${p.nombre || 'Sin nombre'}</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre del punto</label>
+              <input type="text" value="${(p.nombre || '').replace(/"/g, '&quot;')}" data-idx="${i}" data-field="nombre" onchange="updatePunto(this)" />
+            </div>
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" value="${(p.ciudad || '').replace(/"/g, '&quot;')}" data-idx="${i}" data-field="ciudad" onchange="updatePunto(this)" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label>Dirección completa</label>
+              <input type="text" value="${(p.direccion || '').replace(/"/g, '&quot;')}" data-idx="${i}" data-field="direccion" onchange="updatePunto(this)" placeholder="Calle, número, colonia..." />
+            </div>
+            <div class="form-group">
+              <label>Horario</label>
+              <input type="text" value="${(p.horario || '').replace(/"/g, '&quot;')}" data-idx="${i}" data-field="horario" onchange="updatePunto(this)" placeholder="Lun-Vie 10:00-18:00" />
+            </div>
+            <div class="form-group">
+              <label>Teléfono</label>
+              <input type="text" value="${(p.telefono || '').replace(/"/g, '&quot;')}" data-idx="${i}" data-field="telefono" onchange="updatePunto(this)" />
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="deletePunto(${i})">
+              <i class="fas fa-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updatePunto(el) {
+      const i = +el.dataset.idx;
+      const field = el.dataset.field;
+      puntosVenta[i][field] = el.value;
+      savePuntosLocal();
+    }
+
+    function addPunto() {
+      puntosVenta.push({
+        id: 'pv' + Date.now(),
+        nombre: 'Nuevo punto de venta',
+        direccion: '',
+        ciudad: '',
+        horario: '',
+        telefono: ''
+      });
+      savePuntosLocal();
+      renderPuntosAdmin();
+    }
+
+    function deletePunto(i) {
+      if (!confirm('¿Eliminar este punto de venta?')) return;
+      puntosVenta.splice(i, 1);
+      savePuntosLocal();
+      renderPuntosAdmin();
+    }
+
+    async function publishPuntosSheets() {
+      const url = getSheetsUrl();
+      if (!url || url.includes('PEGA_AQUI') || url.includes('XXXX')) {
+        alert('Configura la URL de Sheets primero.');
+        return;
+      }
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'guardarPuntosVenta', data: { puntos: puntosVenta } })
+        });
+        alert('Puntos de venta enviados a Google Sheets. Verifica la hoja "PuntosVenta".');
+      } catch (e) {
+        alert('Error al publicar: ' + e.message);
+      }
+    }
+
+    async function pullPuntosSheets() {
+      const url = getSheetsUrl();
+      if (!url || url.includes('PEGA_AQUI')) {
+        alert('Configura la URL de Sheets.');
+        return;
+      }
+      try {
+        const res = await fetch(url.split('?')[0] + '?action=listarPuntosVenta&_=' + Date.now(), { cache: 'no-store' });
+        const data = await res.json();
+        if (data && data.ok && Array.isArray(data.puntos)) {
+          puntosVenta = data.puntos;
+          savePuntosLocal();
+          renderPuntosAdmin();
+          alert('Cargados ' + puntosVenta.length + ' puntos desde Sheets.');
+        } else {
+          alert((data && data.error) || 'No se pudieron cargar puntos.');
+        }
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    document.getElementById('btnAddPunto')?.addEventListener('click', addPunto);
+    document.getElementById('btnSavePuntosLocal')?.addEventListener('click', () => {
+      savePuntosLocal();
+      alert('Guardado en este dispositivo.');
+    });
+    document.getElementById('btnPublishPuntos')?.addEventListener('click', publishPuntosSheets);
+    document.getElementById('btnPullPuntos')?.addEventListener('click', pullPuntosSheets);
+
+    window.updatePunto = updatePunto;
+    window.deletePunto = deletePunto;
+    window.renderPuntosAdmin = renderPuntosAdmin;
+
+
     document.getElementById('logoutBtn').addEventListener('click', () => {
       sessionStorage.removeItem('planetBoletos_auth');
       location.reload();
@@ -1448,6 +1610,7 @@
           deportes: 'Eventos Deportivos',
           ventas: 'Ventas y Órdenes',
           contactos: 'Contactos',
+          puntos: 'Puntos de venta',
           config: 'Configuración'
         };
         document.getElementById('pageTitle').textContent = titles[btn.dataset.section] || '';
@@ -1456,6 +1619,7 @@
         if (btn.dataset.section === 'deportes') renderDeportes();
         if (btn.dataset.section === 'ventas') renderOrders();
         if (btn.dataset.section === 'contactos') renderContacts();
+        if (btn.dataset.section === 'puntos') renderPuntosAdmin();
         if (btn.dataset.section === 'config') {
           document.getElementById('sheetsUrl').value = getSheetsUrl() || localStorage.getItem('planetBoletos_sheetsUrl') || window.PLANET_SHEETS_URL || '';
         }

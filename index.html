@@ -3730,11 +3730,42 @@
       if (e.target && e.target.name === 'metodoPago') togglePagoUI();
     });
 
+    function isValidSheetsUrl(u) {
+      u = (u || '').trim();
+      if (!u) return false;
+      if (u.includes('PEGA_AQUI') || u.includes('XXXX') || u.includes('TU_ID') || u.includes('TU_SCRIPT')) return false;
+      return u.indexOf('https://script.google.com/') === 0 || u.indexOf('https://script.googleusercontent.com/') === 0;
+    }
+
     function getSheetsUrl() {
-      // Prioridad: URL fija de producción → localStorage (pruebas locales)
+      // 1) config.json (todos los dispositivos en Render)
+      const fromConfig = (window.PLANET_SHEETS_URL_FROM_CONFIG || '').trim();
+      if (isValidSheetsUrl(fromConfig)) return fromConfig;
+      // 2) hardcode en el HTML
       const fixed = (window.PLANET_SHEETS_URL || '').trim();
-      if (fixed && !fixed.includes('PEGA_AQUI')) return fixed;
-      return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+      if (isValidSheetsUrl(fixed)) return fixed;
+      // 3) localStorage (solo este navegador)
+      const local = (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+      if (isValidSheetsUrl(local)) return local;
+      return '';
+    }
+
+    /** Carga config.json del mismo dominio (Render) – fuente global de la URL */
+    async function loadRemoteConfig() {
+      try {
+        const res = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return false;
+        const cfg = await res.json();
+        if (cfg && isValidSheetsUrl(cfg.sheetsUrl)) {
+          window.PLANET_SHEETS_URL_FROM_CONFIG = cfg.sheetsUrl.trim();
+          // También guarda en local para offline de este dispositivo
+          localStorage.setItem('planetBoletos_sheetsUrl', cfg.sheetsUrl.trim());
+          return true;
+        }
+      } catch (e) {
+        console.warn('config.json', e);
+      }
+      return false;
     }
 
     /** Envía datos a Google Apps Script (compatible con CORS del navegador) */
@@ -3951,10 +3982,13 @@
       if (!remote) return false;
       const musica = dedupeEventsById(remote.musica);
       const deportes = dedupeEventsById(remote.deportes);
+      // Si Sheets responde vacío de verdad, no tocar (evita borrar en error parcial)
       if (musica.length === 0 && deportes.length === 0) return false;
-      events = { musica, deportes };
+      // Reemplazo TOTAL: elimina eventos viejos de localStorage de otros dispositivos
+      events = { musica, deportes, culturales: [] };
       saveEvents();
       try { renderEvents(); } catch (e) {}
+      try { if (typeof renderHeroShowcase === 'function') renderHeroShowcase(); } catch (e) {}
       return true;
     }
 
@@ -5399,9 +5433,23 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     });
 
     // Init
-    renderEvents();
-    syncStockFromSheets();
+    async function bootFromSheets() {
+      await loadRemoteConfig();
+      const url = getSheetsUrl();
+      if (!url) {
+        console.warn('Sin URL de Sheets. Crea config.json en Render con tu URL /exec.');
+        renderEvents();
+        renderPuntosVenta();
+        return;
+      }
+      // Sheets = fuente de verdad (reemplaza localStorage viejo de otros PCs)
+      await syncStockFromSheets();
+      await pullPuntosVenta();
+      renderEvents();
+    }
+    bootFromSheets();
     setInterval(function(){ syncStockFromSheets(); }, 12000);
+    setInterval(function(){ pullPuntosVenta(); }, 20000);
 
     // Expose for onclick
 
@@ -5531,6 +5579,12 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
         if (data && data.ok && Array.isArray(data.puntos)) {
           localStorage.setItem('planetBoletos_puntosVenta', JSON.stringify(data.puntos));
           renderPuntosVenta(data.puntos);
+          return;
+        }
+        // Si ok pero sin puntos, limpia caché local vieja
+        if (data && data.ok && data.puntos && data.puntos.length === 0) {
+          localStorage.setItem('planetBoletos_puntosVenta', '[]');
+          renderPuntosVenta([]);
           return;
         }
       } catch (e) {}

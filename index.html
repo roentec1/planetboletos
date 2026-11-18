@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#0B1E3D" />
@@ -62,7 +64,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 1000;
-      background: rgba(11, 30, 61, 0.95);
+      background: #000000;
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       transition: var(--transition);
@@ -77,7 +79,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 72px;
+      height: 80px;
     }
 
     .logo {
@@ -3167,17 +3169,37 @@
     }
 
   
+    .logo {
+      display: flex !important;
+      align-items: center;
+      gap: 12px;
+    }
     .logo img#logoRotator {
-      height: 48px;
+      height: 58px;
       width: auto;
-      max-width: min(240px, 58vw);
+      max-width: min(280px, 52vw);
       object-fit: contain;
       transition: opacity 0.45s ease;
     }
+    .logo .logo-text {
+      display: inline !important;
+      font-size: 1.25rem !important;
+      font-weight: 800;
+      color: #fff !important;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+      line-height: 1.1;
+    }
+    .logo .logo-text span {
+      color: #C41E3A !important;
+    }
     @media (max-width: 480px) {
       .logo img#logoRotator {
-        height: 40px;
-        max-width: min(200px, 70vw);
+        height: 46px;
+        max-width: min(160px, 48vw);
+      }
+      .logo .logo-text {
+        font-size: 0.95rem !important;
       }
     }
 
@@ -3189,7 +3211,8 @@
   <header class="header" id="header">
     <div class="nav-container">
       <a href="#inicio" class="logo" id="siteLogo">
-        <img id="logoRotator" src="bg-deportes.png" alt="Planet Boletos" width="200" height="56" decoding="async" fetchpriority="high" />
+        <img id="logoRotator" src="bg-deportes.png" alt="Planet Boletos" width="280" height="72" decoding="async" fetchpriority="high" />
+        <span class="logo-text">Planet <span>Boletos</span></span>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Menú">
         <i class="fas fa-bars"></i>
@@ -3858,6 +3881,12 @@
     let selectedEvent = null;
     let qty = 1;
 
+    function normalizeVentaActiva(v) {
+      // false explícito → desactivada; vacío/undefined → activa (compatibilidad)
+      if (v === false || v === 0 || v === '0' || v === 'false' || v === 'FALSE' || v === 'no' || v === 'No') return false;
+      return true;
+    }
+
     function loadEvents() {
       const defaults = JSON.parse(JSON.stringify(DEFAULT_EVENTS));
       const saved = localStorage.getItem('planetBoletos_events');
@@ -3876,7 +3905,8 @@
               ...ev,
               precio: Number(ev.precio) || 0,
               comision: Number(ev.comision) || 0,
-              disponibles: Number(ev.disponibles) || 0
+              disponibles: Number(ev.disponibles) || 0,
+              ventaActiva: normalizeVentaActiva(ev.ventaActiva)
             }));
           });
           return data;
@@ -3906,7 +3936,8 @@
           ...ev,
           precio: Number(ev.precio) || 0,
           comision: Number(ev.comision) || 0,
-          disponibles: Number(ev.disponibles) || 0
+          disponibles: Number(ev.disponibles) || 0,
+          ventaActiva: normalizeVentaActiva(ev.ventaActiva)
         });
       });
       return out;
@@ -5370,7 +5401,7 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     // Init
     renderEvents();
     syncStockFromSheets();
-    setInterval(function(){ syncStockFromSheets(); }, 20000);
+    setInterval(function(){ syncStockFromSheets(); }, 12000);
 
     // Expose for onclick
 

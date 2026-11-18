@@ -1304,7 +1304,7 @@
      CONFIG PRODUCCIÓN (Render) – MISMA URL QUE index.html
      Pega tu URL /exec de Google Apps Script:
      ========================================================= */
-  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbysptCAa35V6yTQq94vmHp2yDR8HHsj9G6jbYz5lx3DyoK5XYm9oDKPpZFymXqgRhKa/exec';
+  window.PLANET_SHEETS_URL = 'https://script.google.com/macros/s/PEGA_AQUI_TU_ID/exec';
 </script>
   <script>
     // Credenciales demo (cámbialas en producción)
@@ -2147,12 +2147,34 @@
     let currentQrDataUrl = null;
 
     function getSheetsUrl() {
-      // Prioridad: URL fija (Render) → input Configuración / localStorage
+      function valid(u) {
+        u = (u || '').trim();
+        if (!u || u.includes('PEGA_AQUI') || u.includes('XXXX') || u.includes('TU_ID')) return false;
+        return u.indexOf('https://script.google.com/') === 0;
+      }
+      const fromCfg = (window.PLANET_SHEETS_URL_FROM_CONFIG || '').trim();
+      if (valid(fromCfg)) return fromCfg;
+      const input = (document.getElementById('sheetsUrl') && document.getElementById('sheetsUrl').value || '').trim();
+      if (valid(input)) return input;
       const fixed = (window.PLANET_SHEETS_URL || '').trim();
-      if (fixed && !fixed.includes('PEGA_AQUI')) return fixed;
-      const fromInput = (document.getElementById('sheetsUrl')?.value || '').trim();
-      if (fromInput) return fromInput;
-      return (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+      if (valid(fixed)) return fixed;
+      const local = (localStorage.getItem('planetBoletos_sheetsUrl') || '').trim();
+      if (valid(local)) return local;
+      return '';
+    }
+
+    async function loadRemoteConfig() {
+      try {
+        const res = await fetch('config.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const cfg = await res.json();
+        if (cfg && cfg.sheetsUrl && String(cfg.sheetsUrl).indexOf('script.google.com') >= 0 && !String(cfg.sheetsUrl).includes('PEGA_AQUI')) {
+          window.PLANET_SHEETS_URL_FROM_CONFIG = cfg.sheetsUrl.trim();
+          localStorage.setItem('planetBoletos_sheetsUrl', cfg.sheetsUrl.trim());
+          const inp = document.getElementById('sheetsUrl');
+          if (inp && !inp.value) inp.value = cfg.sheetsUrl.trim();
+        }
+      } catch (e) {}
     }
 
     let sheetsPollTimer = null;
@@ -2925,6 +2947,9 @@ Presenta este folio o el código QR en la entrada del evento.
         return;
       }
       localStorage.setItem('planetBoletos_sheetsUrl', url);
+      window.PLANET_SHEETS_URL_FROM_CONFIG = url;
+      // Copia también a la constante en memoria
+      window.PLANET_SHEETS_URL = url;
       el.style.color = '#1E40AF';
       el.textContent = 'Enviando fila de prueba a la hoja Ventas…';
       try {

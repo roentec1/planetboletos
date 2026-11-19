@@ -392,91 +392,207 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Featured event card */
+    /* ========== SHOWCASE CINEMATOGRÁFICO (estilo boletería pro) ========== */
+    .hero-content {
+      grid-template-columns: 1fr !important;
+      gap: 28px !important;
+      align-items: stretch !important;
+      max-width: 1200px !important;
+    }
+    .hero-intro {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero-intro .hero-actions {
+      justify-content: center;
+    }
+    .hero-intro p {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .hero-featured {
       position: relative;
-      border-radius: 24px;
+      border-radius: 28px;
       overflow: hidden;
-      min-height: 380px;
-      background: rgba(255,255,255,0.06);
+      width: 100%;
+      min-height: 420px;
+      height: clamp(380px, 52vw, 520px);
+      background: #0a0a0a;
       border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.45);
-      backdrop-filter: blur(12px);
-      animation: fadeUp 1s ease 0.25s both;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(255,255,255,0.05);
+      animation: fadeUp 1s ease 0.2s both;
     }
     .hero-featured-slide {
       position: absolute;
       inset: 0;
       opacity: 0;
-      transition: opacity 0.8s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+      transition: opacity 1s ease;
+      pointer-events: none;
     }
-    .hero-featured-slide.active { opacity: 1; z-index: 1; }
+    .hero-featured-slide.active {
+      opacity: 1;
+      z-index: 1;
+      pointer-events: auto;
+    }
     .hero-featured-slide img {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center 20%;
+      transform: scale(1.04);
+      transition: transform 8s ease;
+    }
+    .hero-featured-slide.active img {
+      transform: scale(1);
     }
     .hero-featured-slide .feat-shade {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(5,13,26,0.95) 0%, rgba(5,13,26,0.35) 45%, transparent 70%);
+      background:
+        linear-gradient(90deg, rgba(5,8,16,0.75) 0%, rgba(5,8,16,0.2) 45%, rgba(5,8,16,0.35) 100%),
+        linear-gradient(to top, rgba(5,8,16,0.95) 0%, rgba(5,8,16,0.55) 32%, transparent 62%);
+      z-index: 1;
     }
     .hero-featured-body {
-      position: relative;
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
       z-index: 2;
-      padding: 24px;
+      padding: 28px 32px 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
     }
+    .feat-copy { flex: 1; min-width: 220px; max-width: 720px; }
     .feat-type {
       display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.7rem;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: var(--red);
+      letter-spacing: 0.1em;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(196, 30, 58, 0.9);
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .hero-featured-body h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 900;
       color: #fff;
-      font-size: 1.35rem;
-      font-weight: 800;
-      margin: 0 0 12px;
-      line-height: 1.25;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.45);
+    }
+    .feat-org {
+      color: rgba(255,255,255,0.8) !important;
+      font-size: 0.9rem !important;
+      margin: 0 0 10px !important;
+      font-weight: 600;
     }
     .feat-meta {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      color: rgba(255,255,255,0.85);
+      flex-wrap: wrap;
+      gap: 14px 20px;
+      color: rgba(255,255,255,0.88);
       font-size: 0.92rem;
-      margin-bottom: 16px;
+      font-weight: 600;
     }
-    .feat-meta i { color: #FF8A9B; width: 18px; }
+    .feat-meta i { color: #ff6b81; margin-right: 6px; }
+
+    .feat-cta {
+      flex-shrink: 0;
+    }
+    .feat-cta .btn {
+      min-height: 52px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+      color: #fff !important;
+      border: none;
+      box-shadow: 0 10px 28px rgba(34, 197, 94, 0.4);
+      white-space: nowrap;
+    }
+    .feat-cta .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(34, 197, 94, 0.5);
+    }
+    .feat-cta .btn[disabled] {
+      background: #64748b !important;
+      box-shadow: none;
+      opacity: 0.85;
+    }
+
     .hero-featured-dots {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 3;
+      top: 18px;
+      right: 18px;
+      z-index: 5;
       display: flex;
-      gap: 6px;
+      gap: 8px;
     }
     .hero-featured-dots button {
-      width: 8px; height: 8px; border-radius: 50%;
-      border: none; background: rgba(255,255,255,0.35);
+      width: 10px; height: 10px; border-radius: 50%;
+      border: none; background: rgba(255,255,255,0.4);
       cursor: pointer; padding: 0;
       transition: all 0.25s;
     }
     .hero-featured-dots button.active {
       background: #fff;
-      width: 22px;
+      width: 26px;
       border-radius: 99px;
+    }
+
+    .hero-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 6;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .hero-nav-btn:hover {
+      background: rgba(196, 30, 58, 0.85);
+      transform: translateY(-50%) scale(1.05);
+    }
+    .hero-nav-btn.prev { left: 14px; }
+    .hero-nav-btn.next { right: 14px; }
+
+    @media (max-width: 700px) {
+      .hero-featured {
+        min-height: 340px;
+        height: 68vw;
+        max-height: 420px;
+        border-radius: 18px;
+      }
+      .hero-featured-body {
+        padding: 18px 16px 20px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .feat-cta .btn { width: 100%; justify-content: center; }
+      .hero-nav-btn { width: 40px; height: 40px; }
+      .hero-featured-body h3 { font-size: 1.45rem; }
     }
 
     /* ========== BANNER DE EVENTOS (estilos) ========== */
@@ -3279,7 +3395,7 @@
     <div class="hero-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
 
     <div class="hero-content">
-      <div>
+      <div class="hero-intro">
         <div class="hero-badge">
           <span class="pulse-dot"></span>
           En vivo · Venta oficial de boletos
@@ -3297,6 +3413,8 @@
       </div>
 
       <div class="hero-featured" id="heroFeatured">
+        <button type="button" class="hero-nav-btn prev" id="heroPrev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
+        <button type="button" class="hero-nav-btn next" id="heroNext" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
         <div class="hero-featured-dots" id="heroFeaturedDots"></div>
         <div id="heroFeaturedSlides">
           <!-- slides por JS -->
@@ -4130,24 +4248,36 @@
         ).join('');
       }
 
-      // Featured card slides
+      // Featured showcase cinematográfico
       slidesWrap.innerHTML = all.map((ev, i) => {
         const title = eventTitle(ev);
+        const price = (typeof precioConComision === 'function') ? precioConComision(ev) : (Number(ev.precio)||0);
+        const ventaOn = ev.ventaActiva !== false && ev.ventaActiva !== 'false' && ev.ventaActiva !== 0 && ev.ventaActiva !== '0';
+        const agotado = (Number(ev.disponibles)||0) <= 0;
+        let cta;
+        if (!ventaOn) {
+          cta = '<button type="button" class="btn" disabled><i class="fas fa-info-circle"></i> Solo información</button>';
+        } else if (agotado) {
+          cta = '<button type="button" class="btn" disabled><i class="fas fa-ticket-alt"></i> Agotado</button>';
+        } else {
+          cta = '<button type="button" class="btn" onclick="openPurchase(\'' + ev.id + '\')">' +
+            '<i class="fas fa-ticket-alt"></i> Boletos desde ' + formatMoney(price) + ' →</button>';
+        }
         return (
           '<div class="hero-featured-slide' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' +
             '<img src="' + eventImage(ev) + '" alt="' + title.replace(/"/g, '&quot;') + '" loading="lazy" />' +
             '<div class="feat-shade"></div>' +
             '<div class="hero-featured-body">' +
-              '<span class="feat-type">' + eventTypeLabel(ev) + '</span>' +
-              '<h3>' + title + '</h3>' +
-              (ev.organizador ? '<p class="feat-org"><i class="fas fa-building"></i> Organiza: ' + String(ev.organizador).replace(/</g, '') + '</p>' : '') +
-              '<div class="feat-meta">' +
-                '<span><i class="fas fa-calendar-alt"></i> ' + formatDate(ev.fecha) + '</span>' +
-                '<span><i class="fas fa-map-marker-alt"></i> ' + (ev.ciudad || 'Por confirmar') + '</span>' +
+              '<div class="feat-copy">' +
+                '<span class="feat-type">' + eventTypeLabel(ev) + '</span>' +
+                '<h3>' + title + '</h3>' +
+                (ev.organizador ? '<p class="feat-org"><i class="fas fa-building"></i> Organiza: ' + String(ev.organizador).replace(/</g, '') + '</p>' : '') +
+                '<div class="feat-meta">' +
+                  '<span><i class="fas fa-calendar-alt"></i> ' + formatDate(ev.fecha) + '</span>' +
+                  '<span><i class="fas fa-map-marker-alt"></i> ' + (ev.ciudad || 'Por confirmar') + '</span>' +
+                '</div>' +
               '</div>' +
-              '<button type="button" class="btn btn-primary" style="width:100%;justify-content:center;" onclick="openPurchase(\'' + ev.id + '\')">' +
-                '<i class="fas fa-ticket-alt"></i> Comprar boletos' +
-              '</button>' +
+              '<div class="feat-cta">' + cta + '</div>' +
             '</div>' +
           '</div>'
         );
@@ -4225,6 +4355,15 @@
       if (heroSlideTimer) clearInterval(heroSlideTimer);
       heroSlideTimer = setInterval(() => showHeroSlide(heroSlideIndex + 1), 9000);
     }
+
+    document.getElementById('heroPrev')?.addEventListener('click', () => {
+      showHeroSlide(heroSlideIndex - 1);
+      restartHeroTimer();
+    });
+    document.getElementById('heroNext')?.addEventListener('click', () => {
+      showHeroSlide(heroSlideIndex + 1);
+      restartHeroTimer();
+    });
 
 
 function renderEvents() {

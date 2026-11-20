@@ -161,24 +161,9 @@
       background: #050d1a;
     }
 
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-    .hero-bg-slide {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transform: scale(1.08);
-      transition: opacity 1.2s ease, transform 8s ease;
-    }
-    .hero-bg-slide.active {
-      opacity: 1;
-      transform: scale(1);
-    }
+    .hero-bg { display: none !important; }
+    .hero-bg-slide { display: none !important; }
+    .hero-bg-slide.active { display: none !important; }
     .hero-bg-overlay {
       position: absolute;
       inset: 0;
@@ -3433,6 +3418,70 @@
       text-overflow: ellipsis;
     }
 
+  
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .hero-title-row h1 {
+      margin-bottom: 0 !important;
+      flex: 1;
+      text-align: center;
+    }
+    .hero-title-nav {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.2s, border-color 0.2s;
+      backdrop-filter: blur(8px);
+    }
+    .hero-title-nav:hover {
+      background: rgba(196, 30, 58, 0.9);
+      border-color: #C41E3A;
+      transform: scale(1.06);
+    }
+    .hero-title-nav:active { transform: scale(0.96); }
+    /* Ocultar flechas dentro del banner y dots de avance */
+    .hero-featured .hero-nav-btn,
+    .hero-featured-dots,
+    .hero-manual-hint,
+    .brand-banner-dots {
+      display: none !important;
+    }
+    @media (max-width: 600px) {
+      .hero-title-row {
+        gap: 8px;
+      }
+      .hero-title-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 0.95rem;
+      }
+      .hero-title-row h1 {
+        font-size: clamp(1.35rem, 5.5vw, 1.85rem) !important;
+        line-height: 1.15 !important;
+      }
+      .hero-featured {
+        min-height: 460px !important;
+        height: min(72vh, 560px) !important;
+      }
+      .hero-featured-slide img.feat-poster {
+        max-width: 94% !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3468,7 +3517,15 @@
           <span class="pulse-dot"></span>
           En vivo · Venta oficial de boletos
         </div>
-        <h1>Tu acceso al <span>universo</span> del entretenimiento</h1>
+        <div class="hero-title-row">
+          <button type="button" class="hero-title-nav" id="heroPrev" aria-label="Evento anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <h1>Tu acceso al <span>universo</span> del entretenimiento</h1>
+          <button type="button" class="hero-title-nav" id="heroNext" aria-label="Evento siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
         <p>Conciertos, béisbol y cultura en un solo lugar. Compra segura, comprobante digital y código QR para entrar al evento.</p>
         <div class="hero-actions">
           <a href="#eventos" class="btn btn-primary btn-glow">
@@ -3481,10 +3538,6 @@
       </div>
 
       <div class="hero-featured" id="heroFeatured">
-        <div class="hero-manual-hint"><i class="fas fa-hand-pointer"></i> Desliza o usa las flechas</div>
-        <button type="button" class="hero-nav-btn prev" id="heroPrev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
-        <button type="button" class="hero-nav-btn next" id="heroNext" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
-        <div class="hero-featured-dots" id="heroFeaturedDots"></div>
         <div id="heroFeaturedSlides">
           <!-- slides por JS -->
         </div>
@@ -3496,11 +3549,6 @@
         <img src="bg-conciertos.png" alt="Planet Boletos · Conciertos" class="active" data-i="0" />
         <img src="bg-deportes.png" alt="Planet Boletos · Deportes" data-i="1" />
         <img src="bg-teatro.png" alt="Planet Boletos · Teatro" data-i="2" />
-      </div>
-      <div class="brand-banner-dots" id="brandBannerDots">
-        <button type="button" class="active" data-i="0" aria-label="Conciertos"></button>
-        <button type="button" data-i="1" aria-label="Deportes"></button>
-        <button type="button" data-i="2" aria-label="Teatro"></button>
       </div>
     </div>
 
@@ -4350,17 +4398,7 @@
         );
       }).join('');
 
-      if (dotsWrap) {
-        dotsWrap.innerHTML = all.map((_, i) =>
-          '<button type="button" class="' + (i === 0 ? 'active' : '') + '" data-dot="' + i + '" aria-label="Evento ' + (i + 1) + '"></button>'
-        ).join('');
-        dotsWrap.querySelectorAll('button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            heroSlideIndex = Number(btn.dataset.dot) || 0;
-            showHeroSlide(heroSlideIndex);
-          });
-        });
-      }
+      // Sin indicadores de avance automático (solo flechas manuales)
 
       // Banner strip (duplicated for infinite scroll)
       const cardHtml = all.map(ev => {
@@ -4407,14 +4445,10 @@
 
     function showHeroSlide(i) {
       const slides = document.querySelectorAll('.hero-featured-slide');
-      const bgs = document.querySelectorAll('.hero-bg-slide');
-      const dots = document.querySelectorAll('#heroFeaturedDots button');
       if (!slides.length) return;
       const n = slides.length;
       heroSlideIndex = ((i % n) + n) % n;
       slides.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
-      bgs.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
-      dots.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
     }
 
     function restartHeroTimer() {
@@ -5759,16 +5793,13 @@ if (eventsViewMode === 'calendar') renderEventsCalendar();
     (function() {
       var bi = 0;
       var imgs = document.querySelectorAll('#brandBannerFrame img');
-      var dots = document.querySelectorAll('#brandBannerDots button');
-      if (imgs.length) {
-        function show(i) {
-          bi = ((i % imgs.length) + imgs.length) % imgs.length;
-          imgs.forEach(function(el, n) { el.classList.toggle('active', n === bi); });
-          dots.forEach(function(el, n) { el.classList.toggle('active', n === bi); });
-        }
-        dots.forEach(function(d) { d.addEventListener('click', function() { show(+d.dataset.i); }); });
-        setInterval(function() { show(bi + 1); }, 4000);
+      if (!imgs.length) return;
+      function show(i) {
+        bi = ((i % imgs.length) + imgs.length) % imgs.length;
+        imgs.forEach(function(el, n) { el.classList.toggle('active', n === bi); });
       }
+      // Solo manual no aplica aquí; rotación suave del logo de categoría sin indicadores
+      setInterval(function() { show(bi + 1); }, 5000);
     })();
 
     function openEventImage(src) {

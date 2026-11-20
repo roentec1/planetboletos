@@ -417,106 +417,132 @@
       border-radius: 28px;
       overflow: hidden;
       width: 100%;
-      min-height: 420px;
-      height: clamp(380px, 52vw, 520px);
-      background: #0a0a0a;
-      border: 1px solid rgba(255,255,255,0.12);
+      /* Más alto para posters verticales legibles */
+      min-height: 520px;
+      height: clamp(480px, 70vh, 640px);
+      background: #05070d;
+      border: 1px solid rgba(255,255,255,0.14);
       box-shadow:
         0 30px 80px rgba(0,0,0,0.55),
-        0 0 0 1px rgba(255,255,255,0.05);
+        0 0 0 1px rgba(255,255,255,0.05),
+        inset 0 0 80px rgba(0,0,0,0.35);
       animation: fadeUp 1s ease 0.2s both;
     }
     .hero-featured-slide {
       position: absolute;
       inset: 0;
       opacity: 0;
-      transition: opacity 1s ease;
+      transition: opacity 0.55s ease;
       pointer-events: none;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
     }
     .hero-featured-slide.active {
       opacity: 1;
       z-index: 1;
       pointer-events: auto;
     }
-    .hero-featured-slide img {
+    /* Fondo difuminado del mismo poster (rellena lados sin recortar texto) */
+    .hero-featured-slide .feat-blur {
       position: absolute;
-      inset: 0;
+      inset: -8%;
+      background-size: cover;
+      background-position: center;
+      filter: blur(28px) saturate(1.15) brightness(0.45);
+      transform: scale(1.12);
+      z-index: 0;
+    }
+    .hero-featured-slide .feat-poster-wrap {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      object-position: center 20%;
-      transform: scale(1.04);
-      transition: transform 8s ease;
+      padding: 12px 12px 100px;
     }
-    .hero-featured-slide.active img {
-      transform: scale(1);
+    .hero-featured-slide img.feat-poster {
+      position: relative !important;
+      inset: auto !important;
+      width: auto !important;
+      height: 100% !important;
+      max-width: min(420px, 92%);
+      max-height: 100%;
+      object-fit: contain !important;
+      object-position: center center !important;
+      transform: none !important;
+      border-radius: 14px;
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.65),
+        0 0 0 1px rgba(255,255,255,0.12);
     }
     .hero-featured-slide .feat-shade {
       position: absolute;
       inset: 0;
+      z-index: 2;
+      pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(5,8,16,0.75) 0%, rgba(5,8,16,0.2) 45%, rgba(5,8,16,0.35) 100%),
-        linear-gradient(to top, rgba(5,8,16,0.95) 0%, rgba(5,8,16,0.55) 32%, transparent 62%);
-      z-index: 1;
+        linear-gradient(to top, rgba(5,8,16,0.97) 0%, rgba(5,8,16,0.75) 18%, rgba(5,8,16,0.15) 42%, transparent 58%),
+        linear-gradient(90deg, rgba(5,8,16,0.55) 0%, transparent 18%, transparent 82%, rgba(5,8,16,0.55) 100%);
     }
     .hero-featured-body {
       position: absolute;
       left: 0; right: 0; bottom: 0;
-      z-index: 2;
-      padding: 28px 32px 28px;
+      z-index: 3;
+      padding: 20px 28px 22px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
       flex-wrap: wrap;
     }
-    .feat-copy { flex: 1; min-width: 220px; max-width: 720px; }
+    .feat-copy { flex: 1; min-width: 200px; max-width: 720px; }
     .feat-type {
       display: inline-block;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       padding: 5px 12px;
       border-radius: 8px;
-      background: rgba(196, 30, 58, 0.9);
+      background: rgba(196, 30, 58, 0.95);
       color: #fff;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     .hero-featured-body h3 {
-      margin: 0 0 10px;
-      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      margin: 0 0 8px;
+      font-size: clamp(1.35rem, 3vw, 2.15rem);
       font-weight: 900;
       color: #fff;
-      line-height: 1.1;
+      line-height: 1.12;
       letter-spacing: -0.03em;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.45);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
     .feat-org {
-      color: rgba(255,255,255,0.8) !important;
-      font-size: 0.9rem !important;
-      margin: 0 0 10px !important;
+      color: rgba(255,255,255,0.85) !important;
+      font-size: 0.86rem !important;
+      margin: 0 0 8px !important;
       font-weight: 600;
     }
     .feat-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 14px 20px;
-      color: rgba(255,255,255,0.88);
-      font-size: 0.92rem;
+      gap: 12px 18px;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.9rem;
       font-weight: 600;
     }
     .feat-meta i { color: #ff6b81; margin-right: 6px; }
 
-    .feat-cta {
-      flex-shrink: 0;
-    }
+    .feat-cta { flex-shrink: 0; }
     .feat-cta .btn {
-      min-height: 52px;
-      padding: 14px 28px;
+      min-height: 50px;
+      padding: 13px 26px;
       border-radius: 999px;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.98rem;
       background: linear-gradient(135deg, #22c55e, #16a34a) !important;
       color: #fff !important;
       border: none;
@@ -530,16 +556,21 @@
     .feat-cta .btn[disabled] {
       background: #64748b !important;
       box-shadow: none;
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     .hero-featured-dots {
       position: absolute;
-      top: 18px;
-      right: 18px;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 5;
       display: flex;
       gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
     }
     .hero-featured-dots button {
       width: 10px; height: 10px; border-radius: 50%;
@@ -549,7 +580,7 @@
     }
     .hero-featured-dots button.active {
       background: #fff;
-      width: 26px;
+      width: 28px;
       border-radius: 99px;
     }
 
@@ -558,41 +589,78 @@
       top: 50%;
       transform: translateY(-50%);
       z-index: 6;
-      width: 48px; height: 48px;
+      width: 52px; height: 52px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.45);
       color: #fff;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       cursor: pointer;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
     .hero-nav-btn:hover {
-      background: rgba(196, 30, 58, 0.85);
-      transform: translateY(-50%) scale(1.05);
+      background: rgba(196, 30, 58, 0.9);
+      transform: translateY(-50%) scale(1.06);
     }
     .hero-nav-btn.prev { left: 14px; }
     .hero-nav-btn.next { right: 14px; }
 
+    .hero-manual-hint {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 5;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 6px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      letter-spacing: 0.02em;
+    }
+    .hero-manual-hint i { margin-right: 6px; color: #fbbf24; }
+
     @media (max-width: 700px) {
       .hero-featured {
-        min-height: 340px;
-        height: 68vw;
-        max-height: 420px;
+        min-height: 520px;
+        height: min(78vh, 620px);
         border-radius: 18px;
       }
+      .hero-featured-slide .feat-poster-wrap {
+        padding: 10px 8px 120px;
+      }
+      .hero-featured-slide img.feat-poster {
+        max-width: 96%;
+        border-radius: 10px;
+      }
       .hero-featured-body {
-        padding: 18px 16px 20px;
+        padding: 14px 14px 16px;
         flex-direction: column;
         align-items: stretch;
       }
       .feat-cta .btn { width: 100%; justify-content: center; }
-      .hero-nav-btn { width: 40px; height: 40px; }
-      .hero-featured-body h3 { font-size: 1.45rem; }
+      .hero-nav-btn { width: 42px; height: 42px; }
+      .hero-nav-btn.prev { left: 8px; }
+      .hero-nav-btn.next { right: 8px; }
+      .hero-featured-body h3 { font-size: 1.25rem; }
+      .hero-manual-hint { display: none; }
+      .hero-featured-dots { top: 10px; }
+    }
+
+    @media (min-width: 901px) {
+      .hero-featured {
+        height: clamp(520px, 68vh, 660px);
+      }
+      .hero-featured-slide img.feat-poster {
+        max-width: min(460px, 42vw);
+      }
     }
 
     /* ========== BANNER DE EVENTOS (estilos) ========== */
@@ -2867,12 +2935,12 @@
       }
       .hero h1, .hero p { margin-left: auto; margin-right: auto; }
       .hero-actions { justify-content: center; }
-      .hero-featured { min-height: 320px; order: -1; }
+      .hero-featured { order: -1; }
       .hero-banner-card { flex: 0 0 260px; }
     }
     @media (max-width: 480px) {
       .hero { min-height: auto; padding-bottom: 8px; }
-      .hero-featured { min-height: 300px; }
+      .hero-featured { /* height from showcase css */ }
       .hero-banner-card { flex: 0 0 250px; padding: 10px !important; }
       .hero-banner-card img { width: 64px; height: 64px; }
       .hero-banner-card .hb-info h4 { font-size: 0.88rem; }
@@ -2890,7 +2958,7 @@
         gap: 32px;
         padding: 40px 20px 24px;
       }
-      .hero-featured { min-height: 340px; }
+      .hero-featured { /* height from showcase css */ }
       .events-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 16px;
@@ -3063,7 +3131,7 @@
         min-height: 44px;
       }
 
-      .hero-featured { min-height: 280px !important; }
+      .hero-featured { min-height: 480px !important; }
       .hero-banner-card {
         flex: 0 0 240px !important;
         padding: 10px !important;
@@ -3084,7 +3152,7 @@
       .hero-content { padding: 20px 12px 8px !important; }
       .hero h1 { font-size: 1.4rem !important; }
       .hero-badge { font-size: 0.75rem !important; }
-      .hero-featured { min-height: 260px !important; border-radius: 16px !important; }
+      .hero-featured { min-height: 500px !important; border-radius: 16px !important; }
       .hero-featured-body { padding: 16px !important; }
       .hero-banner-card { flex: 0 0 228px !important; }
       .hero-banner-card .hb-info h4 { font-size: 0.85rem !important; }
@@ -3098,7 +3166,7 @@
     /* Landscape teléfono */
     @media (max-height: 500px) and (orientation: landscape) {
       .hero { min-height: auto; }
-      .hero-featured { min-height: 220px !important; }
+      .hero-featured { min-height: 480px !important; }
       .hero-orbs { display: none; }
       .modal { max-height: 96vh !important; }
     }
@@ -3413,6 +3481,7 @@
       </div>
 
       <div class="hero-featured" id="heroFeatured">
+        <div class="hero-manual-hint"><i class="fas fa-hand-pointer"></i> Desliza o usa las flechas</div>
         <button type="button" class="hero-nav-btn prev" id="heroPrev" aria-label="Anterior"><i class="fas fa-chevron-left"></i></button>
         <button type="button" class="hero-nav-btn next" id="heroNext" aria-label="Siguiente"><i class="fas fa-chevron-right"></i></button>
         <div class="hero-featured-dots" id="heroFeaturedDots"></div>
@@ -3665,13 +3734,6 @@
           <li><a href="#contacto">Contacto</a></li>
           <li><a href="#">Términos</a></li>
           <li><a href="#">Privacidad</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Admin</h4>
-        <ul>
-          <li><a href="admin.html">Panel Admin</a></li>
-          <li><a href="validador.html">Validador QR</a></li>
         </ul>
       </div>
     </div>
@@ -4248,9 +4310,10 @@
         ).join('');
       }
 
-      // Featured showcase cinematográfico
+      // Showcase: poster vertical completo + fondo blur (sin recorte)
       slidesWrap.innerHTML = all.map((ev, i) => {
         const title = eventTitle(ev);
+        const img = eventImage(ev);
         const price = (typeof precioConComision === 'function') ? precioConComision(ev) : (Number(ev.precio)||0);
         const ventaOn = ev.ventaActiva !== false && ev.ventaActiva !== 'false' && ev.ventaActiva !== 0 && ev.ventaActiva !== '0';
         const agotado = (Number(ev.disponibles)||0) <= 0;
@@ -4263,9 +4326,13 @@
           cta = '<button type="button" class="btn" onclick="openPurchase(\'' + ev.id + '\')">' +
             '<i class="fas fa-ticket-alt"></i> Boletos desde ' + formatMoney(price) + ' →</button>';
         }
+        const safeImg = String(img).replace(/'/g, "\'");
         return (
           '<div class="hero-featured-slide' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">' +
-            '<img src="' + eventImage(ev) + '" alt="' + title.replace(/"/g, '&quot;') + '" loading="lazy" />' +
+            '<div class="feat-blur" style="background-image:url(\'' + safeImg + '\')"></div>' +
+            '<div class="feat-poster-wrap">' +
+              '<img class="feat-poster" src="' + img + '" alt="' + title.replace(/"/g, '&quot;') + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" decoding="async" />' +
+            '</div>' +
             '<div class="feat-shade"></div>' +
             '<div class="hero-featured-body">' +
               '<div class="feat-copy">' +
@@ -4291,7 +4358,6 @@
           btn.addEventListener('click', () => {
             heroSlideIndex = Number(btn.dataset.dot) || 0;
             showHeroSlide(heroSlideIndex);
-            restartHeroTimer();
           });
         });
       }
@@ -4352,18 +4418,36 @@
     }
 
     function restartHeroTimer() {
-      if (heroSlideTimer) clearInterval(heroSlideTimer);
-      heroSlideTimer = setInterval(() => showHeroSlide(heroSlideIndex + 1), 9000);
+      // Solo navegación manual: sin avance automático
+      if (heroSlideTimer) {
+        clearInterval(heroSlideTimer);
+        heroSlideTimer = null;
+      }
     }
 
     document.getElementById('heroPrev')?.addEventListener('click', () => {
       showHeroSlide(heroSlideIndex - 1);
-      restartHeroTimer();
     });
     document.getElementById('heroNext')?.addEventListener('click', () => {
       showHeroSlide(heroSlideIndex + 1);
-      restartHeroTimer();
     });
+
+    // Deslizar en móvil / trackpad para cambiar evento
+    (function() {
+      var box = document.getElementById('heroFeatured');
+      if (!box) return;
+      var x0 = null;
+      box.addEventListener('touchstart', function(e) {
+        x0 = e.changedTouches[0].clientX;
+      }, { passive: true });
+      box.addEventListener('touchend', function(e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0;
+        x0 = null;
+        if (Math.abs(dx) < 40) return;
+        showHeroSlide(heroSlideIndex + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+    })();
 
 
 function renderEvents() {

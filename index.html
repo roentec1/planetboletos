@@ -161,16 +161,33 @@
       background: #050d1a;
     }
 
-    .hero-bg { display: none !important; }
-    .hero-bg-slide { display: none !important; }
-    .hero-bg-slide.active { display: none !important; }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .hero-bg-slide {
+      position: absolute;
+      inset: -6%;
+      background-size: cover;
+      background-position: center center;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+      filter: blur(14px) saturate(1.15) brightness(0.85);
+      transform: scale(1.08);
+    }
+    .hero-bg-slide.active {
+      opacity: 1;
+    }
     .hero-bg-overlay {
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(120deg, rgba(5, 13, 26, 0.92) 0%, rgba(11, 30, 61, 0.75) 45%, rgba(5, 13, 26, 0.55) 100%),
-        radial-gradient(ellipse at 70% 40%, rgba(196, 30, 58, 0.25), transparent 55%);
       z-index: 1;
+      /* Más claro para que se note el fondo del evento */
+      background:
+        linear-gradient(105deg, rgba(5, 10, 22, 0.78) 0%, rgba(8, 14, 28, 0.45) 42%, rgba(8, 14, 28, 0.55) 100%),
+        radial-gradient(ellipse at 75% 45%, rgba(196, 30, 58, 0.18), transparent 55%);
     }
     .hero-orbs {
       position: absolute;
@@ -379,22 +396,25 @@
 
     /* ========== SHOWCASE CINEMATOGRÁFICO (estilo boletería pro) ========== */
     .hero-content {
-      grid-template-columns: 1fr !important;
-      gap: 28px !important;
-      align-items: stretch !important;
-      max-width: 1200px !important;
+      grid-template-columns: 1fr 1.05fr !important;
+      gap: 36px !important;
+      align-items: center !important;
+      max-width: 1240px !important;
     }
     .hero-intro {
-      text-align: center;
-      max-width: 720px;
-      margin: 0 auto;
+      text-align: left;
+      max-width: none;
+      margin: 0;
     }
     .hero-intro .hero-actions {
-      justify-content: center;
+      justify-content: flex-start;
     }
     .hero-intro p {
-      margin-left: auto;
-      margin-right: auto;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .hero-intro .hero-badge {
+      margin-left: 0;
     }
 
     .hero-featured {
@@ -402,9 +422,8 @@
       border-radius: 28px;
       overflow: hidden;
       width: 100%;
-      /* Más alto para posters verticales legibles */
-      min-height: 520px;
-      height: clamp(480px, 70vh, 640px);
+      min-height: 480px;
+      height: clamp(440px, 58vh, 580px);
       background: #05070d;
       border: 1px solid rgba(255,255,255,0.14);
       box-shadow:
@@ -3453,13 +3472,52 @@
       transform: scale(1.06);
     }
     .hero-title-nav:active { transform: scale(0.96); }
-    /* Ocultar flechas dentro del banner y dots de avance */
-    .hero-featured .hero-nav-btn,
+    /* Dots / autoplay ocultos; flechas del banner visibles */
     .hero-featured-dots,
     .hero-manual-hint,
     .brand-banner-dots {
       display: none !important;
     }
+    .hero-featured .hero-nav-btn {
+      display: inline-flex !important;
+    }
+    .hero-title-row {
+      display: block !important;
+    }
+    .hero-title-row .hero-title-nav {
+      display: none !important;
+    }
+    .hero-title-row h1 {
+      text-align: left !important;
+    }
+
+    @media (max-width: 900px) {
+      .hero-content {
+        grid-template-columns: 1fr !important;
+        gap: 22px !important;
+        text-align: center;
+      }
+      .hero-intro {
+        text-align: center;
+      }
+      .hero-intro .hero-actions {
+        justify-content: center;
+      }
+      .hero-intro .hero-badge {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .hero-title-row h1 {
+        text-align: center !important;
+      }
+      .hero-featured {
+        min-height: 420px !important;
+        height: min(62vh, 520px) !important;
+        order: 2;
+      }
+      .hero-intro { order: 1; }
+    }
+
     @media (max-width: 600px) {
       .hero-title-row {
         gap: 8px;
@@ -3518,13 +3576,7 @@
           En vivo · Venta oficial de boletos
         </div>
         <div class="hero-title-row">
-          <button type="button" class="hero-title-nav" id="heroPrev" aria-label="Evento anterior">
-            <i class="fas fa-chevron-left"></i>
-          </button>
           <h1>Tu acceso al <span>universo</span> del entretenimiento</h1>
-          <button type="button" class="hero-title-nav" id="heroNext" aria-label="Evento siguiente">
-            <i class="fas fa-chevron-right"></i>
-          </button>
         </div>
         <p>Conciertos, béisbol y cultura en un solo lugar. Compra segura, comprobante digital y código QR para entrar al evento.</p>
         <div class="hero-actions">
@@ -3538,6 +3590,12 @@
       </div>
 
       <div class="hero-featured" id="heroFeatured">
+        <button type="button" class="hero-nav-btn prev" id="heroPrev" aria-label="Evento anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button type="button" class="hero-nav-btn next" id="heroNext" aria-label="Evento siguiente">
+          <i class="fas fa-chevron-right"></i>
+        </button>
         <div id="heroFeaturedSlides">
           <!-- slides por JS -->
         </div>
@@ -4445,10 +4503,12 @@
 
     function showHeroSlide(i) {
       const slides = document.querySelectorAll('.hero-featured-slide');
+      const bgs = document.querySelectorAll('.hero-bg-slide');
       if (!slides.length) return;
       const n = slides.length;
       heroSlideIndex = ((i % n) + n) % n;
       slides.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
+      bgs.forEach((el, idx) => el.classList.toggle('active', idx === heroSlideIndex));
     }
 
     function restartHeroTimer() {
